@@ -121,7 +121,6 @@ function InspectorPanel({
         <button
           className="close-panel-button"
           onClick={() => {
-            setFeatures([]);
             setActiveFeature(null);
           }}
         >
