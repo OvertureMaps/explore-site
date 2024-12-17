@@ -30,9 +30,8 @@ function App() {
     localStorage.setItem("tour", event.target.checked);
     setTour(!tour);
   };
-  
-  const [visibleTypes, setVisibleTypes] = useState([]);
 
+  const [visibleTypes, setVisibleTypes] = useState([]);
 
   useEffect(() => {
     keepTheme(setModeName);

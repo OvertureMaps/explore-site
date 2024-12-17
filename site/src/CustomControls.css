@@ -41,3 +41,39 @@ a.bug-nub-link {
   height: 25px;
   width: 25px;
 }
+
+.compare-toggle {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  background: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  color: var(--ifm-color-content);
+}
+
+.compare-toggle:hover {
+  background: #f0f0f0;
+}
+
+.compare-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Add dark mode styles */
+[data-theme="dark"] .bug-nub {
+  background: var(--ifm-background-surface-color);
+}
+
+[data-theme="dark"] .compare-toggle {
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-color-content);
+}
+
+[data-theme="dark"] .compare-toggle:hover {
+  background: var(--ifm-color-emphasis-200);
+}

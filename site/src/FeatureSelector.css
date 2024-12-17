@@ -4,28 +4,13 @@
   overflow-y: auto;
 }
 
-.maplibregl-popup-content {
-  border-radius: 6px;
-}
-
-.theme-light .maplibregl-popup-content {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: black;
-}
-
-
 .theme-dark .maplibregl-popup-content {
-  background-color: rgba(0, 0, 0, 0.85);
-  color: white;
+  background-color: #121212;
+  color: #fff;
 }
-
-.maplibregl-popup-close-button {
-  color: black;
-}
-
 
 .theme-dark .maplibregl-popup-close-button {
-  color: white;
+  color: #fff;
 }
 
 .feature-selector-title {

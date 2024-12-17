@@ -3,7 +3,6 @@ import { useState } from "react";
 import "./TableRow.css";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import InfoToolTip from "./InfoToolTip";
 
 function TableRow({ mode, table_key, entity }) {
   const [expanded, setExpanded] = useState(false);
