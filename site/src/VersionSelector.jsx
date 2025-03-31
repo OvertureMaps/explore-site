@@ -2,6 +2,9 @@ import PropTypes from "prop-types";
 import "./VersionSelector.css";
 
 export const VERSION_OPTIONS = [
+  "2025-03-19.1",
+  "2025-02-19.0",
+  "2025-01-22.0",
   "2024-12-18.0",
   "2024-11-13.0",
   "2024-10-23.0",
