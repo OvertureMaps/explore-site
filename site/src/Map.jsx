@@ -13,8 +13,26 @@ import Map, { INITIAL_VIEW_STATE } from "./MapLibreMap";
 import CompareToggle, { useComparisonState } from "./CompareToggle";
 import VersionSelector from "./VersionSelector";
 
+function getDateStamp(dayIndex) {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate() - dayIndex).padStart(2, '0');
+  const returnStr = `${year}-${month}-${day}`;
+  console.log(returnStr);
+  
+  return returnStr;
+}
+
 const getPmtilesUrl = (version) =>
   `pmtiles://https://d3c1b7bog2u1nn.cloudfront.net/${version.split(".")[0]}/`;
+
+const TODAY_DS = getDateStamp(0) ;
+const YESTERDAY_DS = getDateStamp(1);
+
+const getQaPmtilesUrl = (date) =>
+  `pmtiles://https://dr23tlpzrppt2.cloudfront.net/nightlies/ds=${date}/`;
+
 
 const ThemeSource = ({ name, url }) => {
   return <Source id={name} type="vector" url={`${url}${name}.pmtiles`} />;
@@ -222,6 +240,7 @@ export default function MapContainer({
             visibleTypes={visibleTypes}
             activeThemes={activeThemes}
             PMTILES_URL={getPmtilesUrl(leftVersion)}
+            QA_PMTILES_URL={getQaPmtilesUrl(YESTERDAY_DS)}
             showControls={!compareMode}
             lastClickedCoords={lastClickedCoords}
             features={features}
@@ -258,6 +277,7 @@ export default function MapContainer({
               visibleTypes={visibleTypes}
               activeThemes={activeThemes}
               PMTILES_URL={getPmtilesUrl(rightVersion)}
+              QA_PMTILES_URL={getQaPmtilesUrl(TODAY_DS)}
               showControls={true}
               lastClickedCoords={lastClickedCoords}
               setLastClickedCoords={setLastClickedCoords}

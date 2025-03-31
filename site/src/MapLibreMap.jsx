@@ -21,9 +21,9 @@ ThemeSource.propTypes = {
 };
 
 export const INITIAL_VIEW_STATE = {
-  latitude: 38.90678,
-  longitude: -77.036495,
-  zoom: 15,
+  latitude: 48.72776,
+  longitude: 4.57531,
+  zoom: 17,
   bearing: 0,
   pitch: 0,
 };
@@ -55,6 +55,7 @@ export default function Map({
   visibleTypes,
   activeThemes,
   PMTILES_URL,
+  QA_PMTILES_URL,
   showControls,
   lastClickedCoords,
   features,
@@ -84,8 +85,8 @@ export default function Map({
       style={style}
       attributionControl={false}
     >
-      <ThemeSource name="base" url={PMTILES_URL} />
-      <ThemeSource name="buildings" url={PMTILES_URL} />
+      <ThemeSource name="base" url={QA_PMTILES_URL} />
+      <ThemeSource name="buildings" url={QA_PMTILES_URL} />
       <ThemeSource name="places" url={PMTILES_URL} />
       <ThemeSource name="divisions" url={PMTILES_URL} />
       <ThemeSource name="transportation" url={PMTILES_URL} />
