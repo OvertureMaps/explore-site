@@ -244,6 +244,7 @@ const ThemeSelector = ({
                 className={`theme-box ${
                   mode === "theme-dark" ? "dark" : "light"
                 }`}
+                key={theme}
                 sx={{ paddingLeft: "5px" }}
                 width={220}
               >
@@ -294,6 +295,7 @@ const ThemeSelector = ({
                             className={`type-selector-checkbox ${
                               mode === "theme-dark" ? "dark" : "light"
                             }`}
+                            key={`${layer.theme}-${layer.type}`}
                             control={
                               <Checkbox
                                 sx={{ padding: "2px" }}
