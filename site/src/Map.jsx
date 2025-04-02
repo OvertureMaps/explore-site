@@ -10,10 +10,10 @@ import ThemeSelector from "./ThemeSelector";
 import BugIcon from "./icons/icon-bug.svg?react";
 import Navigator from "./navigator/Navigator";
 import Map, { INITIAL_VIEW_STATE } from "./MapLibreMap";
-import CompareToggle, { useComparisonState } from "./CompareToggle";
+import CompareToggle from "./CompareToggle";
 import VersionSelector from "./VersionSelector";
 import QaVersionSelector from "./QaVersionSelector";
-
+import { useComparisonState } from "./util/ComparisonState";
 
 const getPmtilesUrl = (version) =>
   `pmtiles://https://d3c1b7bog2u1nn.cloudfront.net/${version.split(".")[0]}/`;
