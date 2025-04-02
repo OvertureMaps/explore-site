@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
-import "./VersionSelector.css";
-import { VERSION_OPTIONS } from "./VersionConstants";
+import "./QaVersionSelector.css";
+import { TWO_WEEKS_DS } from "./VersionConstants";
 
-export default function VersionSelector({ version, onChange, style }) {
+export default function QaVersionSelector({ version, onChange, style }) {
   return (
     <select
-      className="version-selector"
+      className="qa-version-selector"
       value={version}
       onChange={(e) => onChange(e.target.value)}
       style={style}
     >
-      {VERSION_OPTIONS.map((v) => (
+      {TWO_WEEKS_DS.map((v) => (
         <option key={v} value={v}>
           {v}
         </option>
@@ -19,7 +19,7 @@ export default function VersionSelector({ version, onChange, style }) {
   );
 }
 
-VersionSelector.propTypes = {
+QaVersionSelector.propTypes = {
   version: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   style: PropTypes.object,

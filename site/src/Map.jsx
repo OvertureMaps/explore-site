@@ -12,29 +12,14 @@ import Navigator from "./navigator/Navigator";
 import Map, { INITIAL_VIEW_STATE } from "./MapLibreMap";
 import CompareToggle, { useComparisonState } from "./CompareToggle";
 import VersionSelector from "./VersionSelector";
+import QaVersionSelector from "./QaVersionSelector";
 
-function getDateStamp(dayIndex) {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate() - dayIndex).padStart(2, '0');
-  const returnStr = `${year}-${month}-${day}`;
-  console.log(returnStr);
-
-  return returnStr;
-}
 
 const getPmtilesUrl = (version) =>
   `pmtiles://https://d3c1b7bog2u1nn.cloudfront.net/${version.split(".")[0]}/`;
 
-const TODAY_DS = getDateStamp(0) ;
-const YESTERDAY_DS = getDateStamp(1);
-
-const getTodaysQaPmtilesUrl = (date) =>
-  `pmtiles://https://dr23tlpzrppt2.cloudfront.net/nightlies/ds=2025-04-01/`;
-
-const getYesterdaysQaPmtilesUrl = (date) =>
-  `pmtiles://https://dr23tlpzrppt2.cloudfront.net/nightlies/ds=2025-03-30/`;
+const getQaPmtilesUrl = (ds) =>
+  `pmtiles://https://dr23tlpzrppt2.cloudfront.net/nightlies/ds=${ds}/`;
 
 const ThemeSource = ({ name, url }) => {
   return <Source id={name} type="vector" url={`${url}${name}.pmtiles`} />;
@@ -74,6 +59,10 @@ export default function MapContainer({
     setLeftVersion,
     rightVersion,
     setRightVersion,
+    leftQaVersion,
+    setLeftQaVersion,
+    rightQaVersion,
+    setRightQaVersion,
   } = useComparisonState();
 
   const onMove = useCallback((evt) => setViewState(evt.viewState), []);
@@ -216,11 +205,20 @@ export default function MapContainer({
       <div className={`map ${mode} tour-map`}>
         <div style={leftMapStyle}>
           {compareMode && (
+            <>
             <VersionSelector
               version={leftVersion}
               onChange={setLeftVersion}
               style={{ right: "10px" }}
             />
+  
+            <QaVersionSelector
+            version={leftQaVersion}
+            onChange={setLeftQaVersion}
+            style={{ right: "10px", top: "45px" }}
+          />
+          </>
+          
           )}
           <Map
             viewState={viewState}
@@ -242,7 +240,7 @@ export default function MapContainer({
             visibleTypes={visibleTypes}
             activeThemes={activeThemes}
             PMTILES_URL={getPmtilesUrl(leftVersion)}
-            QA_PMTILES_URL={getYesterdaysQaPmtilesUrl(YESTERDAY_DS)}
+            QA_PMTILES_URL={getQaPmtilesUrl(leftQaVersion)}
             showControls={!compareMode}
             lastClickedCoords={lastClickedCoords}
             features={features}
@@ -258,6 +256,11 @@ export default function MapContainer({
               version={rightVersion}
               onChange={setRightVersion}
               style={{ left: "10px" }}
+            />
+            <QaVersionSelector
+            version={rightQaVersion}
+            onChange={setRightQaVersion}
+            style={{ left: "10px", top: "45px" }}
             />
             <Map
               viewState={viewState}
@@ -279,7 +282,7 @@ export default function MapContainer({
               visibleTypes={visibleTypes}
               activeThemes={activeThemes}
               PMTILES_URL={getPmtilesUrl(rightVersion)}
-              QA_PMTILES_URL={getTodaysQaPmtilesUrl(TODAY_DS)}
+              QA_PMTILES_URL={getQaPmtilesUrl(rightQaVersion)}
               showControls={true}
               lastClickedCoords={lastClickedCoords}
               setLastClickedCoords={setLastClickedCoords}
