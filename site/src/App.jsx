@@ -1,5 +1,6 @@
 import "./App.css";
 import Header from "./nav/Header";
+import QaBar from "./qa_info_bar/QaBar";
 import Map from "./Map";
 import { MapProvider } from "react-map-gl/maplibre";
 import { getTheme, keepTheme, darkTheme, lightTheme } from "./themeUtils";
@@ -70,6 +71,7 @@ function App() {
             setZoom={setZoom}
             visibleTypes={visibleTypes}
           />
+          <QaBar/>
           <Map
             mode={modeName}
             features={features}
