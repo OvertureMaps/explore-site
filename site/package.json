@@ -18,13 +18,13 @@
     "@mui/icons-material": "^5.15.21",
     "@mui/material": "^5.15.20",
     "apache-arrow": "^15.0.2",
-    "maplibre-gl": "^4.4.1",
+    "maplibre-gl": "^5.0.0",
     "pmtiles": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-floater": "^0.9.3",
     "react-joyride": "^2.8.2",
-    "react-map-gl": "^7.1.7"
+    "react-map-gl": "^8.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.64",
