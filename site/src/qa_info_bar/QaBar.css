@@ -11,10 +11,10 @@
     line-height: 2;
     outline: none;
     min-height:120px;
-    border: 3px;
-    border-radius: 10px;
+    border: 3px solid white;
+    border-radius: 3px;
     border-color: rgba(15, 15, 15, 0.8);
-    max-height: 80vh;
+    max-height: 30vh;
     position: relative;
     overflow: auto;
   
@@ -39,13 +39,16 @@
     }
 
     .qadata-container {
-      display:flex;
-      flex-direction: column;
-      max-height: 400px;
+      display:table;
+      border-spacing: 2px;
+      border-collapse: collapse;
+      box-sizing: border-box;
+      text-indent: 0;
+      border: 2px solid white;
+      max-height: 200px;
       .qadata-header {
-        display:flex;
-        align-items: flex-start;
-        justify-content: space-between;
+        border:2px solid var(--ifm-color-emphasis-200);
+        display:table-row;
         font-style: italic;
         .qadata-header-item{
           font-weight: 400;
@@ -56,9 +59,11 @@
       }
 
       .qadata-rows {
-        display:flex;
-        justify-content:flex-start;
+        display:table-row;
+        border: 1px dotted white;
+        border-collapse: collapse;
         .qadata-row-item {
+          display: table-cell;
           padding-right: 10px;
           padding-left: 10px;
           min-width: 150px;
