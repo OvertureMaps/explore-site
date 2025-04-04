@@ -67,6 +67,10 @@
           padding-right: 10px;
           padding-left: 10px;
           min-width: 150px;
+
+          a {
+            cursor: pointer;
+          }
         }
 
       }

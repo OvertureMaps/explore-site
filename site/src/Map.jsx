@@ -9,7 +9,7 @@ import "./CustomControls.css";
 import ThemeSelector from "./ThemeSelector";
 import BugIcon from "./icons/icon-bug.svg?react";
 import Navigator from "./navigator/Navigator";
-import Map, { INITIAL_VIEW_STATE } from "./MapLibreMap";
+import Map from "./MapLibreMap";
 import CompareToggle from "./CompareToggle";
 import VersionSelector from "./VersionSelector";
 import QaVersionSelector from "./QaVersionSelector";
@@ -40,13 +40,15 @@ export default function MapContainer({
   navigatorOpen,
   setNavigatorOpen,
   themeRef,
+  viewState,
+  setViewState,
+  onMove
 }) {
   const leftMapRef = useRef();
   const rightMapRef = useRef();
 
   const [cursor, setCursor] = useState("auto");
 
-  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
 
   const {
     compareMode,
@@ -64,8 +66,6 @@ export default function MapContainer({
     rightQaVersion,
     setRightQaVersion,
   } = useComparisonState();
-
-  const onMove = useCallback((evt) => setViewState(evt.viewState), []);
 
   const [activeThemes, setActiveThemes] = useState([
     "places",

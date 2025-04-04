@@ -4,11 +4,12 @@ import QaBar from "./qa_info_bar/QaBar";
 import Map from "./Map";
 import { MapProvider } from "react-map-gl/maplibre";
 import { getTheme, keepTheme, darkTheme, lightTheme } from "./themeUtils";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Tour from "./Tour";
 import StartupBox from "./StartupBox";
 import { ThemeProvider } from "@mui/material";
 import { useNavigatorState } from "./navigator/Navigator";
+import { INITIAL_VIEW_STATE } from "./MapLibreMap";
 
 function App() {
   const [modeName, setModeName] = useState(getTheme());
@@ -31,6 +32,8 @@ function App() {
     localStorage.setItem("tour", event.target.checked);
     setTour(!tour);
   };
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const onMove = useCallback((evt) => setViewState(evt.viewState), []);
 
   const [visibleTypes, setVisibleTypes] = useState([]);
 
@@ -71,7 +74,10 @@ function App() {
             setZoom={setZoom}
             visibleTypes={visibleTypes}
           />
-          <QaBar/>
+          <QaBar
+            viewState={viewState}
+            setViewState={setViewState}
+          />
           <Map
             mode={modeName}
             features={features}
@@ -84,6 +90,9 @@ function App() {
             activeFeature={activeFeature}
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
+            viewState={viewState}
+            setViewState={setViewState}
+            onMove={onMove}
           />
         </MapProvider>
       </ThemeProvider>
