@@ -6,16 +6,14 @@ import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 // This component sits below the header navbar, but above the map. It contains pertinent information for the QA Table
-export default function QaBar() {
+export default function QaBar({viewState, setViewState}) {
 
   const [jsonContents, setJsonContents] = useState({});
   const [fileParsed, setFileParsed] = useState(false);
 
-    function readDone(results, file) {
-      console.log('setting json contents')
+    function readDone(results, _) {
       setJsonContents(results.data);
       setFileParsed(true);
-      console.log("Parsing complete:", results.data, file);
     }
 
     const papaconfig = {
@@ -55,14 +53,15 @@ export default function QaBar() {
       onDrop: acceptedFiles => {
           // Handle the accepted files here
           parseCsv(acceptedFiles[0]);
-      }
+      },
+      noClick: true
     });
 
     return (
       <nav aria-label="Qa Info" className="qa-bar qabar--fixed-top">
         <div className={"qa-bar__inner " + (fileParsed ? "drop" : "nodrop")}  {...getRootProps()}>
           <input {...getInputProps()} />
-            <QaDataRenderer fileParsed={fileParsed} jsonContents={jsonContents}/>
+            <QaDataRenderer fileParsed={fileParsed} jsonContents={jsonContents} viewState={viewState} setViewState={setViewState} />
         </div>
       </nav>
     );
@@ -70,7 +69,7 @@ export default function QaBar() {
   }
 
   QaBar.propTypes = {
-    mode: PropTypes.string.isRequired,
-    setMode: PropTypes.func.isRequired,
+    viewState: PropTypes.object.isRequired,
+    setViewState: PropTypes.func.isRequired,
   };
   
