@@ -31,8 +31,16 @@
       display: flex;
       justify-content: center;
       height: 100%;
+      min-height:125px;
       font-size:36pt;
       align-items:center;
+      background: repeating-linear-gradient(
+        45deg,
+        #606dbc,
+        #606dbc 10px,
+        #465298 10px,
+        #465298 20px
+      );
       border:6px var(--ifm-color-emphasis-400);
     }
   }
