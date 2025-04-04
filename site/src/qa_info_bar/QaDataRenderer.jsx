@@ -9,15 +9,17 @@ export default function QaDataRenderer({fileParsed, jsonContents}) {
       const rowData = jsonContents.slice(1);
       return (    
         <div className="qadata-container">
-          <div className="qadata-headers">
+          <div className="qadata-header">
             {headers.map(header => 
-              <div key={header} className="qadata-header"> 
+              <div key={header} className="qadata-header-item"> 
                 {header}
               </div>
             )}
           </div>
-          <div className="qadata-item">
-          </div>
+          { rowData ? 
+            <QaRowRenderer rows={rowData}></QaRowRenderer> : 
+            <></>
+          }
         </div>
       );
     } else {
@@ -30,3 +32,24 @@ QaDataRenderer.propTypes = {
   jsonContents: PropTypes.array,
   fileParsed: PropTypes.bool.isRequired,
 };
+
+
+function QaRowRenderer({rows}){
+    return (
+
+    rows.map(row => {
+      return(
+        <div key={row[0] + row[1]} className="qadata-rows">
+        {
+          row.map(rowItem => 
+            <div key = {rowItem} className="qadata-row-item">
+              {rowItem}
+              </div>
+          )
+        }
+        </div>  
+      )
+    })
+  )
+
+}
