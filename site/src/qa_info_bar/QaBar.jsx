@@ -12,6 +12,7 @@ export default function QaBar() {
   const [fileParsed, setFileParsed] = useState(false);
 
     function readDone(results, file) {
+      console.log('setting json contents')
       setJsonContents(results.data);
       setFileParsed(true);
       console.log("Parsing complete:", results.data, file);
@@ -59,7 +60,7 @@ export default function QaBar() {
 
     return (
       <nav aria-label="Qa Info" className="qa-bar qabar--fixed-top">
-        <div className="qa-bar__inner nodrop" {...getRootProps()}>
+        <div className={"qa-bar__inner " + (fileParsed ? "drop" : "nodrop")}  {...getRootProps()}>
           <input {...getInputProps()} />
             <QaDataRenderer fileParsed={fileParsed} jsonContents={jsonContents}/>
         </div>
