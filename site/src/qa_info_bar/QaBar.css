@@ -45,7 +45,7 @@
       box-sizing: border-box;
       text-indent: 0;
       border: 2px solid white;
-      max-height: 200px;
+      max-height: inherit;
       .qadata-header {
         border:2px solid var(--ifm-color-emphasis-200);
         display:table-row;
