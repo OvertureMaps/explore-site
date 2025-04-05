@@ -66,7 +66,7 @@ function QaRowRenderer({headers, rows, viewState, setViewState}){
                   key={rowItem} 
                   className="qadata-row-item" 
                 >
-                  <a onClick={() => setLocation(rowItem)}>{rowItem}</a>
+                  <a onClick={() => setLocation(rowItem)}>jump to location</a>
                 </div>
               )
             }else {
