@@ -97,6 +97,9 @@ const ThemeSelector = ({
       if (!newSelectedThemes[layer.theme]) {
         newSelectedThemes[layer.theme] = true;
       }
+      if (layer.type === 'division_area' || layer.type === 'division_boundary'){
+        return;
+      }
       newSelectedTypes[layer.type] = true;
     });
 

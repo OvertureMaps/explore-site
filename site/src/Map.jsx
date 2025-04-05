@@ -68,7 +68,7 @@ export default function MapContainer({
   } = useComparisonState();
 
   const [activeThemes, setActiveThemes] = useState([
-    "places",
+    "base",
     "addresses",
     "buildings",
     "transportation",
