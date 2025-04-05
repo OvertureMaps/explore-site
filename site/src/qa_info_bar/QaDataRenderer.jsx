@@ -1,8 +1,10 @@
 import PropTypes from "prop-types";
-
+import { useState } from "react"
 export default function QaDataRenderer({fileParsed, jsonContents, viewState, setViewState}) {
   // const header = jsonContents[0];
   // const data = jsonContents.slice(1);
+
+  const [selRow, setSelRow] = useState(-1);
 
     if (fileParsed ) {
       const headers = jsonContents[0];
@@ -18,7 +20,7 @@ export default function QaDataRenderer({fileParsed, jsonContents, viewState, set
               )}
             </tr>
             { rowData ? 
-              <QaRowRenderer headers={headers} rows={rowData} viewState={viewState} setViewState={setViewState}></QaRowRenderer> : 
+              <QaRowRenderer headers={headers} rows={rowData} viewState={viewState} setViewState={setViewState} selectedRow={selRow} setSelectedRow={setSelRow}></QaRowRenderer> : 
               <></>
             }
           </tr>
@@ -38,20 +40,24 @@ QaDataRenderer.propTypes = {
 };
 
 
-function QaRowRenderer({headers, rows, viewState, setViewState}){
+function QaRowRenderer({headers, rows, viewState, setViewState, selectedRow, setSelectedRow}){
   
   let locIndex;
   if (headers.includes('map_loc')){
     locIndex = headers.indexOf('map_loc');
   }
 
-  function setLocation(locHashString) {
+  const selectRow = (i) => {
+    setSelectedRow(i);
+  }
 
+  const setLocation = (locHashString, index) => {
     const locItems = locHashString.split('/');
     const zoom = locItems[0];
     const lat = locItems[1];
     const lng = locItems[2];
     setViewState({zoom: zoom, latitude: lat, longitude: lng});
+    setSelectedRow(index);
   }
   
   
@@ -59,7 +65,7 @@ function QaRowRenderer({headers, rows, viewState, setViewState}){
 
     rows.map((row, i) => {
       return(
-        <tr key={i + row[2]} className="qadata-rows">
+        <tr key={i + row[2]} className={ "qadata-rows"  + ((selectedRow === i) ? " highlight" : "")} onClick={() => selectRow(i)}>
         {
           row.map((rowItem, j) => {
             if (j === locIndex) {
@@ -68,7 +74,7 @@ function QaRowRenderer({headers, rows, viewState, setViewState}){
                   key={rowItem} 
                   className="qadata-row-item" 
                 >
-                  <a onClick={() => setLocation(rowItem)}>jump to location</a>
+                  <a onClick={() => setLocation(rowItem, i)}>jump to location</a>
                 </td>
               )
             }else {

@@ -59,10 +59,10 @@ export default function QaBar({viewState, setViewState}) {
 
     return (
       <nav aria-label="Qa Info" className="qa-bar qabar--fixed-top">
-        <div className={"qa-bar__inner " + (fileParsed ? "drop" : "nodrop")}  {...getRootProps()}>
+        <table className={"qa-bar__inner " + (fileParsed ? "drop" : "nodrop")}  {...getRootProps()}>
           <input {...getInputProps()} />
             <QaDataRenderer fileParsed={fileParsed} jsonContents={jsonContents} viewState={viewState} setViewState={setViewState} />
-        </div>
+        </table>
       </nav>
     );
 
