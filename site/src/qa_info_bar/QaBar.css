@@ -49,14 +49,18 @@
       width: auto;
       .qadata-header {
         border:2px solid var(--ifm-color-emphasis-200);
-        display:table-row;
+        
+        display:table-header-group;
         font-style: italic;
         .qadata-header-item{
+          position: sticky;
+          background-color: var(--ifm-color-primary-dark);
+          top: 0; /* Don't forget this, required for the stickiness */
           display: table-cell;
           font-weight: 600;
           padding-right: 10px;
           padding-left: 10px;
-          min-width: 150px;
+          min-width: 150;
         }
       }
 
