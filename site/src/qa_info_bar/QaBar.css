@@ -30,6 +30,7 @@
     .qa-bar__inner {
       display: flex;
       justify-content: center;
+      flex-direction: column;
       height: 100%;
       font-size:10pt;
       min-height:125px;
@@ -46,11 +47,13 @@
       text-indent: 0;
       border: 2px solid white;
       max-height: inherit;
+      width: auto;
       .qadata-header {
         border:2px solid var(--ifm-color-emphasis-200);
         display:table-row;
         font-style: italic;
         .qadata-header-item{
+          display: table-cell;
           font-weight: 400;
           padding-right: 10px;
           padding-left: 10px;

@@ -8,19 +8,23 @@ export default function QaDataRenderer({fileParsed, jsonContents, viewState, set
       const headers = jsonContents[0];
       const rowData = jsonContents.slice(1);
       return (    
-        <div className="qadata-container">
-          <div className="qadata-header">
-            {headers.map(header => 
-              <div key={header} className="qadata-header-item"> 
-                {header}
-              </div>
-            )}
+        <>
+          <div className="qadata-container header">
+            <div className="qadata-header">
+              {headers.map(header => 
+                <div key={header} className="qadata-header-item"> 
+                  {header}
+                </div>
+              )}
+            </div>
           </div>
-          { rowData ? 
-            <QaRowRenderer headers={headers} rows={rowData} viewState={viewState} setViewState={setViewState}></QaRowRenderer> : 
-            <></>
-          }
-        </div>
+          <div className="qadata-container row">
+            { rowData ? 
+              <QaRowRenderer headers={headers} rows={rowData} viewState={viewState} setViewState={setViewState}></QaRowRenderer> : 
+              <></>
+            }
+          </div>
+        </>
       );
     } else {
       return <></>
