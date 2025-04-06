@@ -42,7 +42,7 @@ QaDataRenderer.propTypes = {
 
 function QaRowRenderer({headers, rows, viewState, setViewState, selectedRow, setSelectedRow, activeOsmFeature, setActiveOsmFeature}){
   
-  let locIndex, osmIndex;
+  let locIndex, osmIndex, osmUrlIndex;
   if (headers.includes('map_loc')){
     locIndex = headers.indexOf('map_loc');
   }
@@ -51,6 +51,9 @@ function QaRowRenderer({headers, rows, viewState, setViewState, selectedRow, set
     osmIndex = headers.indexOf('id');
   }
 
+  if (headers.includes('osm_url')){
+    osmUrlIndex = headers.indexOf('osm_url');
+  }
 
   const selectRow = (i) => {
     setSelectedRow(i);
@@ -86,7 +89,16 @@ function QaRowRenderer({headers, rows, viewState, setViewState, selectedRow, set
                   <a onClick={() => setLocation(rowItem, i)}>jump to location</a>
                 </td>
               )
-            }else {
+            } else if ( j === osmUrlIndex){
+              return (
+                <td 
+                  key={rowItem} 
+                  className="qadata-row-item" 
+                >
+                  <a href={rowItem} target='_blank'>view on osm</a>
+                </td>
+              )
+            } else {
               return (
                 <td 
                   key={rowItem} 
