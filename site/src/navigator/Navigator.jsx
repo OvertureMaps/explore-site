@@ -20,13 +20,13 @@ export function useNavigatorState(initialOpen = false) {
 }
 
 function Navigator({ open, setOpen, map, setVisibleTypes, setActiveThemes }) {
-  const { myMap } = useMap();
+  const { leftMap } = useMap();
 
   const handleTourSelect = (tourId) => {
     const tour = tours[tourId];
     setVisibleTypes(tour.visibleTypes);
     setActiveThemes([tour.theme]);
-    myMap.jumpTo(tour.view);
+    leftMap.jumpTo(tour.view);
   };
 
   return (

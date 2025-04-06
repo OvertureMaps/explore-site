@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState } from "react"
-export default function QaDataRenderer({fileParsed, jsonContents, viewState, setViewState}) {
+export default function QaDataRenderer({fileParsed, jsonContents, viewState, setViewState,  activeOsmFeature, setActiveOsmFeature}) {
   // const header = jsonContents[0];
   // const data = jsonContents.slice(1);
 
@@ -20,7 +20,7 @@ export default function QaDataRenderer({fileParsed, jsonContents, viewState, set
               )}
             </tr>
             { rowData ? 
-              <QaRowRenderer headers={headers} rows={rowData} viewState={viewState} setViewState={setViewState} selectedRow={selRow} setSelectedRow={setSelRow}></QaRowRenderer> : 
+              <QaRowRenderer headers={headers} rows={rowData} viewState={viewState} setViewState={setViewState} selectedRow={selRow} setSelectedRow={setSelRow}activeOsmFeature={activeOsmFeature} setActiveOsmFeature={setActiveOsmFeature} /> : 
               <></>
             }
           </tr>
@@ -40,15 +40,24 @@ QaDataRenderer.propTypes = {
 };
 
 
-function QaRowRenderer({headers, rows, viewState, setViewState, selectedRow, setSelectedRow}){
+function QaRowRenderer({headers, rows, viewState, setViewState, selectedRow, setSelectedRow, activeOsmFeature, setActiveOsmFeature}){
   
-  let locIndex;
+  let locIndex, osmIndex;
   if (headers.includes('map_loc')){
     locIndex = headers.indexOf('map_loc');
   }
 
+  if (headers.includes('id')){
+    osmIndex = headers.indexOf('id');
+  }
+
+
   const selectRow = (i) => {
     setSelectedRow(i);
+
+    if (osmIndex){
+      setActiveOsmFeature(rows[i][osmIndex])
+    }
   }
 
   const setLocation = (locHashString, index) => {
