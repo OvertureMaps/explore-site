@@ -36,6 +36,7 @@ export default function MapContainer({
   setFeatures,
   activeFeature,
   setActiveFeature,
+  activeOsmFeature,
   setZoom,
   navigatorOpen,
   setNavigatorOpen,
@@ -122,6 +123,7 @@ export default function MapContainer({
   });
 
   const activeFeatureRef = useRef(null);
+  const highlightedOsmFeaturesRef = useRef([]);
 
   useEffect(() => {
     // Remove feature state from previous active feature
@@ -164,6 +166,61 @@ export default function MapContainer({
 
     activeFeatureRef.current = activeFeature;
   }, [activeFeature]);
+
+
+  useEffect(() => {
+
+     // Remove highlighted feature state from previous osm features
+     if (highlightedOsmFeaturesRef.current) {
+      highlightedOsmFeaturesRef.current.forEach(feature => {
+        leftMapRef.current.removeFeatureState({
+          source: feature.source,
+          sourceLayer: feature.sourceLayer,
+          id: feature.id,
+        });
+        if (rightMapRef.current) {
+          rightMapRef.current.removeFeatureState({
+            source: feature.source,
+            sourceLayer: feature.sourceLayer,
+            id: feature.id,
+          });
+        }
+      })
+    }
+
+    // If there is an active OSM Feature to highlight, we should find all the features that reference it 
+    // and give them the 'highlighted' state. 
+    if (activeOsmFeature){
+      const features =leftMapRef.current.queryRenderedFeatures();
+
+      const filteredFeatures = features.filter(feature => feature.properties.sources.includes(activeOsmFeature));
+      highlightedOsmFeaturesRef.current = filteredFeatures;
+
+      filteredFeatures.forEach(feature => {
+        leftMapRef.current.setFeatureState(
+          {
+            source: feature.source,
+            sourceLayer: feature.sourceLayer,
+            id: feature.id,
+          }, 
+          { highlighted: true}
+        );
+
+        if (rightMapRef.current){
+          rightMapRef.current.setFeatureState(
+            {
+              source: feature.source,
+              sourceLayer: feature.sourceLayer,
+              id: feature.id,
+            }, 
+            { highlighted: true}
+          );
+        }
+      })
+    }
+
+  }, [activeOsmFeature]);
+
 
   const onClick = useCallback(
     (event) => {
@@ -235,7 +292,7 @@ export default function MapContainer({
             onZoom={handleZoom}
             interactiveLayerIds={interactiveLayerIds}
             style={leftMapStyle}
-            mapId="left-map"
+            mapId="leftMap"
             mode={mode}
             visibleTypes={visibleTypes}
             activeThemes={activeThemes}
@@ -277,7 +334,7 @@ export default function MapContainer({
               onMove={onMove}
               interactiveLayerIds={interactiveLayerIds}
               style={rightMapStyle}
-              mapId="right-map"
+              mapId="rightMap"
               mode={mode}
               visibleTypes={visibleTypes}
               activeThemes={activeThemes}

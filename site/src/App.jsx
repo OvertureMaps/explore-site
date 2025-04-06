@@ -22,6 +22,7 @@ function App() {
   const [zoom, setZoom] = useState(0);
   const themeRef = useRef(null);
   const [activeFeature, setActiveFeature] = useState(null);
+  const [activeOsmFeature, setActiveOsmFeature] = useState(null);
 
   const startTour = () => {
     setOpen(false);
@@ -77,6 +78,8 @@ function App() {
           <QaBar
             viewState={viewState}
             setViewState={setViewState}
+            activeOsmFeature={activeOsmFeature}
+            setActiveOsmFeature={setActiveOsmFeature}
           />
           <Map
             mode={modeName}
@@ -88,6 +91,7 @@ function App() {
             themeRef={themeRef}
             setActiveFeature={setActiveFeature}
             activeFeature={activeFeature}
+            activeOsmFeature={activeOsmFeature}
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
             viewState={viewState}
