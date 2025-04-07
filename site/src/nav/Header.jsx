@@ -22,7 +22,6 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes}) {
         <div className="navbar__items navbar__items--right">
           <GithubButton />
           <DarkModeToggle mode={mode} setMode={setMode} />
-          <DownloadButton zoom={zoom} mode={mode} setZoom={setZoom} visibleTypes={visibleTypes}/>
         </div>
       </div>
     </nav>
