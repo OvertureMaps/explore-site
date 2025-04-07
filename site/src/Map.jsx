@@ -352,14 +352,6 @@ export default function MapContainer({
         )}
 
         <div className="custom-controls">
-          <Navigator
-            open={navigatorOpen}
-            setOpen={setNavigatorOpen}
-            map={useRef}
-            setVisibleTypes={setVisibleTypes}
-            setActiveThemes={setActiveThemes}
-          />
-
           {features.length > 0 && (
             <InspectorPanel
               mode={mode}
