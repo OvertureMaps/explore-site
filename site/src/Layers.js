@@ -15,6 +15,7 @@ export const layers = [
     outline: true,
     color: "hsla(195, 71%, 80%, 1)",
     activeColor: "hsla(195, 77%, 85%, 1)",
+    labelColor: "hsla(195, 77%, 60%, 1)",
   },
   {
     theme: "base",
