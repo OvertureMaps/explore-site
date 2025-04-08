@@ -193,7 +193,7 @@ export default function MapContainer({
     if (activeOsmFeature){
       const features =leftMapRef.current.queryRenderedFeatures();
 
-      const filteredFeatures = features.filter(feature => feature.properties.sources.includes(activeOsmFeature));
+      const filteredFeatures = features?.filter(feature => feature?.properties?.sources?.includes(activeOsmFeature));
       highlightedOsmFeaturesRef.current = filteredFeatures;
 
       filteredFeatures.forEach(feature => {
