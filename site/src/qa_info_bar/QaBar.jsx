@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import "./QaBar.css";
 import QaDataRenderer from "./QaDataRenderer";
 import Papa from 'papaparse';
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMap } from "react-map-gl/maplibre";
 import { useDropzone } from 'react-dropzone';
 
@@ -14,6 +14,16 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
  
   const [jsonContents, setJsonContents] = useState({});
   const [fileParsed, setFileParsed] = useState(false);
+  const [textFilter, setTextFilter] = useState('');
+  const [debouncedTextFilter, setDebouncedTextFilter] = useState(textFilter);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setDebouncedTextFilter(textFilter);
+    }, 300); // Adjust the delay as needed (e.g., 300ms)
+
+    return () => clearTimeout(delay);
+  }, [textFilter]);
 
     function readDone(results, _) {
       setJsonContents(results.data);
@@ -62,13 +72,21 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     });
 
     return (
-      <nav aria-label="Qa Info" className="qa-bar qabar--fixed-top">
-        <table className={"qa-bar__inner " + (fileParsed ? "drop" : "nodrop")}  {...getRootProps()}>
-          <input {...getInputProps()} />
-            <QaDataRenderer fileParsed={fileParsed} jsonContents={jsonContents} viewState={viewState} setViewState={setViewState} activeOsmFeature={activeOsmFeature} setActiveOsmFeature={setActiveOsmFeature}/>
-        </table>
-      </nav>
-    );
+      <>
+        <input
+          type="text"
+          placeholder="Type filter text here"
+          value={textFilter}
+          onChange={(e) => setTextFilter(e.target.value)}
+        />
+        <nav aria-label="Qa Info" className="qa-bar qabar--fixed-top">
+          <table className={"qa-bar__inner " + (fileParsed ? "drop" : "nodrop")}  {...getRootProps()}>
+            <input {...getInputProps()} />
+              <QaDataRenderer fileParsed={fileParsed} jsonContents={jsonContents} viewState={viewState} setViewState={setViewState} activeOsmFeature={activeOsmFeature} setActiveOsmFeature={setActiveOsmFeature} textFilter={debouncedTextFilter}/>
+          </table>
+        </nav>
+        </>
+          );
 
   }
 
