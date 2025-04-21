@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState } from "react"
-export default function QaDataRenderer({fileParsed, jsonContents, viewState, setViewState,  activeOsmFeature, setActiveOsmFeature}) {
+export default function QaDataRenderer({fileParsed, jsonContents, viewState, setViewState,  activeOsmFeature, setActiveOsmFeature, textFilter}) {
   // const header = jsonContents[0];
   // const data = jsonContents.slice(1);
 
@@ -8,7 +8,15 @@ export default function QaDataRenderer({fileParsed, jsonContents, viewState, set
 
     if (fileParsed ) {
       const headers = jsonContents[0];
-      const rowData = jsonContents.slice(1);
+      let rowData = jsonContents.slice(1);
+
+      if (textFilter !== '') {
+        // First, filter the row data according to the text filter.
+       rowData = rowData.filter((row, i) => {
+          return row.some(cell => cell.includes(textFilter))
+        })
+      }
+
       return (    
         <>
           <tr className="qadata-container ">
