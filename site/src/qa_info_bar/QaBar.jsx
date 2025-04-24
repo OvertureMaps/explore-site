@@ -74,6 +74,7 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     return (
       <>
         <input
+          disabled={!fileParsed}
           type="text"
           placeholder="Type filter text here"
           value={textFilter}
