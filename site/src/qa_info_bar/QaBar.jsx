@@ -45,7 +45,7 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     step: undefined,
     complete: readDone,
     error: undefined,
-    download: false,
+    download: true,
     downloadRequestHeaders: undefined,
     downloadRequestBody: undefined,
     skipEmptyLines: false,
@@ -58,6 +58,39 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
     skipFirstNLines: 0
     };
+
+      // Effect to load the CSV file automatically when component mounts
+    // useEffect(() => {
+    //   const csvUrl = "https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/ds=2025-04-25/adjudicator_ops.csv";
+    //   Papa.parse(csvUrl, papaconfig);
+    // }, []);  // Empty dependency array means this runs once on mount
+    useEffect(() => {
+      async function fetchLatestData() {
+        try {
+          // First fetch the latest datestamp
+          const response = await fetch("https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/latest_ds.txt");
+          if (!response.ok) {
+            throw new Error(`Failed to fetch latest datestamp: ${response.status}`);
+          }
+
+          // Get the datestamp from the response
+          const datestamp = await response.text();
+          const trimmedDatestamp = datestamp.trim(); // Remove any whitespace
+
+          // Construct the CSV URL using the datestamp
+          const csvUrl = `https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/ds=${trimmedDatestamp}/adjudicator_ops.csv`;
+          console.log("Getting csv from ", csvUrl)
+
+          // Parse the CSV from the constructed URL
+          Papa.parse(csvUrl, papaconfig);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setIsLoading(false);
+        }
+      }
+
+      fetchLatestData();
+    }, []);  // Empty dependency array means this runs once on mountko
 
     function parseCsv (fileResult) {
       Papa.parse(fileResult, papaconfig);
