@@ -8,7 +8,7 @@ import { useDropzone } from 'react-dropzone';
 
 // This component sits below the header navbar, but above the map. It contains pertinent information for the QA Table
 export default function QaBar({viewState, setViewState, activeOsmFeature, setActiveOsmFeature}) {
-  
+
   const { leftMap, rightMap } = useMap();
 
  
@@ -16,6 +16,8 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
   const [fileParsed, setFileParsed] = useState(false);
   const [textFilter, setTextFilter] = useState('');
   const [debouncedTextFilter, setDebouncedTextFilter] = useState(textFilter);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingStatus, setLoadingStatus] = useState("Searching for the latest data file...");
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -28,6 +30,8 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     function readDone(results, _) {
       setJsonContents(results.data);
       setFileParsed(true);      
+      setIsLoading(false);
+      setLoadingStatus("");
     }
 
     const papaconfig = {
@@ -59,38 +63,56 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     skipFirstNLines: 0
     };
 
-      // Effect to load the CSV file automatically when component mounts
-    // useEffect(() => {
-    //   const csvUrl = "https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/ds=2025-04-25/adjudicator_ops.csv";
-    //   Papa.parse(csvUrl, papaconfig);
-    // }, []);  // Empty dependency array means this runs once on mount
-    useEffect(() => {
-      async function fetchLatestData() {
-        try {
-          // First fetch the latest datestamp
-          const response = await fetch("https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/latest_ds.txt");
-          if (!response.ok) {
-            throw new Error(`Failed to fetch latest datestamp: ${response.status}`);
-          }
+  // Function to format date as YYYY-MM-DD
+  function formatDate(date) {
+    return date.toISOString().split('T')[0];
+  }
 
-          // Get the datestamp from the response
-          const datestamp = await response.text();
-          const trimmedDatestamp = datestamp.trim(); // Remove any whitespace
+  // Function to get a date N days ago
+  function getDateNDaysAgo(n) {
+    const date = new Date();
+    date.setDate(date.getDate() - n);
+    return date;
+  }
 
-          // Construct the CSV URL using the datestamp
-          const csvUrl = `https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/ds=${trimmedDatestamp}/adjudicator_ops.csv`;
-          console.log("Getting csv from ", csvUrl)
-
-          // Parse the CSV from the constructed URL
-          Papa.parse(csvUrl, papaconfig);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          setIsLoading(false);
-        }
+    // Effect to load the CSV file automatically when component mounts
+  useEffect(() => {
+    async function tryFetchWithDate(daysAgo) {
+      if (daysAgo > 7) {
+        setLoadingStatus("Failed to find data for the past 7 days.");
+        setIsLoading(false);
+        return;
       }
 
-      fetchLatestData();
-    }, []);  // Empty dependency array means this runs once on mountko
+      const dateToTry = getDateNDaysAgo(daysAgo);
+      const formattedDate = formatDate(dateToTry);
+      const csvUrl = `https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/ds=${formattedDate}/adjudicator_ops.csv`;
+
+      setLoadingStatus(`Checking for data from ${formattedDate}...`);
+
+      try {
+        // Try to fetch the head of the file to see if it exists
+        const response = await fetch(csvUrl, { method: 'HEAD' });
+
+        if (response.ok) {
+          // File exists, parse it
+          setLoadingStatus(`Found data for ${formattedDate}, loading...`);
+          Papa.parse(csvUrl, papaconfig);
+        } else {
+          // File doesn't exist, try the previous day
+          tryFetchWithDate(daysAgo + 1);
+        }
+      } catch (error) {
+        // Network error or CORS issue, try the previous day
+        console.warn(`Error checking ${formattedDate}:`, error);
+        tryFetchWithDate(daysAgo + 1);
+      }
+    }
+
+    // Start with today (0 days ago)
+    tryFetchWithDate(0);
+  }, []);
+
 
     function parseCsv (fileResult) {
       Papa.parse(fileResult, papaconfig);
@@ -128,4 +150,3 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     viewState: PropTypes.object.isRequired,
     setViewState: PropTypes.func.isRequired,
   };
-  
