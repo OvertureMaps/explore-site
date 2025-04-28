@@ -68,6 +68,8 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     return date.toISOString().split('T')[0];
   }
 
+  let retriedDownload = false;
+
   // Function to get a date N days ago
   function getDateNDaysAgo(n) {
     const date = new Date();
@@ -105,7 +107,6 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
       } catch (error) {
         // Network error or CORS issue, try the previous day
         console.warn(`Error checking ${formattedDate}:`, error);
-        tryFetchWithDate(daysAgo + 1);
       }
     }
 
