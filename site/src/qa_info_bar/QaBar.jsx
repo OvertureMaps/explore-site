@@ -8,7 +8,7 @@ import { useDropzone } from 'react-dropzone';
 
 // This component sits below the header navbar, but above the map. It contains pertinent information for the QA Table
 export default function QaBar({viewState, setViewState, activeOsmFeature, setActiveOsmFeature}) {
-  
+
   const { leftMap, rightMap } = useMap();
 
  
@@ -16,6 +16,8 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
   const [fileParsed, setFileParsed] = useState(false);
   const [textFilter, setTextFilter] = useState('');
   const [debouncedTextFilter, setDebouncedTextFilter] = useState(textFilter);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingStatus, setLoadingStatus] = useState("Searching for the latest data file...");
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -28,6 +30,8 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     function readDone(results, _) {
       setJsonContents(results.data);
       setFileParsed(true);      
+      setIsLoading(false);
+      setLoadingStatus("");
     }
 
     const papaconfig = {
@@ -45,7 +49,7 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     step: undefined,
     complete: readDone,
     error: undefined,
-    download: false,
+    download: true,
     downloadRequestHeaders: undefined,
     downloadRequestBody: undefined,
     skipEmptyLines: false,
@@ -58,6 +62,57 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
     skipFirstNLines: 0
     };
+
+  // Function to format date as YYYY-MM-DD
+  function formatDate(date) {
+    return date.toISOString().split('T')[0];
+  }
+
+  // Function to get a date N days ago
+  function getDateNDaysAgo(n) {
+    const date = new Date();
+    date.setDate(date.getDate() - n);
+    return date;
+  }
+
+    // Effect to load the CSV file automatically when component mounts
+  useEffect(() => {
+    async function tryFetchWithDate(daysAgo) {
+      if (daysAgo > 7) {
+        setLoadingStatus("Failed to find data for the past 7 days.");
+        setIsLoading(false);
+        return;
+      }
+
+      const dateToTry = getDateNDaysAgo(daysAgo);
+      const formattedDate = formatDate(dateToTry);
+      const csvUrl = `https://s3.us-west-2.amazonaws.com/overturemaps-qa-tiles/nightlies/ds=${formattedDate}/adjudicator_ops.csv`;
+
+      setLoadingStatus(`Checking for data from ${formattedDate}...`);
+
+      try {
+        // Try to fetch the head of the file to see if it exists
+        const response = await fetch(csvUrl, { method: 'HEAD' });
+
+        if (response.ok) {
+          // File exists, parse it
+          setLoadingStatus(`Found data for ${formattedDate}, loading...`);
+          Papa.parse(csvUrl, papaconfig);
+        } else {
+          // File doesn't exist, try the previous day
+          tryFetchWithDate(daysAgo + 1);
+        }
+      } catch (error) {
+        // Network error or CORS issue, try the previous day
+        console.warn(`Error checking ${formattedDate}:`, error);
+        tryFetchWithDate(daysAgo + 1);
+      }
+    }
+
+    // Start with today (0 days ago)
+    tryFetchWithDate(0);
+  }, []);
+
 
     function parseCsv (fileResult) {
       Papa.parse(fileResult, papaconfig);
@@ -95,4 +150,3 @@ export default function QaBar({viewState, setViewState, activeOsmFeature, setAct
     viewState: PropTypes.object.isRequired,
     setViewState: PropTypes.func.isRequired,
   };
-  
