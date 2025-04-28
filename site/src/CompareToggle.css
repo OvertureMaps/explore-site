@@ -1,0 +1,29 @@
+.compare-toggle {
+  padding: 6px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compare-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.compare-icon svg {
+  fill: #666;
+  width: 100%;
+  height: 100%;
+}
+
+.compare-toggle:hover {
+  background: #fafafa;
+}
+
+.compare-toggle:hover .compare-icon svg {
+  fill: #333;
+}

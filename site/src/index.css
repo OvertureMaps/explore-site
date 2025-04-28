@@ -35,6 +35,10 @@ body {
   min-height: 100vh;
 }
 
+[data-theme="dark"] body {
+  background: #1a1a1a;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;

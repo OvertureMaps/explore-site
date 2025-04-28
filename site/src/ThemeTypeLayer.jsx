@@ -7,6 +7,8 @@ const colorExpression = (color, highlightColor) => {
     "case",
     ["boolean", ["feature-state", "selected"], false],
     highlightColor || "white",
+    ["boolean", ["feature-state", "highlighted"], false],
+     "pink",
     color,
   ];
 };

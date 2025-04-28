@@ -1,13 +1,15 @@
 import "./App.css";
 import Header from "./nav/Header";
+import QaBar from "./qa_info_bar/QaBar";
 import Map from "./Map";
 import { MapProvider } from "react-map-gl/maplibre";
 import { getTheme, keepTheme, darkTheme, lightTheme } from "./themeUtils";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Tour from "./Tour";
 import StartupBox from "./StartupBox";
 import { ThemeProvider } from "@mui/material";
 import { useNavigatorState } from "./navigator/Navigator";
+import { INITIAL_VIEW_STATE } from "./MapLibreMap";
 
 function App() {
   const [modeName, setModeName] = useState(getTheme());
@@ -20,6 +22,7 @@ function App() {
   const [zoom, setZoom] = useState(0);
   const themeRef = useRef(null);
   const [activeFeature, setActiveFeature] = useState(null);
+  const [activeOsmFeature, setActiveOsmFeature] = useState(null);
 
   const startTour = () => {
     setOpen(false);
@@ -30,9 +33,10 @@ function App() {
     localStorage.setItem("tour", event.target.checked);
     setTour(!tour);
   };
-  
-  const [visibleTypes, setVisibleTypes] = useState([]);
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const onMove = useCallback((evt) => setViewState(evt.viewState), []);
 
+  const [visibleTypes, setVisibleTypes] = useState([]);
 
   useEffect(() => {
     keepTheme(setModeName);
@@ -71,6 +75,12 @@ function App() {
             setZoom={setZoom}
             visibleTypes={visibleTypes}
           />
+          <QaBar
+            viewState={viewState}
+            setViewState={setViewState}
+            activeOsmFeature={activeOsmFeature}
+            setActiveOsmFeature={setActiveOsmFeature}
+          />
           <Map
             mode={modeName}
             features={features}
@@ -81,8 +91,12 @@ function App() {
             themeRef={themeRef}
             setActiveFeature={setActiveFeature}
             activeFeature={activeFeature}
+            activeOsmFeature={activeOsmFeature}
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
+            viewState={viewState}
+            setViewState={setViewState}
+            onMove={onMove}
           />
         </MapProvider>
       </ThemeProvider>

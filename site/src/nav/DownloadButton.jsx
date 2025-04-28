@@ -16,22 +16,22 @@ import CloseIcon from "@mui/icons-material/Close";
 const ZOOM_BOUND = 15;
 
 function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
-  const { myMap } = useMap();
+  const { leftMap } = useMap();
 
   const [loading, setLoading] = useState(false);
   const [showFloater, setShowFloater] = useState(false);
 
   useEffect(() => {
-    if (myMap) {
-      myMap.getBounds();
-      setZoom(myMap.getZoom());
+    if (leftMap) {
+      leftMap.getBounds();
+      setZoom(leftMap.getZoom());
     }
-  }, [myMap]);
+  }, [leftMap]);
 
   const handleDownloadClick = async () => {
     setLoading(true);
     //Get current map dimensions and convert to bbox
-    const bounds = myMap.getBounds();
+    const bounds = leftMap.getBounds();
     let bbox = [
       bounds.getWest(), //minx
       bounds.getSouth(), //miny
@@ -39,7 +39,6 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
       bounds.getNorth(), //maxy
     ];
 
-    console.log(bounds);
 
     //Send those to the download engine
     const xmin = ["bbox", "xmin"];
@@ -93,8 +92,8 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
                 var downloadLink = document.createElement("a");
                 downloadLink.href = url;
 
-                const center = myMap.getCenter();
-                const zoom = myMap.getZoom();
+                const center = leftMap.getCenter();
+                const zoom = leftMap.getZoom();
                 downloadLink.download = `overture-${wasmTable.type}-${zoom}-${center.lat}-${center.lng}.geojson`;
 
                 document.body.appendChild(downloadLink);

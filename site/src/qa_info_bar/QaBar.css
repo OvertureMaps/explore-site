@@ -1,0 +1,113 @@
+.qa-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 3px;
+    color: black;
+    padding: 2px;
+    margin: 2px;
+    font-size: 13px;
+    line-height: 2;
+    outline: none;
+    min-height:120px;
+    border: 3px solid white;
+    border-radius: 3px;
+    border-color: rgba(15, 15, 15, 0.8);
+    max-height: 30vh;
+    position: relative;
+    overflow: auto;
+  
+    p {
+      margin: 0;
+    }
+  
+    @media (max-width: 768px) {
+      max-height: 380px;
+      width: 70%;
+    }
+  
+    .qa-bar__inner {
+      justify-content: center;
+      flex-direction: column;
+      height: 100%;
+      font-size:10pt;
+      min-height:125px;
+      align-items:center;
+      overflow: auto;
+      border:6px var(--ifm-color-emphasis-400);
+      cursor: pointer;
+    }
+
+    .qadata-container {
+      display:table;
+      border-radius: 5px;
+      border-spacing: 2px;
+      border-collapse: collapse;
+      box-sizing: border-box;
+      text-indent: 0;
+      border: 2px solid white;
+      max-height: inherit;
+      width: auto;
+      .qadata-header {
+        border:2px solid var(--ifm-color-emphasis-200);
+        display:table-header-group;
+        font-style: italic;
+        .qadata-header-item{
+          max-height: 10px;
+          position: sticky;
+          background-color: var(--ifm-color-primary-dark);
+          top: 0; /* Don't forget this, required for the stickiness */
+          display: table-cell;
+          font-weight: 600;
+          padding: 0px 10px 0px 10px;          
+          min-width: 150;
+        }
+      }
+
+      .qadata-rows {
+        display:table-row;
+        border: 1px dotted white;
+        border-collapse: collapse;
+        .qadata-row-item {
+          display: table-cell;
+          padding: 0px 10px 0px 10px;          
+          min-width: 150px;
+          a {
+            cursor: default;
+          }
+        }
+
+      }
+
+      .qadata-rows.highlight {
+        border: 3px solid var(--ifm-color-primary-dark);
+        background-color: var(--ifm-color-emphasis-300);
+      }
+    }
+  }
+
+
+  .qa-bar__inner.nodrop {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    font-size:36pt;
+    border:6px var(--ifm-color-emphasis-400);
+    background: repeating-linear-gradient(
+        45deg,
+        #606dbc,
+        #606dbc 10px,
+        #465298 10px,
+        #465298 20px
+      );
+  }
+
+
+
+
+  [data-theme="dark"] .qa-bar {
+    background: var(--ifm-background-surface-color);
+    border: var(--ifm-color-emphasis-200);
+    color: var(--ifm-color-content);
+  }

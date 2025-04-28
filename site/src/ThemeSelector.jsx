@@ -97,6 +97,9 @@ const ThemeSelector = ({
       if (!newSelectedThemes[layer.theme]) {
         newSelectedThemes[layer.theme] = true;
       }
+      if (layer.type === 'division_area' || layer.type === 'division_boundary'){
+        return;
+      }
       newSelectedTypes[layer.type] = true;
     });
 
@@ -244,6 +247,7 @@ const ThemeSelector = ({
                 className={`theme-box ${
                   mode === "theme-dark" ? "dark" : "light"
                 }`}
+                key={theme}
                 sx={{ paddingLeft: "5px" }}
                 width={220}
               >
@@ -294,6 +298,7 @@ const ThemeSelector = ({
                             className={`type-selector-checkbox ${
                               mode === "theme-dark" ? "dark" : "light"
                             }`}
+                            key={`${layer.theme}-${layer.type}`}
                             control={
                               <Checkbox
                                 sx={{ padding: "2px" }}
