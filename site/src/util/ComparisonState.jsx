@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { VERSION_OPTIONS, TWO_WEEKS_DS } from "../VersionConstants";
 
 export function useComparisonState() {
-    const [compareMode, setCompareMode] = useState(false);
+    const [compareMode, setCompareMode] = useState(true);
     const [activeMap, setActiveMap] = useState("left");
     const [leftVersion, setLeftVersion] = useState(VERSION_OPTIONS[0]);
     const [rightVersion, setRightVersion] = useState(VERSION_OPTIONS[0]);
