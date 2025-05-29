@@ -29,6 +29,7 @@ const ThemeTypeLayer = ({
   pointSize,
   fillOutlineColor,
   labelColor,
+  lineWidth,
 }) => {
   return (
     <>
@@ -120,14 +121,18 @@ const ThemeTypeLayer = ({
 
       {outline ? (
         <Layer
-          filter={["==", ["geometry-type"], "Polygon"]}
+          filter={[
+            "all",
+            ["==", ["geometry-type"], "Polygon"],
+            ["==", ["get", "has_parts"], true], // only show outline if has_parts is true
+          ]}
           id={`${theme}_${type}_outline`}
           type="line"
           source={theme}
           source-layer={type}
           paint={{
             "line-color": colorExpression(color, highlightColor),
-            "line-width": [
+            "line-width": lineWidth || [
               "interpolate",
               ["linear"],
               ["zoom"],
@@ -143,7 +148,11 @@ const ThemeTypeLayer = ({
       ) : null}
       {outline ? (
         <Layer
-          filter={["==", ["geometry-type"], "Polygon"]}
+          filter={[
+            "all",
+            ["==", ["geometry-type"], "Polygon"],
+            ["==", ["get", "has_parts"], true], // only show outline click buffer if has_parts is true
+          ]}
           id={`${theme}_${type}_outline_click_buffer`}
           type="line"
           source={theme}
@@ -198,7 +207,11 @@ const ThemeTypeLayer = ({
       ) : null}
       {extrusion ? (
         <Layer
-          filter={["==", ["geometry-type"], "Polygon"]}
+          filter={[
+            "all",
+            ["==", ["geometry-type"], "Polygon"],
+            ["!=", ["get", "has_parts"], true], // hide extrusion if has_parts is true
+          ]}
           id={`${theme}_${type}_fill-extrusion`}
           type="fill-extrusion"
           source={theme}
@@ -260,6 +273,7 @@ ThemeTypeLayer.propTypes = {
   pointSize: PropTypes.number,
   fillOutlineColor: PropTypes.string,
   labelColor: PropTypes.string,
+  lineWidth: PropTypes.number,
 };
 
 export default ThemeTypeLayer;
