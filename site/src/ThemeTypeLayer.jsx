@@ -198,11 +198,7 @@ const ThemeTypeLayer = ({
       ) : null}
       {extrusion ? (
         <Layer
-          filter={[
-            "all",
-            ["==", ["geometry-type"], "Polygon"],
-            ["!=", ["get", "has_parts"], true],
-          ]} // prevent z-fighting
+          filter={["==", ["geometry-type"], "Polygon"]}
           id={`${theme}_${type}_fill-extrusion`}
           type="fill-extrusion"
           source={theme}
