@@ -130,10 +130,28 @@ export const layers = [
   {
     theme: "buildings",
     type: "building",
+    outline: true,
+    color: "hsla(210, 16%, 82%, 0.2)",
+    activeColor: "hsla(344, 100%, 50%, 0.4)",
+    labelColor: "hsla(341, 91%, 32%, 1)",
+    lineWidth: 3,
+  },
+  {
+    theme: "buildings",
+    type: "building",
     extrusion: true,
     color: "hsla(210, 16%, 82%, 0.2)",
     activeColor: "hsla(344, 100%, 66%, 0.4)",
     labelColor: "hsla(341, 91%, 32%, 1)",
+  },
+  {
+    theme: "buildings",
+    type: "building_part",
+    outline: true,
+    color: "hsla(210, 16%, 82%, 0.2)",
+    activeColor: "hsla(344, 100%, 50%, 0.4)",
+    labelColor: "hsla(341, 91%, 32%, 1)",
+    lineWidth: 3,
   },
   {
     theme: "buildings",
