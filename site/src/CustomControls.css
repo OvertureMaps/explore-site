@@ -27,6 +27,7 @@ div.bug-nub {
   position: relative;
   display: grid;
   place-items: center;
+  border-radius: 5px;
 }
 
 svg.bug-nub-icon > path.primary {
