@@ -61,10 +61,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
+          path: build
 
       - name: Copy to S3
         run: |
-          aws s3 cp --recursive . s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/
+          aws s3 sync --delete build s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/
 
       - name: Bust the Cache
         run: aws cloudfront create-invalidation --distribution-id E1KP2IN0H2RGGT --paths "/${{ github.event.repository.name }}/pr/${{ github.event.number }}/*"
