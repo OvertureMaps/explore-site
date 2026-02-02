@@ -33,7 +33,7 @@ jobs:
     - name: Build 🏃
       run: cd site; npm run build
       env:
-        BASE_ARIA_URL: ${{github.repository}}/pr/${{ github.event.number }}
+        BASE_ARIA_URL: ${{ github.event.repository.name }}/pr/${{ github.event.number }}
 
     - name: Upload artifacts 📤
       uses: actions/upload-artifact@v4
@@ -48,7 +48,7 @@ jobs:
     needs: build
     environment:
       name: staging
-      url: https://staging.overturemaps.org/${{github.repository}}/pr/${{ github.event.number }}/index.html
+      url: https://staging.overturemaps.org/${{ github.event.repository.name }}/pr/${{ github.event.number }}/index.html
 
     steps:
       - name: Configure AWS credentials 🔐
@@ -64,7 +64,7 @@ jobs:
 
       - name: Copy to S3
         run: |
-          aws s3 cp --recursive . s3://overture-managed-staging-usw2/gh-pages/${{ github.repository }}/pr/${{ github.event.number }}/
+          aws s3 cp --recursive . s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/
 
       - name: Bust the Cache
-        run: aws cloudfront create-invalidation --distribution-id E1KP2IN0H2RGGT --paths "/${{ github.repository }}/pr/${{ github.event.number }}/*"
+        run: aws cloudfront create-invalidation --distribution-id E1KP2IN0H2RGGT --paths "/${{ github.event.repository.name }}/pr/${{ github.event.number }}/*"
