@@ -20,12 +20,10 @@ import Navigator from "./navigator/Navigator";
 import { layers } from "./Layers";
 import ThemeTypeLayer from "./ThemeTypeLayer";
 import FeaturePopup from "./FeatureSelector";
+import { loadPmtilesFromStac } from "./stacService";
 
-// Fetch the latest Overture release from Overture STAC
-const LATEST_RELEASE = await fetch('https://stac.overturemaps.org/catalog.json').then(r => r.json()).then(r => r.latest.split('.')[0])
-
-const PMTILES_URL =
-  "pmtiles://https://d3c1b7bog2u1nn.cloudfront.net/" + LATEST_RELEASE + "/";
+// Load PMTiles URLs from STAC catalog at module load time
+const pmtilesPromise = loadPmtilesFromStac();
 
 const INITIAL_VIEW_STATE = {
   latitude: 38.90678,
@@ -44,12 +42,13 @@ const MAP_STYLE = {
 };
 
 const ThemeSource = ({ name, url }) => {
-  return <Source id={name} type="vector" url={`${url}${name}.pmtiles`} />;
+  if (!url) return null;
+  return <Source id={name} type="vector" url={`pmtiles://${url}`} />;
 };
 
 ThemeSource.propTypes = {
   name: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
+  url: PropTypes.string,
 };
 
 export default function Map({
@@ -68,6 +67,20 @@ export default function Map({
   const mapRef = useRef();
 
   const [cursor, setCursor] = useState("auto");
+  const [pmtilesUrls, setPmtilesUrls] = useState({});
+  const [pmtilesLoaded, setPmtilesLoaded] = useState(false);
+
+  // Load PMTiles URLs from STAC catalog
+  useEffect(() => {
+    pmtilesPromise.then((urls) => {
+      // Convert Map to object for state
+      const urlsObj = Object.fromEntries(urls);
+      setPmtilesUrls(urlsObj);
+      setPmtilesLoaded(true);
+    }).catch((error) => {
+      console.error("Failed to load PMTiles from STAC catalog:", error);
+    });
+  }, []);
 
   const [activeThemes, setActiveThemes] = useState([
     "places",
@@ -207,12 +220,12 @@ export default function Map({
           }}
           attributionControl={false}
         >
-          <ThemeSource name="base" url={PMTILES_URL} />
-          <ThemeSource name="buildings" url={PMTILES_URL} />
-          <ThemeSource name="places" url={PMTILES_URL} />
-          <ThemeSource name="divisions" url={PMTILES_URL} />
-          <ThemeSource name="transportation" url={PMTILES_URL} />
-          <ThemeSource name="addresses" url={PMTILES_URL} />
+          <ThemeSource name="base" url={pmtilesUrls["base"]} />
+          <ThemeSource name="buildings" url={pmtilesUrls["buildings"]} />
+          <ThemeSource name="places" url={pmtilesUrls["places"]} />
+          <ThemeSource name="divisions" url={pmtilesUrls["divisions"]} />
+          <ThemeSource name="transportation" url={pmtilesUrls["transportation"]} />
+          <ThemeSource name="addresses" url={pmtilesUrls["addresses"]} />
 
           <FeaturePopup
             coordinates={lastClickedCoords}
