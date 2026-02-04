@@ -68,7 +68,6 @@ export default function Map({
 
   const [cursor, setCursor] = useState("auto");
   const [pmtilesUrls, setPmtilesUrls] = useState({});
-  const [pmtilesLoaded, setPmtilesLoaded] = useState(false);
 
   // Load PMTiles URLs from STAC catalog
   useEffect(() => {
@@ -76,7 +75,6 @@ export default function Map({
       // Convert Map to object for state
       const urlsObj = Object.fromEntries(urls);
       setPmtilesUrls(urlsObj);
-      setPmtilesLoaded(true);
     }).catch((error) => {
       console.error("Failed to load PMTiles from STAC catalog:", error);
     });

@@ -1,6 +1,6 @@
 # This workflow will do a clean install of node dependencies and deploy to AWS.
 
-name: Preview Deployment
+name: Staging Deploy
 
 on:
   pull_request:
