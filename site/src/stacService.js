@@ -1,7 +1,6 @@
 import create from "stac-js";
 
-const STAC_CATALOG_URL =
-  "https://staging.overturemaps.org/stac/pr/21/catalog.json";
+const STAC_CATALOG_URL = "https://stac.overturemaps.org/catalog.json";
 
 // Cached STAC data
 let cachedStacData = null;
