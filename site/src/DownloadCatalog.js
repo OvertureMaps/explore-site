@@ -1,12 +1,11 @@
-// URL for the remote manifest file
-const STAC_URL = 'https://stac.overturemaps.org/catalog.json'
+import { getStacData } from "./stacService";
 
 // Cache the manifest to avoid repeated fetches
 let cachedManifest = null;
 let manifestFetchPromise = null;
 
 /**
- * Fetches the manifest from the remote URL
+ * Fetches the manifest from the STAC catalog
  * @returns {Promise<Object>} The manifest object
  */
 async function fetchManifest() {
@@ -15,16 +14,11 @@ async function fetchManifest() {
   }
 
   if (!manifestFetchPromise) {
-    manifestFetchPromise = fetch(STAC_URL)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch STAC: ${response.status} ${response.statusText}`);
-        }
-        return response.json();
-      })
+    manifestFetchPromise = getStacData()
       .then(stacData => {
-        const latest = stacData.latest;
-        return fetch(`https://stac.overturemaps.org/${latest}/manifest.geojson`);
+        // Construct manifest URL from the release URL
+        const manifestUrl = new URL("manifest.geojson", stacData.releaseUrl).href;
+        return fetch(manifestUrl);
       })
       .then(response => {
         if (!response.ok) {
