@@ -1,0 +1,52 @@
+{
+  "id": "building-fill-extrusion",
+  "type": "fill-extrusion",
+  "source": "buildings",
+  "source-layer": "building",
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "!=",
+      [
+        "get",
+        "has_parts"
+      ],
+      true
+    ]
+  ],
+  "paint": {
+    "fill-extrusion-color": "$buildings.building.color",
+    "fill-extrusion-opacity": 0.15,
+    "fill-extrusion-base": [
+      "coalesce",
+      [
+        "get",
+        "min_height"
+      ],
+      0
+    ],
+    "fill-extrusion-height": [
+      "coalesce",
+      [
+        "get",
+        "height"
+      ],
+      0
+    ]
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "buildings",
+    "overture:type": "building",
+    "overture:pass": "geometry",
+    "overture:color": "$buildings.building.color",
+    "overture:activeColor": "$buildings.building.activeColor"
+  }
+}

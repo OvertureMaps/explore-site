@@ -1,0 +1,37 @@
+{
+  "id": "division-boundary-line",
+  "type": "line",
+  "source": "divisions",
+  "source-layer": "division_boundary",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "line-color": "$divisions.division_boundary.color",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      12,
+      1,
+      13,
+      2
+    ]
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_boundary",
+    "overture:pass": "geometry",
+    "overture:color": "$divisions.division_boundary.color",
+    "overture:activeColor": "$divisions.division_boundary.activeColor"
+  }
+}

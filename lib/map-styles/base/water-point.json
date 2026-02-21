@@ -1,0 +1,39 @@
+{
+  "id": "water-point",
+  "type": "circle",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "paint": {
+    "circle-color": "$base.water.color",
+    "circle-radius": [
+      "interpolate",
+      [
+        "exponential",
+        2
+      ],
+      [
+        "zoom"
+      ],
+      0,
+      1,
+      17,
+      6
+    ],
+    "circle-opacity": 0.4
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:pass": "geometry",
+    "overture:color": "$base.water.color",
+    "overture:activeColor": "$base.water.activeColor"
+  }
+}

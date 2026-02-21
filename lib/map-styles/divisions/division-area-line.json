@@ -1,0 +1,37 @@
+{
+  "id": "division-area-line",
+  "type": "line",
+  "source": "divisions",
+  "source-layer": "division_area",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "line-color": "$divisions.division_area.color",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      12,
+      1,
+      13,
+      2
+    ]
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_area",
+    "overture:pass": "geometry",
+    "overture:color": "$divisions.division_area.color",
+    "overture:activeColor": "$divisions.division_area.activeColor"
+  }
+}

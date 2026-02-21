@@ -1,0 +1,28 @@
+{
+  "id": "land-use-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_use",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "minzoom": 13,
+  "paint": {
+    "fill-color": "$base.land_use.color",
+    "fill-opacity": 0.5,
+    "fill-outline-color": "$base.land_use.outlineColor"
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:pass": "geometry",
+    "overture:color": "$base.land_use.color",
+    "overture:activeColor": "$base.land_use.activeColor",
+    "overture:activeOnly": true
+  }
+}
