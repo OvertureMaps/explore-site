@@ -3,17 +3,17 @@ import "./Navigator.css";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { useMap } from "react-map-gl/maplibre";
+import { useMapInstance } from "@/lib/MapContext";
 import { tours } from "@/components/navigator/NavigatorConfig";
 
 function Navigator({ open, setOpen, setVisibleTypes, setActiveThemes }) {
-  const { myMap } = useMap();
+  const map = useMapInstance();
 
   const handleTourSelect = (tourId) => {
     const tour = tours[tourId];
     setVisibleTypes(tour.visibleTypes);
     setActiveThemes([tour.theme]);
-    myMap.jumpTo(tour.view);
+    if (map) map.jumpTo(tour.view);
   };
 
   return (

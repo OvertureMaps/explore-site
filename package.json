@@ -28,10 +28,10 @@
     "react-dom": "^18.2.0",
     "react-floater": "^0.9.3",
     "react-joyride": "^2.8.2",
-    "react-map-gl": "^7.1.7",
     "stac-js": "^0.1.9"
   },
   "devDependencies": {
+    "@maplibre/maplibre-gl-style-spec": "^24.4.1",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

@@ -76,13 +76,67 @@ components/     React components
   navigator/    Bookmark locations
   icons/        SVG icons
 lib/            Shared utilities and data
-  Layers.js     Layer definitions
+  map-styles/   MapLibre layer definitions and style variables
+    variables.json   Centralized style variables (colors, fonts, sizes)
+    layer-order.json Layer rendering order
+    index.js         Imports all layers, resolves variable references
+    addresses/       Address layer specs
+    base/            Base layer specs (land, water, infrastructure, etc.)
+    buildings/       Building layer specs
+    divisions/       Division layer specs
+    places/          Place layer specs
+    transportation/  Transportation layer specs
+  Layers.js     Abstract layer definitions derived from specs
+  LayerManager.js  Runtime layer add/update/visibility logic
   stacService.js  STAC catalog integration
   themeUtils.js   Dark/light mode
 __tests__/      Unit tests
 __mocks__/      Jest mocks (SVG, styles)
 public/         Static assets
 ```
+
+### Map style system
+
+Layer styles are defined as individual JSON files in `lib/map-styles/<theme>/`. Each file is a valid [MapLibre style layer](https://maplibre.org/maplibre-style-spec/layers/) with additional `overture:*` metadata.
+
+#### Variables
+
+`lib/map-styles/variables.json` stores shared style values in a nested `theme → type → property` structure:
+
+```json
+{
+  "global": {
+    "colors": { "background": "...", "textHalo": "..." },
+    "fonts":  { "regular": ["Noto Sans Regular"], "sizeSm": 10, "sizeMd": 11 }
+  },
+  "base": {
+    "water":      { "color": "...", "activeColor": "...", "textColor": "...", ... },
+    "land_cover": { "color": [...], ... }
+  },
+  ...
+}
+```
+
+Layer JSON files reference variables with the syntax `"$theme.type.property"`:
+
+```json
+{
+  "paint": {
+    "fill-color": "$base.water.color",
+    "text-color": "$base.water.textColor"
+  },
+  "layout": {
+    "text-font": "$global.fonts.regular",
+    "text-size": "$global.fonts.sizeMd"
+  }
+}
+```
+
+At import time, `index.js` resolves all `$`-references to their actual values from `variables.json`.
+
+#### Layer IDs
+
+Each layer's `id` matches its filename without `.json` (e.g., `base/land-cover-fill.json` has `"id": "land-cover-fill"`). The rendering order is defined in `layer-order.json`.
 
 ## License
 
