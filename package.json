@@ -1,0 +1,46 @@
+{
+  "name": "explore-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest",
+    "test:ci": "jest --ci --passWithNoTests",
+    "preview": "npx serve out"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@geoarrow/geoarrow-wasm": "^0.2.0-beta.5",
+    "@mui/base": "^5.0.0-beta.40",
+    "@mui/icons-material": "^5.15.21",
+    "@mui/material": "^5.15.20",
+    "apache-arrow": "^15.0.2",
+    "infima": "0.2.0-alpha.43",
+    "maplibre-gl": "^4.4.1",
+    "next": "^14.2.0",
+    "pmtiles": "^3.0.5",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-floater": "^0.9.3",
+    "react-joyride": "^2.8.2",
+    "react-map-gl": "^7.1.7",
+    "stac-js": "^0.1.9"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0"
+  },
+  "volta": {
+    "node": "20.11.1"
+  }
+}
