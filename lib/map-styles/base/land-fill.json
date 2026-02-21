@@ -1,0 +1,26 @@
+{
+  "id": "land-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "paint": {
+    "fill-color": "$base.land.color",
+    "fill-opacity": 0.5,
+    "fill-outline-color": "$base.land.outlineColor"
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land",
+    "overture:pass": "geometry",
+    "overture:color": "$base.land.color",
+    "overture:activeColor": "$base.land.activeColor"
+  }
+}

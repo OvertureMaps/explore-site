@@ -1,0 +1,37 @@
+{
+  "id": "water-line",
+  "type": "line",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "line-color": "$base.water.color",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      12,
+      1,
+      13,
+      2
+    ]
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:pass": "geometry",
+    "overture:color": "$base.water.color",
+    "overture:activeColor": "$base.water.activeColor"
+  }
+}
