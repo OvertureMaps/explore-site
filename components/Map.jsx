@@ -202,6 +202,7 @@ export default function Map({
         ? map.queryRenderedFeatures(e.point, { layers: interactiveIds })
         : [];
 
+
       const coords = {
         longitude: e.lngLat.lng,
         latitude: e.lngLat.lat,
@@ -339,6 +340,7 @@ export default function Map({
       ]);
     }
   }, [language, sourcesAdded]);
+
 
   // Highlight active feature
   useEffect(() => {
