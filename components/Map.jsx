@@ -4,11 +4,10 @@ import * as pmtiles from "pmtiles";
 import maplibregl from "maplibre-gl";
 import MaplibreInspect from "@maplibre/maplibre-gl-inspect";
 import { useState, useEffect, useRef } from "react";
-import InspectorPanel from "@/components/inspector_panel/InspectorPanel";
 import PropTypes from "prop-types";
 import "@/components/CustomControls.css";
-import ThemeSelector from "@/components/ThemeSelector";
-import Navigator from "@/components/navigator/Navigator";
+import SidePanel from "@/components/SidePanel";
+import BookmarkDial from "@/components/BookmarkDial";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
 import variables from "@/lib/map-styles/variables.json";
@@ -43,6 +42,7 @@ const INSPECT_COLORS = {};
 for (const theme of Object.keys(variables)) {
   if (theme === "global") continue;
   for (const [layerName, props] of Object.entries(variables[theme])) {
+    if (layerName === "_meta") continue;
     if (props.inspectColor) {
       INSPECT_COLORS[layerName] = props.inspectColor;
     }
@@ -66,9 +66,6 @@ export default function Map({
   activeFeature,
   setActiveFeature,
   setZoom,
-  navigatorOpen,
-  setNavigatorOpen,
-  themeRef,
   visibleTypes,
   setVisibleTypes,
   onMapReady,
@@ -82,20 +79,10 @@ export default function Map({
   const [pmtilesUrls, setPmtilesUrls] = useState({});
   const [sourcesAdded, setSourcesAdded] = useState(false);
 
-  const [activeThemes, setActiveThemes] = useState([
-    "places",
-    "addresses",
-    "buildings",
-    "transportation",
-  ]);
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState("layers");
 
   const [lastClickedCoords, setLastClickedCoords] = useState();
-
-  // Refs for latest state to avoid stale closures in map event handlers
-  const activeThemesRef = useRef(activeThemes);
-  useEffect(() => {
-    activeThemesRef.current = activeThemes;
-  }, [activeThemes]);
 
   const visibleTypesRef = useRef(visibleTypes);
   useEffect(() => {
@@ -159,8 +146,6 @@ export default function Map({
         addresses: ["address"],
       },
       assignLayerColor: (layerId) => {
-        // Match layer ID to source-layer by finding the longest matching prefix
-        // Layer IDs follow the pattern: {source_layer}-{suffix} with underscores replaced by hyphens
         const normalized = layerId.replace(/-/g, "_");
         let match = "";
         for (const sourceLayer of Object.keys(INSPECT_COLORS)) {
@@ -177,7 +162,6 @@ export default function Map({
     map.on("load", () => {
       setMapLoaded(true);
 
-      // Add tooltips to map control buttons
       const container = mapContainer.current;
       const zoomIn = container.querySelector(".maplibregl-ctrl-zoom-in");
       const zoomOut = container.querySelector(".maplibregl-ctrl-zoom-out");
@@ -225,6 +209,9 @@ export default function Map({
       if (clickedFeatures.length > 0) {
         setFeatures(clickedFeatures);
         setActiveFeature(clickedFeatures[0]);
+        // Auto-switch to Features tab and open drawer
+        setActiveTab("features");
+        setDrawerOpen(true);
       } else {
         setFeatures([]);
         setActiveFeature(null);
@@ -270,17 +257,17 @@ export default function Map({
 
     const map = mapRef.current;
     addSources(map, pmtilesUrls);
-    addAllLayers(map, activeThemes, visibleTypes, mode);
+    addAllLayers(map, visibleTypes, mode);
     setSourcesAdded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, pmtilesUrls]);
 
-  // Update layer visibility when visibleTypes or activeThemes change
+  // Update layer visibility when visibleTypes change
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
     if (inspectRef.current?._showInspectMap) return;
-    updateLayerVisibility(mapRef.current, activeThemes, visibleTypes);
-  }, [visibleTypes, activeThemes, sourcesAdded]);
+    updateLayerVisibility(mapRef.current, visibleTypes);
+  }, [visibleTypes, sourcesAdded]);
 
   // Update division label colors on mode change
   useEffect(() => {
@@ -303,8 +290,6 @@ export default function Map({
         map.setLayoutProperty(layer.id, "text-field", ["get", "@name"]);
         continue;
       }
-      // Parse the translated name from the names JSON string using string ops.
-      // Search for "XX":"value" in the common object and extract value.
       map.setLayoutProperty(layer.id, "text-field", [
         "let",
         "names_str",
@@ -371,6 +356,16 @@ export default function Map({
     });
   }, [globeMode, mapLoaded]);
 
+  // Resize map when drawer opens/closes so it fills the remaining space
+  useEffect(() => {
+    if (!mapRef.current) return;
+    // Wait for the CSS transition to finish before resizing
+    const timer = setTimeout(() => {
+      mapRef.current?.resize();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [drawerOpen]);
+
   return (
     <>
       <div className={`map ${mode} tour-map`}>
@@ -378,8 +373,10 @@ export default function Map({
           ref={mapContainer}
           style={{
             position: "fixed",
-            width: "100%",
+            left: drawerOpen ? 340 : 0,
+            width: drawerOpen ? "calc(100% - 340px)" : "100%",
             height: "calc(100vh - 60px)",
+            transition: "left 225ms cubic-bezier(0,0,0.2,1), width 225ms cubic-bezier(0,0,0.2,1)",
           }}
         />
 
@@ -393,35 +390,23 @@ export default function Map({
         />
 
         <div className="custom-controls">
-          <Navigator
-            open={navigatorOpen}
-            setOpen={setNavigatorOpen}
-            map={useRef}
-            setVisibleTypes={setVisibleTypes}
-            setActiveThemes={setActiveThemes}
-          />
-
-          {features.length > 0 && (
-            <InspectorPanel
-              mode={mode}
-              activeFeature={activeFeature}
-              setActiveFeature={setActiveFeature}
-              features={features}
-              setFeatures={setFeatures}
-              activeThemes={activeThemes}
-              setActiveThemes={setActiveThemes}
-            />
-          )}
-          <ThemeSelector
-            mode={mode}
-            visibleTypes={visibleTypes}
-            setVisibleTypes={setVisibleTypes}
-            activeThemes={activeThemes}
-            setActiveThemes={setActiveThemes}
-            themeRef={themeRef}
-          ></ThemeSelector>
+          <BookmarkDial />
         </div>
 
+        <SidePanel
+          mode={mode}
+          drawerOpen={drawerOpen}
+          setDrawerOpen={setDrawerOpen}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          visibleTypes={visibleTypes}
+          setVisibleTypes={setVisibleTypes}
+          inspectMode={inspectMode}
+          features={features}
+          setFeatures={setFeatures}
+          activeFeature={activeFeature}
+          setActiveFeature={setActiveFeature}
+        />
       </div>
     </>
   );
@@ -435,9 +420,6 @@ Map.propTypes = {
   activeFeature: PropTypes.object,
   setActiveFeature: PropTypes.func.isRequired,
   setZoom: PropTypes.func.isRequired,
-  navigatorOpen: PropTypes.bool.isRequired,
-  setNavigatorOpen: PropTypes.func.isRequired,
-  themeRef: PropTypes.object.isRequired,
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,
   onMapReady: PropTypes.func,

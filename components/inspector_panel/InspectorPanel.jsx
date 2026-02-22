@@ -9,8 +9,6 @@ import FallbackTable from "@/components/inspector_panel/components/FallbackTable
 function InspectorPanel({
   mode,
   setFeatures,
-  activeThemes,
-  setActiveThemes,
   activeFeature,
   setActiveFeature,
 }) {
@@ -44,8 +42,6 @@ function InspectorPanel({
         mode={mode}
         entity={entity}
         tips={themeConfig.tips}
-        activeThemes={activeThemes}
-        setActiveThemes={setActiveThemes}
       />
     );
   } else {
@@ -59,7 +55,7 @@ function InspectorPanel({
   }
 
   return (
-    <div className="inspector-panel">
+    <div className="inspector-panel in-drawer">
       <PanelHeader title={panelTitle} onClose={handleClose} />
       {inspectorPanel}
       <p>
@@ -78,8 +74,6 @@ function InspectorPanel({
 InspectorPanel.propTypes = {
   mode: PropTypes.string.isRequired,
   setFeatures: PropTypes.func.isRequired,
-  activeThemes: PropTypes.array.isRequired,
-  setActiveThemes: PropTypes.func.isRequired,
   activeFeature: PropTypes.object,
   setActiveFeature: PropTypes.func.isRequired,
 };
