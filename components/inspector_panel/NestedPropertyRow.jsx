@@ -178,10 +178,10 @@ function NestedPropertyRow({ entity, propertyName, expectedProperties = [] }) {
             }
 
             renderedProperties.push(
-              <p key={prop}>
+              <div key={prop} className="nested-property">
                 <strong>{prop}: </strong>
                 {valueToRender}
-              </p>
+              </div>
             );
             processedKeys.add(prop);
           }
@@ -193,23 +193,23 @@ function NestedPropertyRow({ entity, propertyName, expectedProperties = [] }) {
           .filter(([, value]) => value != null)
           .forEach(([objKey, value]) => {
             renderedProperties.push(
-              <p key={objKey}>
+              <div key={objKey} className="nested-property">
                 <strong>{objKey}: </strong>
                 {renderValue(value)}
-              </p>
+              </div>
             );
           });
 
         return renderedProperties;
       } else if (Array.isArray(data)) {
         return data.map((item, index) => (
-          <p key={index}>{renderValue(item)}</p>
+          <div key={index} className="nested-property">{renderValue(item)}</div>
         ));
       } else {
-        return <p>{renderValue(data)}</p>;
+        return <div className="nested-property">{renderValue(data)}</div>;
       }
     } catch (e) {
-      return <p>{entity[propertyName]}</p>;
+      return <div className="nested-property">{entity[propertyName]}</div>;
     }
   };
 

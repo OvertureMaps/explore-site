@@ -67,9 +67,11 @@ export default function FeaturePopup({
         popupRef.current = null;
       }
       if (rootRef.current) {
-        rootRef.current.unmount();
+        const root = rootRef.current;
         rootRef.current = null;
         containerRef.current = null;
+        // Defer unmount to avoid conflict with in-progress React render
+        setTimeout(() => root.unmount(), 0);
       }
       return;
     }
@@ -104,10 +106,11 @@ export default function FeaturePopup({
 
     return () => {
       popup.remove();
-      root.unmount();
       popupRef.current = null;
       rootRef.current = null;
       containerRef.current = null;
+      // Defer unmount to avoid conflict with in-progress React render
+      setTimeout(() => root.unmount(), 0);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, coordinates, features]);

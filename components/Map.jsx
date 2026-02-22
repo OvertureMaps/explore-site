@@ -1,16 +1,17 @@
 import "maplibre-gl/dist/maplibre-gl.css";
+import "@maplibre/maplibre-gl-inspect/dist/maplibre-gl-inspect.css";
 import * as pmtiles from "pmtiles";
 import maplibregl from "maplibre-gl";
-
+import MaplibreInspect from "@maplibre/maplibre-gl-inspect";
 import { useState, useEffect, useRef } from "react";
 import InspectorPanel from "@/components/inspector_panel/InspectorPanel";
 import PropTypes from "prop-types";
 import "@/components/CustomControls.css";
 import ThemeSelector from "@/components/ThemeSelector";
-import BugIcon from "@/components/icons/icon-bug.svg?react";
 import Navigator from "@/components/navigator/Navigator";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
+import variables from "@/lib/map-styles/variables.json";
 import {
   addSources,
   addAllLayers,
@@ -20,11 +21,33 @@ import {
   getInteractiveLayerIds,
 } from "@/lib/LayerManager";
 
+// Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
+try {
+  maplibregl.setRTLTextPlugin(
+    "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js",
+    null,
+    true
+  );
+} catch {
+  // Already set — ignore
+}
+
 // Load PMTiles URLs from STAC catalog at module load time
 const pmtilesPromise = loadPmtilesFromStac();
 
 const INITIAL_CENTER = [-77.036495, 38.90678];
 const INITIAL_ZOOM = 15;
+
+// Build a flat lookup from source-layer name to inspectColor
+const INSPECT_COLORS = {};
+for (const theme of Object.keys(variables)) {
+  if (theme === "global") continue;
+  for (const [layerName, props] of Object.entries(variables[theme])) {
+    if (props.inspectColor) {
+      INSPECT_COLORS[layerName] = props.inspectColor;
+    }
+  }
+}
 
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
@@ -32,10 +55,12 @@ const MAP_STYLE = {
   glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
   sources: {},
   layers: [],
+  projection: { type: "globe" },
 };
 
 export default function Map({
   mode,
+  language,
   features,
   setFeatures,
   activeFeature,
@@ -47,9 +72,12 @@ export default function Map({
   visibleTypes,
   setVisibleTypes,
   onMapReady,
+  inspectMode,
+  globeMode,
 }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
+  const inspectRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [pmtilesUrls, setPmtilesUrls] = useState({});
   const [sourcesAdded, setSourcesAdded] = useState(false);
@@ -114,8 +142,51 @@ export default function Map({
       })
     );
 
+    const inspect = new MaplibreInspect({
+      showInspectButton: false,
+      showInspectMapPopupOnHover: false,
+      showMapPopupOnHover: false,
+      popup: new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+      }),
+      sources: {
+        base: ["bathymetry", "land", "land_cover", "land_use", "water", "infrastructure"],
+        buildings: ["building", "building_part"],
+        places: ["place"],
+        divisions: ["division_area", "division_boundary", "division"],
+        transportation: ["segment", "connector"],
+        addresses: ["address"],
+      },
+      assignLayerColor: (layerId) => {
+        // Match layer ID to source-layer by finding the longest matching prefix
+        // Layer IDs follow the pattern: {source_layer}-{suffix} with underscores replaced by hyphens
+        const normalized = layerId.replace(/-/g, "_");
+        let match = "";
+        for (const sourceLayer of Object.keys(INSPECT_COLORS)) {
+          if (normalized.startsWith(sourceLayer) && sourceLayer.length > match.length) {
+            match = sourceLayer;
+          }
+        }
+        return match ? INSPECT_COLORS[match] : "hsla(0, 0%, 50%, 0.5)";
+      },
+    });
+    map.addControl(inspect);
+    inspectRef.current = inspect;
+
     map.on("load", () => {
       setMapLoaded(true);
+
+      // Add tooltips to map control buttons
+      const container = mapContainer.current;
+      const zoomIn = container.querySelector(".maplibregl-ctrl-zoom-in");
+      const zoomOut = container.querySelector(".maplibregl-ctrl-zoom-out");
+      const compass = container.querySelector(".maplibregl-ctrl-compass");
+      const geolocate = container.querySelector(".maplibregl-ctrl-geolocate");
+      if (zoomIn) zoomIn.title = "Zoom in";
+      if (zoomOut) zoomOut.title = "Zoom out";
+      if (compass) compass.title = "Reset rotation";
+      if (geolocate) geolocate.title = "Find my location";
     });
 
     map.on("zoom", () => {
@@ -206,14 +277,68 @@ export default function Map({
   // Update layer visibility when visibleTypes or activeThemes change
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
+    if (inspectRef.current?._showInspectMap) return;
     updateLayerVisibility(mapRef.current, activeThemes, visibleTypes);
   }, [visibleTypes, activeThemes, sourcesAdded]);
 
   // Update division label colors on mode change
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
+    if (inspectRef.current?._showInspectMap) return;
     updateDivisionLabelMode(mapRef.current, mode);
   }, [mode, sourcesAdded]);
+
+  // Update map language on symbol layers
+  useEffect(() => {
+    if (!sourcesAdded || !mapRef.current) return;
+    if (inspectRef.current?._showInspectMap) return;
+    const map = mapRef.current;
+    const style = map.getStyle();
+    if (!style) return;
+    for (const layer of style.layers) {
+      if (layer.type !== "symbol") continue;
+      if (!layer.layout?.["text-field"]) continue;
+      if (language === "mul") {
+        map.setLayoutProperty(layer.id, "text-field", ["get", "@name"]);
+        continue;
+      }
+      // Parse the translated name from the names JSON string using string ops.
+      // Search for "XX":"value" in the common object and extract value.
+      map.setLayoutProperty(layer.id, "text-field", [
+        "let",
+        "names_str",
+        ["to-string", ["get", "names"]],
+        "key",
+        ["concat", '"', language, '":"'],
+        [
+          "let",
+          "idx",
+          ["index-of", ["var", "key"], ["var", "names_str"]],
+          [
+            "case",
+            [">=", ["var", "idx"], 0],
+            [
+              "let",
+              "start",
+              ["+", ["var", "idx"], ["length", ["var", "key"]]],
+              [
+                "slice",
+                ["var", "names_str"],
+                ["var", "start"],
+                [
+                  "index-of",
+                  '"',
+                  ["var", "names_str"],
+                  ["var", "start"],
+                ],
+              ],
+            ],
+            ["get", "@name"],
+          ],
+        ],
+      ]);
+    }
+  }, [language, sourcesAdded]);
 
   // Highlight active feature
   useEffect(() => {
@@ -227,6 +352,23 @@ export default function Map({
   useEffect(() => {
     window.map = mapRef.current;
   });
+
+  // Sync inspect mode with header toggle
+  useEffect(() => {
+    const inspect = inspectRef.current;
+    if (!inspect || !mapRef.current) return;
+    if (inspectMode !== inspect._showInspectMap) {
+      inspect.toggleInspector();
+    }
+  }, [inspectMode]);
+
+  // Toggle globe/mercator projection
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded) return;
+    mapRef.current.setProjection({
+      type: globeMode ? "globe" : "mercator",
+    });
+  }, [globeMode, mapLoaded]);
 
   return (
     <>
@@ -279,15 +421,6 @@ export default function Map({
           ></ThemeSelector>
         </div>
 
-        <div className="bug-nub">
-          <a
-            className="bug-nub-link"
-            href="https://github.com/OvertureMaps/explore-site/issues/new/choose"
-            target="_blank"
-          >
-            <BugIcon className="bug-nub-icon" />
-          </a>
-        </div>
       </div>
     </>
   );
@@ -295,6 +428,7 @@ export default function Map({
 
 Map.propTypes = {
   mode: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
   features: PropTypes.array.isRequired,
   setFeatures: PropTypes.func.isRequired,
   activeFeature: PropTypes.object,
@@ -306,4 +440,6 @@ Map.propTypes = {
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,
   onMapReady: PropTypes.func,
+  inspectMode: PropTypes.bool.isRequired,
+  globeMode: PropTypes.bool.isRequired,
 };
