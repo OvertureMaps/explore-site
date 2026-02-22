@@ -1,0 +1,33 @@
+{
+  "id": "infrastructure-line-label",
+  "type": "symbol",
+  "source": "base",
+  "source-layer": "infrastructure",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "text-color": "$base.infrastructure.text.color",
+    "text-halo-color": "$base.infrastructure.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeMd",
+    "symbol-placement": "line-center"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "infrastructure",
+    "overture:pass": "labels",
+    "overture:activeOnly": true
+  }
+}

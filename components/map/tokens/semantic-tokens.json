@@ -1,0 +1,8 @@
+{
+  "background": "$primitives.colors.white",
+  "textHalo": "$primitives.colors.white",
+  "globe": {
+    "water": "$primitives.colors.grey-100",
+    "land": "$primitives.colors.land-warm-light"
+  }
+}

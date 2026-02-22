@@ -1,0 +1,128 @@
+{
+  "addresses": {
+    "address": {
+      "color": {
+        "fill": "$primitives.colors.address-inspect",
+        "line": "$primitives.colors.address-inspect",
+        "circle": "$primitives.colors.address-inspect"
+      }
+    }
+  },
+  "base": {
+    "bathymetry": {
+      "color": {
+        "fill": "$primitives.colors.bathymetry-inspect",
+        "line": "$primitives.colors.bathymetry-inspect",
+        "circle": "$primitives.colors.bathymetry-inspect"
+      }
+    },
+    "infrastructure": {
+      "color": {
+        "fill": "$primitives.colors.infrastructure-inspect",
+        "line": "$primitives.colors.infrastructure-inspect",
+        "circle": "$primitives.colors.infrastructure-inspect"
+      }
+    },
+    "land": {
+      "color": {
+        "fill": "$primitives.colors.land-warm-inspect",
+        "line": "$primitives.colors.land-warm-inspect",
+        "circle": "$primitives.colors.land-warm-inspect"
+      }
+    },
+    "land_cover": {
+      "color": {
+        "fill": "$primitives.colors.land-cover-inspect",
+        "line": "$primitives.colors.land-cover-inspect",
+        "circle": "$primitives.colors.land-cover-inspect"
+      }
+    },
+    "land_use": {
+      "color": {
+        "fill": "$primitives.colors.land-use-inspect",
+        "line": "$primitives.colors.land-use-inspect",
+        "circle": "$primitives.colors.land-use-inspect"
+      }
+    },
+    "land_use_line": {
+      "color": {
+        "fill": "$primitives.colors.land-use-line-inspect",
+        "line": "$primitives.colors.land-use-line-inspect",
+        "circle": "$primitives.colors.land-use-line-inspect"
+      }
+    },
+    "water": {
+      "color": {
+        "fill": "$primitives.colors.water-blue-inspect",
+        "line": "$primitives.colors.water-blue-inspect",
+        "circle": "$primitives.colors.water-blue-inspect"
+      }
+    }
+  },
+  "buildings": {
+    "building": {
+      "color": {
+        "fill": "$primitives.colors.building-inspect",
+        "fillExtrusion": "$primitives.colors.building-inspect",
+        "line": "$primitives.colors.building-inspect",
+        "circle": "$primitives.colors.building-inspect"
+      }
+    },
+    "building_part": {
+      "color": {
+        "fill": "$primitives.colors.building-part-inspect",
+        "fillExtrusion": "$primitives.colors.building-part-inspect",
+        "line": "$primitives.colors.building-part-inspect",
+        "circle": "$primitives.colors.building-part-inspect"
+      }
+    }
+  },
+  "divisions": {
+    "division": {
+      "color": {
+        "fill": "$primitives.colors.division-inspect",
+        "line": "$primitives.colors.division-inspect",
+        "circle": "$primitives.colors.division-inspect"
+      }
+    },
+    "division_area": {
+      "color": {
+        "fill": "$primitives.colors.division-area-inspect",
+        "line": "$primitives.colors.division-area-inspect",
+        "circle": "$primitives.colors.division-area-inspect"
+      }
+    },
+    "division_boundary": {
+      "color": {
+        "fill": "$primitives.colors.division-boundary-inspect",
+        "line": "$primitives.colors.division-boundary-inspect",
+        "circle": "$primitives.colors.division-boundary-inspect"
+      }
+    }
+  },
+  "places": {
+    "place": {
+      "color": {
+        "fill": "$primitives.colors.place-inspect",
+        "line": "$primitives.colors.place-inspect",
+        "circle": "$primitives.colors.place-inspect"
+      }
+    }
+  },
+  "transportation": {
+    "connector": {
+      "color": {
+        "fill": "$primitives.colors.connector-inspect",
+        "line": "$primitives.colors.connector-inspect",
+        "circle": "$primitives.colors.connector-inspect"
+      }
+    },
+    "segment": {
+      "color": {
+        "fill": "$primitives.colors.segment-inspect",
+        "line": "$primitives.colors.segment-inspect",
+        "circle": "$primitives.colors.segment-inspect"
+      }
+    }
+  }
+}

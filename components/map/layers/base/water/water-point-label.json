@@ -1,0 +1,37 @@
+{
+  "id": "water-point-label",
+  "type": "symbol",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "minzoom": 17,
+  "paint": {
+    "text-color": "$base.water.text.color",
+    "text-halo-color": "$base.water.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeSm",
+    "text-radial-offset": 0,
+    "text-justify": "auto",
+    "text-line-height": 1,
+    "text-padding": 12,
+    "text-max-width": 4
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:pass": "labels"
+  }
+}

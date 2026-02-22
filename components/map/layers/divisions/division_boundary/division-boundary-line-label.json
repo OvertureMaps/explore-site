@@ -1,0 +1,32 @@
+{
+  "id": "division-boundary-line-label",
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division_boundary",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "text-color": "$divisions.division_boundary.text.color",
+    "text-halo-color": "$divisions.division_boundary.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeMd",
+    "symbol-placement": "line-center"
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_boundary",
+    "overture:pass": "labels"
+  }
+}

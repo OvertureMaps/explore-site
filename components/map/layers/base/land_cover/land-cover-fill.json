@@ -1,0 +1,24 @@
+{
+  "id": "land-cover-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_cover",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "paint": {
+    "fill-color": "$base.land_cover.color.fill",
+    "fill-opacity": 0.5,
+    "fill-outline-color": "$base.land_cover.color.fillOutline"
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_cover",
+    "overture:pass": "geometry"
+  }
+}

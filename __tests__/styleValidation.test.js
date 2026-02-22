@@ -1,7 +1,7 @@
 import { validateStyleMin } from '@maplibre/maplibre-gl-style-spec';
-import { geometryLayers, labelLayers, divisionLabelSpec } from '@/lib/map-styles';
+import { geometryLayers, labelLayers } from '@/components/map';
 
-const allSpecs = [...geometryLayers, ...labelLayers, divisionLabelSpec];
+const allSpecs = [...geometryLayers, ...labelLayers];
 
 // Build a minimal valid style that includes all layers with their sources,
 // so the validator can cross-reference source-layer against source definitions.
@@ -54,14 +54,6 @@ describe('MapLibre style spec validation', () => {
       expect(spec.metadata['overture:theme']).toBeDefined();
       expect(spec.metadata['overture:type']).toBeDefined();
       expect(spec.metadata['overture:pass']).toMatch(/^(geometry|labels|division-labels)$/);
-    });
-  });
-
-  it('geometry layers have overture:color metadata', () => {
-    geometryLayers.forEach((spec) => {
-      // Click buffers don't carry color metadata
-      if (spec.id.includes('click-buffer')) return;
-      expect(spec.metadata['overture:color']).toBeDefined();
     });
   });
 

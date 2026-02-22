@@ -1,0 +1,117 @@
+{
+  "id": "division-labels",
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division",
+  "filter": [
+    "all",
+    [
+      "has",
+      "@name"
+    ],
+    [
+      "step",
+      [
+        "zoom"
+      ],
+      [
+        "==",
+        "$type",
+        "Point"
+      ],
+      2,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "country",
+          "dependency"
+        ],
+        true,
+        false
+      ],
+      4,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "macroregion",
+          "region"
+        ],
+        true,
+        false
+      ],
+      8,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "macrocounty",
+          "county"
+        ],
+        true,
+        false
+      ],
+      10,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "county",
+          "localadmin"
+        ],
+        true,
+        false
+      ],
+      12,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "localadmin",
+          "locality",
+          "borough",
+          "macrohood",
+          "neighborhood",
+          "microhood"
+        ],
+        true,
+        false
+      ]
+    ]
+  ],
+  "paint": {
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$divisions.division.textSize",
+    "text-line-height": 1,
+    "text-padding": 6,
+    "text-max-width": 4
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:pass": "division-labels"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "land-point-label",
+  "type": "symbol",
+  "source": "base",
+  "source-layer": "land",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "minzoom": 17,
+  "paint": {
+    "text-color": "$base.land.text.color",
+    "text-halo-color": "$base.land.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeSm",
+    "text-radial-offset": 0,
+    "text-justify": "auto",
+    "text-line-height": 1,
+    "text-padding": 12,
+    "text-max-width": 4
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land",
+    "overture:pass": "labels"
+  }
+}

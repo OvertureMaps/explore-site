@@ -7,7 +7,7 @@ import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import CircleIcon from "@mui/icons-material/Circle";
 import AbcIcon from "@mui/icons-material/Abc";
 import PlaceIcon from "@mui/icons-material/Place";
-import variables from "@/lib/map-styles/variables.json";
+import { modes } from "@/components/map";
 
 const GEOMETRY_ICONS = {
   polygon: SquareIcon,
@@ -37,13 +37,15 @@ GeometryIcon.propTypes = {
 };
 
 function getIconColor(typeData, inspectMode) {
-  if (inspectMode && typeData.inspectColor) {
-    return typeData.inspectColor;
+  if (inspectMode) {
+    // In inspect mode, find the inspect color from inspect mode tokens
+    const inspectColor = typeData._inspectColor;
+    if (inspectColor) return inspectColor;
   }
-  const color = typeData.color;
+  const color = typeData.color?.fill || typeData.color?.line || typeData.color?.circle;
   if (typeof color === "string") return color;
-  // For expression-based colors (like land_cover), use inspectColor or a fallback
-  if (typeData.inspectColor) return typeData.inspectColor;
+  // For expression-based colors (like land_cover), use inspect color or a fallback
+  if (typeData._inspectColor) return typeData._inspectColor;
   return "grey";
 }
 
@@ -52,16 +54,22 @@ export default function LayerTree({
   setVisibleTypes,
   inspectMode,
 }) {
-  const themeEntries = Object.entries(variables)
-    .filter(([k]) => k !== "global")
-    .sort((a, b) => (a[1]._meta?.order ?? 99) - (b[1]._meta?.order ?? 99));
+  const themeEntries = Object.entries(modes.default)
+    .sort((a, b) => (a[1].display?.order ?? 99) - (b[1].display?.order ?? 99));
 
   const isTypeVisible = (type) => visibleTypes.includes(type);
 
   const getThemeTypes = (themeData) =>
     Object.entries(themeData)
-      .filter(([k]) => k !== "_meta")
-      .sort((a, b) => (a[1].order ?? 99) - (b[1].order ?? 99));
+      .filter(([k]) => k !== "display")
+      .sort((a, b) => (a[1].display?.order ?? 99) - (b[1].display?.order ?? 99));
+
+  // Augment type data with inspect colors for the icon
+  const getTypeDataWithInspect = (themeName, typeName, typeData) => {
+    const inspectTokens = modes.inspect[themeName]?.[typeName];
+    const inspectColor = inspectTokens?.color?.fill || inspectTokens?.color?.line || inspectTokens?.color?.circle;
+    return { ...typeData, _inspectColor: inspectColor };
+  };
 
   const isThemeChecked = (themeData) => {
     const types = getThemeTypes(themeData);
@@ -104,7 +112,7 @@ export default function LayerTree({
     >
       {themeEntries.map(([themeName, themeData]) => {
         const types = getThemeTypes(themeData);
-        const displayName = themeData._meta?.displayName || themeName;
+        const displayName = themeData.display?.name || themeName;
 
         return (
           <TreeItem
@@ -126,7 +134,9 @@ export default function LayerTree({
               </Box>
             }
           >
-            {types.map(([typeName, typeData]) => (
+            {types.map(([typeName, typeData]) => {
+              const augmented = getTypeDataWithInspect(themeName, typeName, typeData);
+              return (
               <TreeItem
                 key={typeName}
                 itemId={`${themeName}/${typeName}`}
@@ -142,22 +152,22 @@ export default function LayerTree({
                       onChange={() => handleTypeToggle(typeName)}
                     />
                     <GeometryIcon
-                      geometryType={typeData.geometryType}
-                      color={getIconColor(typeData, inspectMode)}
+                      geometryType={augmented.geometryType}
+                      color={getIconColor(augmented, inspectMode)}
                     />
-                    <span>{typeData.displayName || typeName}</span>
+                    <span>{augmented.display?.name || typeName}</span>
                   </Box>
                 }
               >
-                {typeData.subtypes &&
-                  typeData.subtypes.map((sub) => (
+                {augmented.display?.subtypes &&
+                  augmented.display.subtypes.map((sub) => (
                     <TreeItem
                       key={sub.name}
                       itemId={`${themeName}/${typeName}/${sub.name}`}
                       label={
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                           <GeometryIcon
-                            geometryType={typeData.geometryType}
+                            geometryType={augmented.geometryType}
                             color={sub.color}
                           />
                           <span>{sub.name}</span>
@@ -166,7 +176,8 @@ export default function LayerTree({
                     />
                   ))}
               </TreeItem>
-            ))}
+              );
+            })}
           </TreeItem>
         );
       })}

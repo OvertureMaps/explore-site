@@ -1,0 +1,36 @@
+{
+  "id": "infrastructure-fill-labels",
+  "type": "symbol",
+  "source": "base",
+  "source-layer": "infrastructure",
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ]
+  ],
+  "paint": {
+    "text-color": "$base.infrastructure.text.color",
+    "text-halo-color": "$base.infrastructure.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeMd",
+    "symbol-placement": "point"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "infrastructure",
+    "overture:pass": "labels",
+    "overture:activeOnly": true
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "building-fill-labels",
+  "type": "symbol",
+  "source": "buildings",
+  "source-layer": "building",
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ]
+  ],
+  "paint": {
+    "text-color": "$buildings.building.text.color",
+    "text-halo-color": "$buildings.building.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeMd",
+    "symbol-placement": "point"
+  },
+  "metadata": {
+    "overture:theme": "buildings",
+    "overture:type": "building",
+    "overture:pass": "labels"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "place-point-label",
+  "type": "symbol",
+  "source": "places",
+  "source-layer": "place",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "minzoom": 11,
+  "paint": {
+    "text-color": "$places.place.text.color",
+    "text-halo-color": "$places.place.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeSm",
+    "text-radial-offset": 0,
+    "text-justify": "auto",
+    "text-line-height": 1,
+    "text-padding": 12,
+    "text-max-width": 4
+  },
+  "metadata": {
+    "overture:theme": "places",
+    "overture:type": "place",
+    "overture:pass": "labels"
+  }
+}

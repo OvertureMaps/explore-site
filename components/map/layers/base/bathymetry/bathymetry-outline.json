@@ -1,0 +1,35 @@
+{
+  "id": "bathymetry-outline",
+  "type": "line",
+  "source": "base",
+  "source-layer": "bathymetry",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "paint": {
+    "line-color": "$base.bathymetry.color.line",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      12,
+      1,
+      13,
+      1
+    ]
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "bathymetry",
+    "overture:pass": "geometry"
+  }
+}

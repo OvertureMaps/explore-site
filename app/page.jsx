@@ -2,19 +2,20 @@
 
 import "@/components/CustomControls.css";
 import Header from "@/components/nav/Header";
-import Map from "@/components/Map";
+import Map from "@/components/MapView";
 import MapContext from "@/lib/MapContext";
 import { keepTheme, setTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ThemeProvider } from "@mui/material";
-import variables from "@/lib/map-styles/variables.json";
+import { modes } from "@/components/map";
 
-// Build initial visible types from variables.json (all types visible on load)
-const INITIAL_VISIBLE_TYPES = Object.entries(variables)
-  .filter(([k]) => k !== "global")
-  .flatMap(([, themeData]) =>
-    Object.keys(themeData).filter((k) => k !== "_meta")
-  );
+// Default layer lists per mode
+const GLOBE_DEFAULTS = Object.entries(modes.default)
+  .flatMap(([, themeData]) => Object.entries(themeData)
+    .filter(([k, v]) => k !== "display" && v.globeDefault)
+    .map(([k]) => k));
+const FLAT_DEFAULTS = Object.entries(modes.default)
+  .flatMap(([, themeData]) => Object.keys(themeData).filter((k) => k !== "display"));
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -28,7 +29,13 @@ export default function Home() {
   const [mapInstance, setMapInstance] = useState(null);
   const [language, setLanguage] = useState("mul");
 
-  const [visibleTypes, setVisibleTypes] = useState(INITIAL_VISIBLE_TYPES);
+  const [visibleTypes, setVisibleTypes] = useState(GLOBE_DEFAULTS);
+
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
+    setVisibleTypes(globeMode ? GLOBE_DEFAULTS : FLAT_DEFAULTS);
+  }, [globeMode]);
 
   useEffect(() => {
     keepTheme(setModeName);

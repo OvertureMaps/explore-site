@@ -1,0 +1,35 @@
+{
+  "id": "land-fill-labels",
+  "type": "symbol",
+  "source": "base",
+  "source-layer": "land",
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ]
+  ],
+  "paint": {
+    "text-color": "$base.land.text.color",
+    "text-halo-color": "$base.land.text.halo",
+    "text-halo-width": 1
+  },
+  "layout": {
+    "text-font": "$primitives.fonts.regular",
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-size": "$primitives.fonts.sizeMd",
+    "symbol-placement": "point"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land",
+    "overture:pass": "labels"
+  }
+}
