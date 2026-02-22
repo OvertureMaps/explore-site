@@ -341,7 +341,6 @@ export default function Map({
     }
   }, [language, sourcesAdded]);
 
-
   // Highlight active feature
   useEffect(() => {
     if (!mapRef.current) return;
