@@ -45,6 +45,10 @@
     grid-template-columns: auto auto;
     place-items: start;
     height: 26px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: inherit;
   }
 }
 
@@ -86,6 +90,8 @@ button.close-panel-button {
   width: 24px;
   height: 24px;
   border-radius: 50%;
+  cursor: pointer;
+  background: transparent;
 }
 button.close-panel-button:active {
   outline: none;
