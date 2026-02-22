@@ -19,11 +19,14 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [navigatorOpen, setNavigatorOpen] = useNavigatorState(false);
 
+  const [inspectMode, setInspectMode] = useState(false);
+  const [globeMode, setGlobeMode] = useState(true);
   const [features, setFeatures] = useState([]);
   const [zoom, setZoom] = useState(0);
   const themeRef = useRef(null);
   const [activeFeature, setActiveFeature] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
+  const [language, setLanguage] = useState("mul");
 
   const startTour = () => {
     setOpen(false);
@@ -84,9 +87,16 @@ export default function Home() {
             zoom={zoom}
             setZoom={setZoom}
             visibleTypes={visibleTypes}
+            language={language}
+            setLanguage={setLanguage}
+            inspectMode={inspectMode}
+            setInspectMode={setInspectMode}
+            globeMode={globeMode}
+            setGlobeMode={setGlobeMode}
           />
           <Map
             mode={modeName}
+            language={language}
             features={features}
             setFeatures={setFeatures}
             setZoom={setZoom}
@@ -98,6 +108,8 @@ export default function Home() {
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
             onMapReady={setMapInstance}
+            inspectMode={inspectMode}
+            globeMode={globeMode}
           />
         </MapContext.Provider>
       </ThemeProvider>
