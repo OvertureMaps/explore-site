@@ -47,9 +47,10 @@ function getArcPosition(angleDeg) {
   };
 }
 
-export default function BookmarkDial() {
+export default function BookmarkDial({ mode }) {
   const [open, setOpen] = useState(false);
   const map = useMapInstance();
+  const isDark = mode === "theme-dark";
 
   const handleClick = (bookmark) => {
     if (!map) return;
@@ -94,9 +95,9 @@ export default function BookmarkDial() {
       <Fab
         onClick={() => setOpen(!open)}
         sx={{
-          bgcolor: '#1976d2',
-          color: 'white',
-          '&:hover': { bgcolor: '#1565c0' },
+          bgcolor: isDark ? '#000000' : '#ffffff',
+          color: isDark ? '#ffffff' : '#000000',
+          '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
         }}
       >
         <StarIcon sx={{ fontSize: 28 }} />

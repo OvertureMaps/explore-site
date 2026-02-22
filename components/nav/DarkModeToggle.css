@@ -13,6 +13,10 @@
   }
 
   button:hover {
-    background: var(--ifm-color-emphasis-200);
+    background: rgba(0, 0, 0, 0.08);
   }
+}
+
+[data-theme="dark"] .dark-mode-toggle button:hover {
+  background: rgba(255, 255, 255, 0.08);
 }

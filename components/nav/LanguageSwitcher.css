@@ -4,7 +4,7 @@
   margin-right: 11px;
 
   .language-btn {
-    color: var(--ifm-navbar-link-color);
+    color: inherit;
     font-size: 0.8rem;
     text-transform: none;
     padding: 4px 10px;
@@ -13,7 +13,7 @@
   }
 
   .language-btn:hover {
-    background: var(--ifm-color-emphasis-200);
+    background: rgba(0, 0, 0, 0.08);
   }
 
   .mui-caret {
@@ -26,4 +26,8 @@
     border-right: 4px solid transparent;
     border-left: 4px solid transparent;
   }
+}
+
+[data-theme="dark"] .language-switcher .language-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }

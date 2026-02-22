@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import InfoToolTip from "@/components/inspector_panel/InfoToolTip";
+import Tooltip from "@mui/material/Tooltip";
 import "./SourcesRow.css";
 
 function SourcesRow({ entity, mode, tips }) {
@@ -38,7 +38,9 @@ function SourcesRow({ entity, mode, tips }) {
   return (
     <div className="panel-row sources">
       <div>
-        <strong>sources: </strong>
+        <Tooltip title={tips.source} placement="top" arrow>
+          <strong style={{ cursor: "help" }}>sources: </strong>
+        </Tooltip>
         <div className="sources-content">
           {sources.map((source, index) => {
             const url = getSourceLink(source);
@@ -84,11 +86,6 @@ function SourcesRow({ entity, mode, tips }) {
           })}
         </div>
       </div>
-      <InfoToolTip
-        mode={mode}
-        content={tips.source}
-        target={"theme-sources-tip"}
-      />
     </div>
   );
 }

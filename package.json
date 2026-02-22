@@ -25,14 +25,12 @@
     "@mui/x-tree-view": "^8.27.2",
     "apache-arrow": "^15.0.2",
     "iconoir-react": "^7.11.0",
-    "infima": "0.2.0-alpha.43",
     "maplibre-gl": "^5.18.0",
     "next": "^14.2.0",
     "pmtiles": "^3.0.5",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-floater": "^0.9.3",
     "stac-js": "^0.1.9"
   },
   "devDependencies": {

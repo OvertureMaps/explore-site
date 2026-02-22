@@ -24,7 +24,7 @@ table.theme-panel-table td {
 }
 
 table.theme-panel-table tr {
-  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  border-bottom: 1px solid #d1d5db;
 }
 
 button.theme-table {
@@ -33,7 +33,7 @@ button.theme-table {
   grid-template-columns: auto auto;
   place-items: center;
   width: 180px;
-  background-color: var(--ifm-color-primary);
+  background-color: #3578e5;
   color: white;
   font-weight: 600;
   border: none;
@@ -41,7 +41,7 @@ button.theme-table {
 }
 
 button.theme-table:hover {
-  background-color: var(--ifm-color-primary-light);
+  background-color: #4e8ef7;
 }
 
 button.theme-table:focus {
@@ -56,6 +56,6 @@ table.theme-table {
 
 .theme-dark .inspector-panel {
   button.theme-table {
-    background: var(--ifm-color-primary-light);
+    background: #4e8ef7;
   }
 }

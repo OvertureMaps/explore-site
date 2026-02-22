@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import TableRow from "@/components/inspector_panel/TableRow";
+import Tooltip from "@mui/material/Tooltip";
 import "./ThemePanel.css";
 import IndentIcon from "@/components/icons/icon-indent.svg?react";
-import InfoToolTip from "@/components/inspector_panel/InfoToolTip";
 import SourcesRow from "@/components/inspector_panel/SourcesRow";
 import NestedPropertyRow from "@/components/inspector_panel/NestedPropertyRow";
 
@@ -26,51 +26,42 @@ function ThemePanel({ mode, entity, tips }) {
       {entity["id"] ? (
         <div className="panel-row id">
           <div>
-            <strong>id: </strong>
-            <span onDoubleClick={() => {
+            <Tooltip title="A feature ID, typically associated with the Global Entity Reference System (GERS). Double click to copy." placement="top" arrow>
+              <strong style={{ cursor: "help" }}>GERS: </strong>
+            </Tooltip>
+            <span style={{ fontSize: "11px" }} onDoubleClick={() => {
                 navigator.clipboard.writeText(entity["id"]);
               }}>{entity["id"]}</span>
           </div>
-          <InfoToolTip mode={mode} content=
-            "A feature ID, typically associated with the Global Entity Reference System (GERS). Double Click to copy to clipboard"
-          target={"theme-id-tip"} />
         </div>
       ) : (
         <></>
       )}
       <div className="panel-row theme">
         <div>
-          <strong>theme: </strong>
+          <Tooltip title={tips.theme} placement="top" arrow>
+            <strong style={{ cursor: "help" }}>theme: </strong>
+          </Tooltip>
           {entity["theme"]}
         </div>
-        <InfoToolTip
-          mode={mode}
-          content={tips.theme}
-          target={"theme-theme-tip"}
-        />
       </div>
       <div className="panel-row type">
         <div>
-          <strong>type: </strong>
+          <Tooltip title={tips.type} placement="top" arrow>
+            <strong style={{ cursor: "help" }}>type: </strong>
+          </Tooltip>
           {entity["type"]}
         </div>
-        <InfoToolTip
-          mode={mode}
-          content={tips.type}
-          target={"theme-type-tip"}
-        />
       </div>
       {entity["subtype"] ? (
         <div className="panel-row subtype">
           <div>
-            <IndentIcon /> <strong>subtype: </strong>
+            <IndentIcon />{" "}
+            <Tooltip title={tips.subtype} placement="top" arrow>
+              <strong style={{ cursor: "help" }}>subtype: </strong>
+            </Tooltip>
             {entity["subtype"]}
           </div>
-          <InfoToolTip
-            mode={mode}
-            content={tips.subtype}
-            target={"theme-subtype-tip"}
-          />
         </div>
       ) : (
         <></>
@@ -78,7 +69,9 @@ function ThemePanel({ mode, entity, tips }) {
       {entity["class"] ? (
         <div className="panel-row class">
           <div>
-            <strong>class: </strong>
+            <Tooltip title={tips.class || "Classification of the feature"} placement="top" arrow>
+              <strong style={{ cursor: "help" }}>class: </strong>
+            </Tooltip>
             {entity["class"]}
             {entity["subclass"] ? (
               <div style={{ paddingLeft: "15px" }}>
@@ -89,11 +82,6 @@ function ThemePanel({ mode, entity, tips }) {
               <></>
             )}
           </div>
-          <InfoToolTip
-            mode={mode}
-            content={tips.class || "Classification of the feature"}
-            target={"theme-class-tip"}
-          />
         </div>
       ) : (
         <></>

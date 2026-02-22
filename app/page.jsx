@@ -4,7 +4,7 @@ import "@/components/CustomControls.css";
 import Header from "@/components/nav/Header";
 import Map from "@/components/Map";
 import MapContext from "@/lib/MapContext";
-import { keepTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
+import { keepTheme, setTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material";
 import variables from "@/lib/map-styles/variables.json";
@@ -32,6 +32,18 @@ export default function Home() {
 
   useEffect(() => {
     keepTheme(setModeName);
+
+    // Restore state from URL params (shared link)
+    const params = new URLSearchParams(window.location.search);
+    const layersParam = params.get("layers");
+    const modeParam = params.get("mode");
+    if (layersParam) {
+      setVisibleTypes(layersParam.split(","));
+    }
+    if (modeParam) {
+      setTheme(modeParam, setModeName);
+    }
+
     setMounted(true);
   }, []);
 
