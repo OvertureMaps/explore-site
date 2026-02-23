@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 
 const ZOOM_BOUND = 15;
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const { myMap } = useMap();
@@ -202,7 +203,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
           <div className="wrapper tour-download">
             <div className="download-icon">
               {!loading ? (
-                <img className={"dl-img"} src="/download.svg" />
+                <img className={"dl-img"} src={`${basePath}/download.svg`} />
               ) : (
                 <RefreshIcon />
               )}

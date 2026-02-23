@@ -2,6 +2,8 @@ import { setTheme } from "@/lib/themeUtils";
 import PropTypes from "prop-types";
 import "./DarkModeToggle.css";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export default function DarkModeToggle({ mode, setMode }) {
   const toggleDarkMode = () => {
     if (mode === "theme-dark") {
@@ -15,9 +17,9 @@ export default function DarkModeToggle({ mode, setMode }) {
     <div className="dark-mode-toggle tour-darkmode">
       <button className="clean-btn" onClick={toggleDarkMode}>
         {mode === "theme-light" ? (
-          <img src="/lightmode.svg" />
+          <img src={`${basePath}/lightmode.svg`} />
         ) : (
-          <img src="/darkmode.svg" />
+          <img src={`${basePath}/darkmode.svg`} />
         )}
       </button>
     </div>

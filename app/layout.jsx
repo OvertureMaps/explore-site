@@ -1,11 +1,13 @@
 import './globals.css';
 import 'infima/dist/css/default/default.css';
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export const metadata = {
   title: 'Overture Maps Explorer (Beta)',
   description: 'Explore Overture Maps Foundation geospatial data',
   icons: {
-    icon: '/favicon.png',
+    icon: `${basePath}/favicon.png`,
   },
 };
 

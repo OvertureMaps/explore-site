@@ -36,7 +36,7 @@ jobs:
     - name: Build
       run: npm run build
       env:
-        BASE_ARIA_URL: ${{ github.event.repository.name }}/pr/${{ github.event.number }}
+        BASEURL: ${{ github.event.repository.name }}/pr/${{ github.event.number }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4

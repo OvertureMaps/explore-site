@@ -1,3 +1,5 @@
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export default function OvertureWordmark() {
   return (
     <a
@@ -7,7 +9,7 @@ export default function OvertureWordmark() {
       className="navbar__brand"
     >
       <div className="navbar__logo">
-        <img src="/omf_logo_transparent.png" alt="Overture Maps Foundation Logo" />
+        <img src={`${basePath}/omf_logo_transparent.png`} alt="Overture Maps Foundation Logo" />
       </div>
       <b className="navbar__title tour-homepage">Overture Maps Explorer</b>
     </a>
