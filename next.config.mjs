@@ -1,8 +1,8 @@
-const basePath = process.env.BASEURL ? `/${process.env.BASEURL}` : '';
+const basePath = process.env.BASEURL ? `/${process.env.BASEURL}` : "";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: "export",
   basePath,
   assetPrefix: basePath,
   env: {
@@ -20,7 +20,7 @@ const nextConfig = {
 
     // Handle SVG imports as React components (replaces vite-plugin-svgr)
     const fileLoaderRule = config.module.rules.find((rule) =>
-      rule.test?.test?.('.svg'),
+      rule.test?.test?.(".svg")
     );
 
     config.module.rules.push(
@@ -34,8 +34,8 @@ const nextConfig = {
       {
         test: /\.svg$/i,
         resourceQuery: /react/,
-        use: ['@svgr/webpack'],
-      },
+        use: ["@svgr/webpack"],
+      }
     );
 
     // Modify the file loader rule to ignore *.svg
@@ -44,7 +44,7 @@ const nextConfig = {
     // Handle .wasm?url imports
     config.module.rules.push({
       test: /\.wasm$/,
-      type: 'asset/resource',
+      type: "asset/resource",
     });
 
     return config;
