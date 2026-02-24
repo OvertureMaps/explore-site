@@ -1,0 +1,23 @@
+{
+  "id": "inspect-land-use-line",
+  "type": "line",
+  "source": "base",
+  "source-layer": "land_use",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:selectable": true
+  },
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "line-color": "$inspect.land_use.color.line",
+    "line-width": 1.5
+  }
+}

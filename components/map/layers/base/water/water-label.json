@@ -1,0 +1,34 @@
+{
+  "id": "water-label",
+  "type": "symbol",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "all",
+    ["==", ["geometry-type"], "LineString"],
+    ["has", "subtype"],
+    ["!", ["has", "is_intermittent"]]
+  ],
+  "layout": {
+    "text-field": ["get", "@name"],
+    "text-font": "$divisions.division.font",
+    "text-size": [
+      "interpolate", ["linear"], ["zoom"],
+      10, ["case", ["has", "wikidata"], 15, 12],
+      14, ["case", ["has", "wikidata"], 18, 15]
+    ],
+    "symbol-placement": "line",
+    "symbol-spacing": 500,
+    "text-max-angle": 30
+  },
+  "paint": {
+    "text-color": "$base.water.lakes.color.text"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:group": "base-land",
+    "overture:selectable": false,
+    "overture:item": "lakes-rivers"
+  }
+}

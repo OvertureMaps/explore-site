@@ -1,0 +1,151 @@
+{
+  "id": "division-boundary",
+  "type": "line",
+  "source": "divisions",
+  "source-layer": "division_boundary",
+  "minzoom": 2,
+  "filter": [
+    "step",
+    [
+      "zoom"
+    ],
+    [
+      "in",
+      [
+        "get",
+        "subtype"
+      ],
+      [
+        "literal",
+        [
+          "country",
+          "dependency"
+        ]
+      ]
+    ],
+    4,
+    [
+      "in",
+      [
+        "get",
+        "subtype"
+      ],
+      [
+        "literal",
+        [
+          "country",
+          "dependency",
+          "region"
+        ]
+      ]
+    ],
+    6,
+    [
+      "in",
+      [
+        "get",
+        "subtype"
+      ],
+      [
+        "literal",
+        [
+          "country",
+          "dependency",
+          "region",
+          "county"
+        ]
+      ]
+    ],
+    8,
+    true
+  ],
+  "paint": {
+    "line-color": "$divisions.division_boundary.color.line",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      2,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "country",
+          "dependency"
+        ],
+        0.5,
+        0
+      ],
+      4,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "country",
+          "dependency"
+        ],
+        0.6,
+        "region",
+        0.3,
+        0
+      ],
+      8,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "country",
+          "dependency"
+        ],
+        1,
+        "region",
+        0.5,
+        "county",
+        0.2,
+        0.1
+      ],
+      12,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "country",
+          "dependency"
+        ],
+        1.5,
+        "region",
+        1,
+        "county",
+        0.8,
+        0.2
+      ]
+    ]
+  },
+  "layout": {
+    "line-cap": "round",
+    "line-join": "round"
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_boundary",
+    "overture:group": "divisions-boundaries",
+    "overture:selectable": true,
+    "overture:item": "division_boundary"
+  }
+}

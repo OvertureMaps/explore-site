@@ -1,7 +1,7 @@
 import { validateStyleMin } from '@maplibre/maplibre-gl-style-spec';
-import { geometryLayers, labelLayers } from '@/components/map';
+import { defaultLayerSpecs } from '@/components/map';
 
-const allSpecs = [...geometryLayers, ...labelLayers];
+const allSpecs = defaultLayerSpecs;
 
 // Build a minimal valid style that includes all layers with their sources,
 // so the validator can cross-reference source-layer against source definitions.
@@ -53,7 +53,6 @@ describe('MapLibre style spec validation', () => {
       expect(spec.metadata).toBeDefined();
       expect(spec.metadata['overture:theme']).toBeDefined();
       expect(spec.metadata['overture:type']).toBeDefined();
-      expect(spec.metadata['overture:pass']).toMatch(/^(geometry|labels|division-labels)$/);
     });
   });
 

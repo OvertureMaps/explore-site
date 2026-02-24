@@ -1,0 +1,41 @@
+{
+  "id": "inspect-address-label",
+  "type": "symbol",
+  "source": "addresses",
+  "source-layer": "address",
+  "metadata": {
+    "overture:theme": "addresses",
+    "overture:type": "address",
+    "overture:group": "addresses",
+    "overture:selectable": false
+  },
+  "minzoom": 15,
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "number"
+    ],
+    "text-font": [
+      "$globals.font.noto-sans-regular"
+    ],
+    "text-size": 10,
+    "text-offset": [
+      0,
+      1
+    ],
+    "text-anchor": "top",
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.address.color.text",
+    "text-halo-color": "$inspect.address.color.textHalo",
+    "text-halo-width": 1
+  }
+}

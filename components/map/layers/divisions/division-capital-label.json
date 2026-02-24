@@ -1,0 +1,72 @@
+{
+  "id": "division-capital-label",
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division",
+  "minzoom": 3,
+  "filter": [
+    "all",
+    ["has", "capital_division_ids"],
+    [
+      "in",
+      ["get", "subtype"],
+      ["literal", ["country", "region"]]
+    ]
+  ],
+  "layout": {
+    "icon-image": "star",
+    "icon-size": [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      3,
+      ["match", ["get", "subtype"], "country", 0.6, 0.4],
+      6,
+      ["match", ["get", "subtype"], "country", 0.75, 0.55],
+      9,
+      ["match", ["get", "subtype"], "country", 0.9, 0.7],
+      12,
+      ["match", ["get", "subtype"], "country", 1, 0.85]
+    ],
+    "icon-allow-overlap": true,
+    "text-field": ["get", "@name"],
+    "text-font": ["$divisions.division.subtype.font.regular"],
+    "text-size": [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      3,
+      ["match", ["get", "subtype"], "country", 10, 8],
+      8,
+      ["match", ["get", "subtype"], "country", 13, 10],
+      12,
+      ["match", ["get", "subtype"], "country", 15, 12]
+    ],
+        "text-line-height": 1,
+        "text-justify": "auto",
+        "text-max-width": 5,
+        "text-radial-offset": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          3,
+          0.4,
+          8,
+          0.3,
+          12,
+          0.2
+        ]
+  },
+  "paint": {
+    "text-color": "$divisions.division.subtype.color.text",
+    "text-halo-color": "$divisions.division.subtype.color.textHalo",
+    "text-halo-width": 1.5
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:group": "divisions-labels",
+    "overture:selectable": true,
+    "overture:item": "division_label"
+  }
+}

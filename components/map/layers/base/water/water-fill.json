@@ -4,21 +4,24 @@
   "source": "base",
   "source-layer": "water",
   "filter": [
-    "==",
-    [
-      "geometry-type"
-    ],
-    "Polygon"
+    "all",
+    ["==", ["geometry-type"], "Polygon"],
+    ["match", ["get", "is_intermittent"], ["false"], false, true],
+    ["step",["zoom"],
+      ["has", "subtype"],
+      5, ["match", ["get", "subtype"], ["ocean"], false, true]
+    ]
   ],
   "paint": {
-    "fill-color": "$base.water.color.fill",
-    "fill-opacity": 0.5,
-    "fill-outline-color": "$base.water.color.fillOutline"
+    "fill-color": "$base.water.lakes.color.fill",
+    "fill-opacity": 1,
+    "fill-outline-color": "$base.water.lakes.color.fillOutline"
   },
-  "layout": {},
   "metadata": {
     "overture:theme": "base",
     "overture:type": "water",
-    "overture:pass": "geometry"
+    "overture:group": "base-land",
+    "overture:selectable": true,
+    "overture:item": "lakes-rivers"
   }
 }

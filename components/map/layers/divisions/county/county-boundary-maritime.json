@@ -1,0 +1,31 @@
+{
+  "id": "county-boundary-maritime",
+  "type": "line",
+  "source": "divisions",
+  "source-layer": "division_boundary",
+  "minzoom": 8,
+  "filter": [
+    "all",
+    ["in", ["get", "subtype"], ["literal", ["macrocounty", "county"]]],
+    ["==", ["get", "class"], "maritime"]
+  ],
+  "paint": {
+    "line-color": "$divisions.division_boundary.color.maritime",
+    "line-width": ["interpolate", ["linear"], ["zoom"],
+      8, 0.8,
+      16, 1
+    ],
+    "line-opacity": 0.55,
+    "line-dasharray": [1, 3]
+  },
+  "layout": {
+    "line-cap": "butt"
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_boundary",
+    "overture:group": "divisions-county",
+    "overture:selectable": true,
+    "overture:item": "county_boundary"
+  }
+}

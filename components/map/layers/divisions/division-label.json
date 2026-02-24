@@ -1,0 +1,193 @@
+{
+  "id": "division-label",
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division",
+  "filter": [
+    "all",
+    [
+      "step",
+      [
+        "zoom"
+      ],
+      [
+        "in",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "literal",
+          [
+            "country",
+            "dependency"
+          ]
+        ]
+      ],
+      5,
+      [
+        "in",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "literal",
+          [
+            "country",
+            "dependency",
+            "region"
+          ]
+        ]
+      ],
+      7,
+      [
+        "in",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "literal",
+          [
+            "country",
+            "dependency",
+            "region",
+            "county"
+          ]
+        ]
+      ],
+      9,
+      true
+    ],
+    [
+      "<=",
+      [
+        "length",
+        [
+          "get",
+          "@name"
+        ]
+      ],
+      [
+        "step",
+        [
+          "zoom"
+        ],
+        15,
+        3,
+        25,
+        5,
+        50,
+        7,
+        999
+      ]
+    ]
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-font": ["$divisions.division.subtype.font.regular"],
+    "text-size": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      0,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "country",
+        11,
+        "dependency",
+        10,
+        8
+      ],
+      4,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "country",
+        12,
+        "dependency",
+        11,
+        "region",
+        9,
+        8
+      ],
+      8,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "country",
+        14,
+        "dependency",
+        13,
+        "region",
+        11,
+        "county",
+        9,
+        "localadmin",
+        8,
+        7
+      ],
+      12,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "country",
+        16,
+        "dependency",
+        15,
+        "region",
+        13,
+        "county",
+        11,
+        "localadmin",
+        10,
+        "locality",
+        9,
+        "macrohood",
+        8,
+        "neighborhood",
+        7,
+        "microhood",
+        7,
+        7
+      ]
+    ],
+    "text-transform": "uppercase",
+    "text-letter-spacing": 0.1,
+    "text-max-width": 8,
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$divisions.division.subtype.color.text",
+    "text-halo-color": "$divisions.division.subtype.color.textHalo",
+    "text-halo-width": 1.5
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:group": "divisions-labels",
+    "overture:selectable": true,
+    "overture:item": "division_label"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "segment-road-trunk-line",
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "minzoom": 12,
+  "filter": [
+    "all",
+    ["==", ["get", "subtype"], "road"],
+    ["==", ["get", "class"], "trunk"]
+  ],
+  "paint": {
+    "line-color": "$transportation.road.color.roadFill",
+    "line-width": [
+      "interpolate",
+      ["exponential", 1.5],
+      ["zoom"],
+      5, 0.4,
+      8, 0.8,
+      12, 2.5,
+      16, 7,
+      20, 14
+    ]
+  },
+  "layout": {
+    "line-cap": "round",
+    "line-join": "round"
+  },
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-roads",
+    "overture:selectable": true,
+    "overture:item": "road-trunk"
+  }
+}

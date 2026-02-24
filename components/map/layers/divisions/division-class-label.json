@@ -1,0 +1,59 @@
+{
+  "id": "division-class-label",
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division_area",
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_area",
+    "overture:group": "divisions-labels",
+    "overture:selectable": false,
+    "overture:item": "division_label"
+  },
+  "minzoom": 6,
+  "filter": [
+    "has",
+    "class"
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "class"
+    ],
+    "text-font": "$divisions.division.class.font",
+    "text-size": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      6,
+      10,
+      14,
+      14
+    ],
+    "text-max-width": 8,
+    "symbol-placement": "point",
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$divisions.division.class.color.text",
+    "text-halo-color": "$divisions.division.class.color.textHalo",
+    "text-halo-width": 1.5,
+    "text-opacity": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      6,
+      0.5,
+      10,
+      1
+    ]
+  }
+}

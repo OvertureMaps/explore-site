@@ -1,0 +1,29 @@
+{
+  "id": "inspect-segment-line",
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-roads",
+    "overture:selectable": true
+  },
+  "minzoom": 4,
+  "paint": {
+    "line-color": "$inspect.segment.color.line",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      4,
+      0.5,
+      14,
+      2
+    ]
+  }
+}

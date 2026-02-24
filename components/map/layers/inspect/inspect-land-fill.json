@@ -1,0 +1,23 @@
+{
+  "id": "inspect-land-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land",
+    "overture:group": "base-land",
+    "overture:selectable": true
+  },
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "paint": {
+    "fill-color": "$inspect.land.color.fill",
+    "fill-opacity": 0.3
+  }
+}

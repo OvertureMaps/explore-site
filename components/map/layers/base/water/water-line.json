@@ -4,32 +4,20 @@
   "source": "base",
   "source-layer": "water",
   "filter": [
-    "==",
-    [
-      "geometry-type"
-    ],
-    "LineString"
+    "all",
+    ["==", ["geometry-type"], "LineString"],
+    ["has", "subtype"],
+    ["!", ["has", "is_intermittent"]]
   ],
   "paint": {
-    "line-color": "$base.water.color.line",
-    "line-width": [
-      "interpolate",
-      [
-        "linear"
-      ],
-      [
-        "zoom"
-      ],
-      12,
-      1,
-      13,
-      2
-    ]
+    "line-color": "$base.water.lakes.color.line",
+    "line-width": ["match", ["get", "class"], "river", 1, 0.5]
   },
-  "layout": {},
   "metadata": {
     "overture:theme": "base",
     "overture:type": "water",
-    "overture:pass": "geometry"
+    "overture:group": "base-land",
+    "overture:selectable": true,
+    "overture:item": "lakes-rivers"
   }
 }

@@ -1,0 +1,34 @@
+{
+  "id": "infrastructure-aerialway-line",
+  "type": "line",
+  "source": "base",
+  "source-layer": "infrastructure",
+  "minzoom": 12,
+  "filter": [
+    "all",
+    ["==", ["get", "subtype"], "airport"],
+    ["match", ["get", "class"], ["runway", "taxiway"], true, false]
+  ],
+  "paint": {
+    "line-color": "$base.infrastructure.aerialway.color.line",
+    "line-width": [
+      "interpolate",
+      ["exponential", 1.5],
+      ["zoom"],
+      12, 0.5,
+      16, 2,
+      20, 4
+    ]
+  },
+  "layout": {
+    "line-cap": "round",
+    "line-join": "round"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "infrastructure",
+    "overture:group": "base-infrastructure",
+    "overture:selectable": true,
+    "overture:item": "aerialway"
+  }
+}

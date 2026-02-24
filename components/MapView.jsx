@@ -1,8 +1,6 @@
 import "maplibre-gl/dist/maplibre-gl.css";
-import "@maplibre/maplibre-gl-inspect/dist/maplibre-gl-inspect.css";
 import * as pmtiles from "pmtiles";
 import maplibregl from "maplibre-gl";
-import MaplibreInspect from "@maplibre/maplibre-gl-inspect";
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import "@/components/CustomControls.css";
@@ -10,13 +8,18 @@ import SidePanel from "@/components/SidePanel";
 import BookmarkDial from "@/components/BookmarkDial";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
-import { modes } from "@/components/map";
+import { getInspectTokens } from "@/components/map";
 import {
   addSources,
   addAllLayers,
   updateLayerVisibility,
   highlightFeature,
   getInteractiveLayerIds,
+  isTypeVisible,
+  removeDefaultLayers,
+  addInspectLayers,
+  removeInspectLayers,
+  updateInspectVisibility,
 } from "@/lib/LayerManager";
 
 // Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
@@ -33,19 +36,25 @@ try {
 // Load PMTiles URLs from STAC catalog at module load time
 const pmtilesPromise = loadPmtilesFromStac();
 
-const INITIAL_CENTER = [-44.27, 21.45];
-const INITIAL_ZOOM = 2.5;
+const INITIAL_CENTER = [-77.04, 38.90];
+const INITIAL_ZOOM = 14;
 
 // Build a flat lookup from source-layer name to inspectColor
 const INSPECT_COLORS = {};
-for (const theme of Object.keys(modes.inspect)) {
-  if (theme === "_meta") continue;
-  const themeData = modes.inspect[theme];
-  for (const [layerName, props] of Object.entries(themeData)) {
-    if (layerName === "display") continue;
-    const inspectColor = props.color?.fill || props.color?.line || props.color?.circle;
-    if (inspectColor) {
-      INSPECT_COLORS[layerName] = inspectColor;
+for (const theme of ["base", "buildings", "transportation", "addresses", "places", "divisions"]) {
+  const inspectTheme = {
+    base: ["land", "water", "bathymetry", "land_cover", "land_use"],
+    buildings: ["building", "building_part"],
+    transportation: ["segment"],
+    addresses: ["address"],
+    places: ["place"],
+    divisions: ["division", "division_area", "division_boundary"],
+  }[theme] || [];
+  for (const type of inspectTheme) {
+    const tokens = getInspectTokens(theme, type);
+    const inspectColor = tokens?.color?.fill || tokens?.color?.line || tokens?.color?.circle || tokens?.color?.text;
+    if (inspectColor && typeof inspectColor === "string") {
+      INSPECT_COLORS[type] = inspectColor;
     }
   }
 }
@@ -53,10 +62,11 @@ for (const theme of Object.keys(modes.inspect)) {
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
   version: 8,
-  glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+  glyphs: "/fonts/{fontstack}/{range}.pbf",
   sources: {},
   layers: [],
   projection: { type: "globe" },
+  light: { anchor: "viewport", color: "white", intensity: 0.1 },
 };
 
 export default function Map({
@@ -66,16 +76,17 @@ export default function Map({
   setFeatures,
   activeFeature,
   setActiveFeature,
+  zoom,
   setZoom,
   visibleTypes,
   setVisibleTypes,
+  defaultVisibleTypes,
   onMapReady,
   inspectMode,
   globeMode,
 }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
-  const inspectRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [pmtilesUrls, setPmtilesUrls] = useState({});
   const [sourcesAdded, setSourcesAdded] = useState(false);
@@ -91,6 +102,7 @@ export default function Map({
   }, [visibleTypes]);
 
   const activeFeatureRef = useRef(null);
+  const inspectActiveRef = useRef(false);
 
   // Load PMTiles URLs from STAC catalog
   useEffect(() => {
@@ -130,36 +142,6 @@ export default function Map({
       })
     );
 
-    const inspect = new MaplibreInspect({
-      showInspectButton: false,
-      showInspectMapPopupOnHover: false,
-      showMapPopupOnHover: false,
-      popup: new maplibregl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-      }),
-      sources: {
-        base: ["bathymetry", "land", "land_cover", "land_use", "water", "infrastructure"],
-        buildings: ["building", "building_part"],
-        places: ["place"],
-        divisions: ["division_area", "division_boundary", "division"],
-        transportation: ["segment", "connector"],
-        addresses: ["address"],
-      },
-      assignLayerColor: (layerId) => {
-        const normalized = layerId.replace(/-/g, "_");
-        let match = "";
-        for (const sourceLayer of Object.keys(INSPECT_COLORS)) {
-          if (normalized.startsWith(sourceLayer) && sourceLayer.length > match.length) {
-            match = sourceLayer;
-          }
-        }
-        return match ? INSPECT_COLORS[match] : "hsla(0, 0%, 50%, 0.5)";
-      },
-    });
-    map.addControl(inspect);
-    inspectRef.current = inspect;
-
     map.on("load", () => {
       setMapLoaded(true);
 
@@ -170,7 +152,14 @@ export default function Map({
       const geolocate = container.querySelector(".maplibregl-ctrl-geolocate");
       if (zoomIn) zoomIn.title = "Zoom in";
       if (zoomOut) zoomOut.title = "Zoom out";
-      if (compass) compass.title = "Reset rotation";
+      if (compass) {
+        compass.title = "Reset rotation";
+        const newCompass = compass.cloneNode(true);
+        compass.parentNode.replaceChild(newCompass, compass);
+        newCompass.addEventListener("click", () => {
+          map.easeTo({ bearing: 0, pitch: 0 });
+        });
+      }
       if (geolocate) geolocate.title = "Find my location";
     });
 
@@ -199,7 +188,7 @@ export default function Map({
       const seenIds = new Set();
 
       for (const feature of queriedFeatures) {
-        if (currentVisibleTypes.indexOf(feature.layer["source-layer"]) >= 0) {
+        if (isTypeVisible(feature.layer["source-layer"], currentVisibleTypes)) {
           if (!seenIds.has(feature.properties.id)) {
             clickedFeatures.push(feature);
             seenIds.add(feature.properties.id);
@@ -235,7 +224,7 @@ export default function Map({
 
       map.getCanvas().style.cursor =
         featuresAtPoint.some(
-          (f) => currentVisibleTypes.indexOf(f.layer["source-layer"]) >= 0
+          (f) => isTypeVisible(f.layer["source-layer"], currentVisibleTypes)
         )
           ? "pointer"
           : "auto";
@@ -258,22 +247,24 @@ export default function Map({
 
     const map = mapRef.current;
     addSources(map, pmtilesUrls);
-    addAllLayers(map, visibleTypes, mode, globeMode);
-    setSourcesAdded(true);
+    addAllLayers(map, visibleTypes).then(() => setSourcesAdded(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, pmtilesUrls]);
 
   // Update layer visibility when visibleTypes change
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
-    if (inspectRef.current?._showInspectMap) return;
-    updateLayerVisibility(mapRef.current, visibleTypes, globeMode);
-  }, [visibleTypes, sourcesAdded, globeMode]);
+    if (inspectActiveRef.current) {
+      updateInspectVisibility(mapRef.current, visibleTypes);
+    } else {
+      updateLayerVisibility(mapRef.current, visibleTypes);
+    }
+  }, [visibleTypes, sourcesAdded]);
 
   // Update map language on symbol layers
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
-    if (inspectRef.current?._showInspectMap) return;
+    if (inspectActiveRef.current) return;
     const map = mapRef.current;
     const style = map.getStyle();
     if (!style) return;
@@ -333,14 +324,24 @@ export default function Map({
     window.map = mapRef.current;
   });
 
-  // Sync inspect mode with header toggle
+  // Sync inspect mode — swap between styled layers and inspect layers
   useEffect(() => {
-    const inspect = inspectRef.current;
-    if (!inspect || !mapRef.current) return;
-    if (inspectMode !== inspect._showInspectMap) {
-      inspect.toggleInspector();
+    if (!sourcesAdded || !mapRef.current) return;
+    const map = mapRef.current;
+
+    if (inspectMode && !inspectActiveRef.current) {
+      // Entering inspect mode: remove styled layers, add inspect layers
+      removeDefaultLayers(map);
+      addInspectLayers(map, visibleTypesRef.current);
+      inspectActiveRef.current = true;
+    } else if (!inspectMode && inspectActiveRef.current) {
+      // Leaving inspect mode: remove inspect layers, add styled layers
+      removeInspectLayers(map);
+      addAllLayers(map, visibleTypesRef.current).then(() => {
+        inspectActiveRef.current = false;
+      });
     }
-  }, [inspectMode]);
+  }, [inspectMode, sourcesAdded]);
 
   // Toggle globe/mercator projection
   useEffect(() => {
@@ -396,7 +397,9 @@ export default function Map({
           setActiveTab={setActiveTab}
           visibleTypes={visibleTypes}
           setVisibleTypes={setVisibleTypes}
+          defaultVisibleTypes={defaultVisibleTypes}
           inspectMode={inspectMode}
+          zoom={zoom}
           features={features}
           setFeatures={setFeatures}
           activeFeature={activeFeature}
@@ -414,6 +417,7 @@ Map.propTypes = {
   setFeatures: PropTypes.func.isRequired,
   activeFeature: PropTypes.object,
   setActiveFeature: PropTypes.func.isRequired,
+  zoom: PropTypes.number.isRequired,
   setZoom: PropTypes.func.isRequired,
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,

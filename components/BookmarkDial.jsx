@@ -81,13 +81,13 @@ export default function BookmarkDial({ mode }) {
                 : 'translate(-50%, -50%) scale(0)',
               opacity: open ? 1 : 0,
               transition: `transform 0.3s ${i * 0.03}s, opacity 0.2s ${i * 0.03}s`,
-              bgcolor: '#1976d2',
-              color: 'white',
+              bgcolor: isDark ? '#000000' : '#ffffff',
+              color: isDark ? '#ffffff' : '#000000',
               fontWeight: 600,
               cursor: 'pointer',
               maxWidth: 'none',
               '& .MuiChip-label': { overflow: 'visible' },
-              '&:hover': { bgcolor: '#1565c0' },
+              '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
             }}
           />
         );

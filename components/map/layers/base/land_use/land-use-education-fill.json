@@ -1,0 +1,36 @@
+{
+  "id": "land-use-education-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_use",
+  "minzoom": 12,
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:selectable": true,
+    "overture:item": "education"
+  },
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "==",
+      [
+        "get",
+        "subtype"
+      ],
+      "education"
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.land_use.education.color.fill",
+    "fill-outline-color": "$base.land_use.education.color.fillOutline"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "land-cover-moss-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_cover",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_cover",
+    "overture:group": "base-land-cover",
+    "overture:selectable": true,
+    "overture:item": "moss"
+  },
+  "filter": [
+    "==",
+    [
+      "get",
+      "subtype"
+    ],
+    "moss"
+  ],
+  "paint": {
+    "fill-color": "$base.land_cover.color.fill.moss",
+    "fill-opacity": "$base.land_cover.opacity",
+    "fill-outline-color": "$globals.color.transparent"
+  }
+}

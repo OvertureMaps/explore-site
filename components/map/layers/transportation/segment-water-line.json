@@ -1,0 +1,35 @@
+{
+  "id": "segment-water-line",
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "minzoom": 12,
+  "filter": [
+    "==",
+    ["get", "subtype"],
+    "water"
+  ],
+  "paint": {
+    "line-color": "$transportation.water.color.line",
+    "line-width": [
+      "interpolate",
+      ["exponential", 1.5],
+      ["zoom"],
+      10, 0.2,
+      12, 0.5,
+      16, 2,
+      20, 4
+    ]
+  },
+  "layout": {
+    "line-cap": "round",
+    "line-join": "round"
+  },
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-water",
+    "overture:selectable": true,
+    "overture:item": "waterway"
+  }
+}

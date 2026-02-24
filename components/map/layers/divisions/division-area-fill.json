@@ -1,0 +1,38 @@
+{
+  "id": "division-area-fill",
+  "type": "fill",
+  "source": "divisions",
+  "source-layer": "division_area",
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_area",
+    "overture:group": "divisions-areas",
+    "overture:selectable": true,
+    "overture:item": "division_area"
+  },
+  "minzoom": 2,
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "paint": {
+    "fill-color": "$divisions.division_area.color.fill",
+    "fill-outline-color": "$divisions.division_area.color.fillOutline",
+    "fill-opacity": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      2,
+      0.05,
+      8,
+      0.15
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "segment-road-other-label",
+  "type": "symbol",
+  "source": "transportation",
+  "source-layer": "segment",
+  "minzoom": 16,
+  "filter": [
+    "all",
+    ["==", ["get", "subtype"], "road"],
+    ["!", ["in", ["get", "class"], ["literal", ["motorway", "trunk", "primary", "secondary", "tertiary", "residential", "living_street"]]]]
+  ],
+  "layout": {
+    "text-field": ["get", "@name"],
+    "text-font": ["$globals.font.noto-sans-regular"],
+    "text-size": ["interpolate", ["linear"], ["zoom"], 16, 6, 18, 10],
+    "text-letter-spacing": 0.1,
+    "text-max-angle": 30,
+    "text-transform": "uppercase",
+    "symbol-placement": "line",
+    "symbol-spacing": ["interpolate", ["linear"], ["zoom"], 12, 150, 18, 450, 22, 1500]
+  },
+  "paint": {
+    "text-color": "$transportation.road.color.text",
+    "text-halo-color": "$transportation.road.color.textHalo",
+    "text-halo-width": 1
+  },
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-roads",
+    "overture:selectable": true,
+    "overture:item": "road-other"
+  }
+}

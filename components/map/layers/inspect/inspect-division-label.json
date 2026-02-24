@@ -1,0 +1,48 @@
+{
+  "id": "inspect-division-label",
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division",
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:group": "divisions-labels",
+    "overture:selectable": false
+  },
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-font": [
+      "$globals.font.noto-sans-regular"
+    ],
+    "text-size": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      3,
+      10,
+      10,
+      16
+    ],
+    "text-max-width": 8,
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.division.color.text",
+    "text-halo-color": "$inspect.division.color.textHalo",
+    "text-halo-width": 1.5
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "inspect-address-circle",
+  "type": "circle",
+  "source": "addresses",
+  "source-layer": "address",
+  "metadata": {
+    "overture:theme": "addresses",
+    "overture:type": "address",
+    "overture:group": "addresses",
+    "overture:selectable": true
+  },
+  "minzoom": 14,
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "paint": {
+    "circle-color": "$inspect.address.color.circle",
+    "circle-radius": 3,
+    "circle-stroke-width": 1,
+    "circle-stroke-color": "$inspect.address.color.circleStroke"
+  }
+}

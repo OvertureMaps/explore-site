@@ -1,0 +1,26 @@
+{
+  "id": "land-cover-mangrove-outline",
+  "type": "line",
+  "source": "base",
+  "source-layer": "land_cover",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_cover",
+    "overture:group": "base-land-cover",
+    "overture:selectable": true,
+    "overture:item": "mangrove"
+  },
+  "filter": [
+    "==",
+    [
+      "get",
+      "subtype"
+    ],
+    "mangrove"
+  ],
+  "paint": {
+    "line-color": "$base.land_cover.color.fill.mangrove",
+    "line-blur": 1,
+    "line-width": 1.1
+  }
+}

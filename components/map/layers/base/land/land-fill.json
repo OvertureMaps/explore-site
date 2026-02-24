@@ -4,21 +4,31 @@
   "source": "base",
   "source-layer": "land",
   "filter": [
-    "==",
+    "all",
+    ["==", ["geometry-type"], "Polygon"],
     [
-      "geometry-type"
-    ],
-    "Polygon"
+      "step",["zoom"],
+      ["!",["has","subtype"]],
+      5,
+      ["any",
+        ["==",["get","class"],"land"],
+        ["!",["has","subtype"]]
+      ]
+    ]
   ],
   "paint": {
-    "fill-color": "$base.land.color.fill",
-    "fill-opacity": 0.5,
+    "fill-color": [
+      "interpolate", ["linear"], ["zoom"],
+      0, "$base.land.color.fill.low",
+      8, "$base.land.color.fill.high"
+    ],
     "fill-outline-color": "$base.land.color.fillOutline"
   },
-  "layout": {},
   "metadata": {
     "overture:theme": "base",
     "overture:type": "land",
-    "overture:pass": "geometry"
+    "overture:group": "base-land",
+    "overture:selectable": true,
+    "overture:item": "land"
   }
 }

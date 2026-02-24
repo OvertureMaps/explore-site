@@ -11,6 +11,7 @@ import RefreshIcon from "@/components/icons/icon-refresh.svg?react";
 import Tooltip from "@mui/material/Tooltip";
 import "./DownloadButton.css";
 import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
+import { getVisibleTypes } from "@/lib/LayerManager";
 
 const ZOOM_BOUND = 15;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -64,7 +65,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
       set_panic_hook();
 
       // Get the download catalog - now this is async
-      const downloadCatalog = await getDownloadCatalog(bbox, visibleTypes);
+      const downloadCatalog = await getDownloadCatalog(bbox, getVisibleTypes(visibleTypes));
 
       console.log(downloadCatalog);
 

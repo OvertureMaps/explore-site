@@ -1,0 +1,23 @@
+{
+  "id": "inspect-water-line",
+  "type": "line",
+  "source": "base",
+  "source-layer": "water",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:group": "base-water",
+    "overture:selectable": true
+  },
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "line-color": "$inspect.water.color.line",
+    "line-width": 1.5
+  }
+}

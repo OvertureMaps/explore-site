@@ -5,17 +5,21 @@ import Header from "@/components/nav/Header";
 import Map from "@/components/MapView";
 import MapContext from "@/lib/MapContext";
 import { keepTheme, setTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material";
-import { modes } from "@/components/map";
+import { defaultLayerSpecs } from "@/components/map";
 
-// Default layer lists per mode
-const GLOBE_DEFAULTS = Object.entries(modes.default)
-  .flatMap(([, themeData]) => Object.entries(themeData)
-    .filter(([k, v]) => k !== "display" && v.globeDefault)
-    .map(([k]) => k));
-const FLAT_DEFAULTS = Object.entries(modes.default)
-  .flatMap(([, themeData]) => Object.keys(themeData).filter((k) => k !== "display"));
+// All unique overture:item values from layer specs
+const ALL_ITEMS = [...new Set(
+  defaultLayerSpecs
+    .map((spec) => spec.metadata?.["overture:item"])
+    .filter(Boolean)
+)];
+
+// Items disabled by default
+const DEFAULT_OFF = new Set(["place_poi", "place_heat", "building_footprint", "building_part_footprint"]);
+
+const DEFAULT_VISIBLE = ALL_ITEMS.filter((id) => !DEFAULT_OFF.has(id));
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -29,13 +33,7 @@ export default function Home() {
   const [mapInstance, setMapInstance] = useState(null);
   const [language, setLanguage] = useState("mul");
 
-  const [visibleTypes, setVisibleTypes] = useState(GLOBE_DEFAULTS);
-
-  const isFirstRender = useRef(true);
-  useEffect(() => {
-    if (isFirstRender.current) { isFirstRender.current = false; return; }
-    setVisibleTypes(globeMode ? GLOBE_DEFAULTS : FLAT_DEFAULTS);
-  }, [globeMode]);
+  const [visibleTypes, setVisibleTypes] = useState(DEFAULT_VISIBLE);
 
   useEffect(() => {
     keepTheme(setModeName);
@@ -81,11 +79,13 @@ export default function Home() {
             language={language}
             features={features}
             setFeatures={setFeatures}
+            zoom={zoom}
             setZoom={setZoom}
             setActiveFeature={setActiveFeature}
             activeFeature={activeFeature}
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
+            defaultVisibleTypes={DEFAULT_VISIBLE}
             onMapReady={setMapInstance}
             inspectMode={inspectMode}
             globeMode={globeMode}
