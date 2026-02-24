@@ -8,6 +8,7 @@ export default function GithubButton() {
       rel="noopener noreferrer"
       className="navbar__item github-link"
       aria-label="GitHub repository"
+      title="GitHub repository"
     ></a>
   );
 }

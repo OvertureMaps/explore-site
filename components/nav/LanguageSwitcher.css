@@ -1,0 +1,29 @@
+.language-switcher {
+  display: flex;
+  align-items: center;
+  margin-right: 11px;
+
+  .language-btn {
+    color: var(--ifm-navbar-link-color);
+    font-size: 0.8rem;
+    text-transform: none;
+    padding: 4px 10px;
+    min-width: auto;
+    white-space: nowrap;
+  }
+
+  .language-btn:hover {
+    background: var(--ifm-color-emphasis-200);
+  }
+
+  .mui-caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 6px;
+    vertical-align: middle;
+    border-top: 4px solid;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+  }
+}
