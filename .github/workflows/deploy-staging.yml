@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::763944545891:role/pages-staging-oidc-overturemaps
           aws-region: us-west-2
