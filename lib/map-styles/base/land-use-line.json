@@ -1,0 +1,39 @@
+{
+  "id": "land-use-line",
+  "type": "line",
+  "source": "base",
+  "source-layer": "land_use",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "minzoom": 13,
+  "paint": {
+    "line-color": "$base.land_use_line.color",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      12,
+      1,
+      13,
+      2
+    ]
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:pass": "geometry",
+    "overture:color": "$base.land_use_line.color",
+    "overture:activeColor": "$base.land_use_line.activeColor",
+    "overture:activeOnly": true
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "global": {
+    "colors": {
+      "background": "hsla(0, 0%, 100%, 1)",
+      "textHalo": "hsla(0, 100%, 100%, 1)"
+    },
+    "fonts": {
+      "regular": ["Noto Sans Regular"],
+      "sizeSm": 10,
+      "sizeMd": 11
+    }
+  },
+  "addresses": {
+    "address": {
+      "color": "hsla(210, 15%, 65%, 1)",
+      "activeColor": "hsla(43, 100%, 42%, 0.5)",
+      "textColor": "hsla(43, 100%, 42%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    }
+  },
+  "base": {
+    "bathymetry": {
+      "color": "hsla(195, 71%, 80%, 1)",
+      "activeColor": "hsla(195, 77%, 85%, 1)",
+      "textColor": "black",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "infrastructure": {
+      "color": "hsla(209, 15%, 58%, 1)",
+      "activeColor": "hsla(210, 15%, 65%, 0.25)",
+      "outlineColor": "hsla(209, 13%, 52%, 0.5)",
+      "textColor": "hsla(207, 17%, 37%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "land": {
+      "color": "hsla(31, 100%, 90%, 0.33)",
+      "activeColor": "hsla(30, 96%, 79%, 0.66)",
+      "outlineColor": "hsla(31, 100%, 90%)",
+      "textColor": "hsla(28, 100%, 46%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "land_cover": {
+      "color": [
+        "match",
+        ["get", "subtype"],
+        "moss", "hsla(98, 19%, 80%, 1)",
+        "forest", "hsla(98, 39%, 80%, 1)",
+        "grass", "hsla(98, 39%, 84%, 1)",
+        "crop", "hsla(98, 39%, 88%, 1)",
+        "shrub", "hsla(80, 39%, 86%, 1)",
+        "barren", "hsla(62, 39%, 84%, 1)",
+        "wetland", "hsla(194, 39%, 80%, 1)",
+        "mangrove", "hsla(194, 39%, 84%, 1)",
+        "urban", "hsla(213, 19%, 89%, 1)",
+        "snow", "hsla(100, 0%, 96%, 1)",
+        "hsla(0, 0%, 0%, 0)"
+      ],
+      "activeColor": "hsla(183, 76%, 30%, 0.25)",
+      "outlineColor": "hsla(208, 15%, 78%, 0)",
+      "textColor": "hsla(222, 49%, 91%, 0)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "land_use": {
+      "color": "hsla(222, 49%, 91%, 1)",
+      "activeColor": "hsla(222, 49%, 91%, 1)",
+      "outlineColor": "hsla(222, 49%, 81%, 1)",
+      "textColor": "hsla(254, 100%, 66%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "land_use_line": {
+      "color": "hsla(222, 49%, 81%, 1)",
+      "activeColor": "hsla(222, 49%, 91%, 1)"
+    },
+    "water": {
+      "color": "hsla(195, 71%, 90%, 1)",
+      "activeColor": "hsla(195, 77%, 85%, 1)",
+      "outlineColor": "hsla(195, 71%, 89%, 1)",
+      "textColor": "hsla(209, 100%, 49%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    }
+  },
+  "buildings": {
+    "building": {
+      "color": "hsla(210, 16%, 82%, 0.2)",
+      "activeColor": "hsla(344, 100%, 66%, 0.4)",
+      "textColor": "hsla(341, 91%, 32%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "building_part": {
+      "color": "hsla(210, 16%, 82%, 0.2)",
+      "activeColor": "hsla(344, 100%, 66%, 0.4)",
+      "textColor": "hsla(341, 91%, 32%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    }
+  },
+  "divisions": {
+    "division_area": {
+      "color": "hsla(213, 23%, 92%, 1)",
+      "activeColor": "hsla(17, 17%, 92%, 1)",
+      "outlineColor": "hsla(208, 15%, 78%, 1)",
+      "textColor": "hsla(0, 0%, 0%, 0)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "division_boundary": {
+      "color": "hsla(210, 16%, 82%, 1)",
+      "activeColor": "hsla(210, 16%, 82%, 1)",
+      "textColor": "hsla(201, 29%, 15%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "division": {
+      "textSize": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        2, 10,
+        10, 14,
+        12, 12,
+        16, 16
+      ]
+    }
+  },
+  "places": {
+    "place": {
+      "color": "hsla(226, 100%, 75%, 1)",
+      "activeColor": "hsla(243, 100%, 61%, 0.25)",
+      "textColor": "hsla(249, 83%, 39%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    }
+  },
+  "transportation": {
+    "connector": {
+      "color": "hsla(210, 16%, 82%, 0.5)",
+      "activeColor": "hsla(209, 100%, 72%, 0.5)",
+      "textColor": "hsla(214, 100%, 40%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    },
+    "segment": {
+      "color": "hsla(210, 16%, 82%, 0.4)",
+      "activeColor": "hsla(209, 100%, 72%, 0.5)",
+      "textColor": "hsla(214, 100%, 40%, 1)",
+      "textHaloColor": "hsla(0, 100%, 100%, 1)"
+    }
+  }
+}

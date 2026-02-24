@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useMap } from "react-map-gl/maplibre";
+import { useMapInstance } from "@/lib/MapContext";
 import { useEffect, useState } from "react";
 import { getDownloadCatalog } from "@/lib/DownloadCatalog";
 import {
@@ -17,19 +17,20 @@ const ZOOM_BOUND = 15;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
-  const { myMap } = useMap();
+  const map = useMapInstance();
 
   const [loading, setLoading] = useState(false);
   const [showFloater, setShowFloater] = useState(false);
 
   useEffect(() => {
-    if (myMap) {
-      myMap.getBounds();
-      setZoom(myMap.getZoom());
+    if (map) {
+      map.getBounds();
+      setZoom(map.getZoom());
     }
-  }, [myMap, setZoom]);
+  }, [map, setZoom]);
 
   const handleDownloadClick = async () => {
+    if (!map) return;
 
     //TODO: Make this async and parallelize with the startup of the map component, rather than blocking in.
     await initWasm();
@@ -38,7 +39,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     setLoading(true);
     try {
       //Get current map dimensions and convert to bbox
-      const bounds = myMap.getBounds();
+      const bounds = map.getBounds();
       let bbox = [
         bounds.getWest(),  //xmin
         bounds.getSouth(), //ymin
@@ -108,8 +109,8 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
                   var downloadLink = document.createElement("a");
                   downloadLink.href = url;
 
-                  const center = myMap.getCenter();
-                  const zoom = myMap.getZoom();
+                  const center = map.getCenter();
+                  const zoom = map.getZoom();
                   downloadLink.download = `overture-${wasmTable.type}-${zoom}-${center.lat}-${center.lng}.geojson`;
 
                   document.body.appendChild(downloadLink);

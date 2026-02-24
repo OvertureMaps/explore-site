@@ -1,37 +1,30 @@
-import {
-  Map as MapLibreMap,
-  NavigationControl,
-  Source,
-  AttributionControl,
-  ScaleControl,
-} from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import * as pmtiles from "pmtiles";
 import maplibregl from "maplibre-gl";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Layer, GeolocateControl } from "react-map-gl/maplibre";
+import { useState, useEffect, useRef } from "react";
 import InspectorPanel from "@/components/inspector_panel/InspectorPanel";
 import PropTypes from "prop-types";
 import "@/components/CustomControls.css";
 import ThemeSelector from "@/components/ThemeSelector";
 import BugIcon from "@/components/icons/icon-bug.svg?react";
 import Navigator from "@/components/navigator/Navigator";
-import { layers } from "@/lib/Layers";
-import ThemeTypeLayer from "@/components/ThemeTypeLayer";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
+import {
+  addSources,
+  addAllLayers,
+  updateLayerVisibility,
+  updateDivisionLabelMode,
+  highlightFeature,
+  getInteractiveLayerIds,
+} from "@/lib/LayerManager";
 
 // Load PMTiles URLs from STAC catalog at module load time
 const pmtilesPromise = loadPmtilesFromStac();
 
-const INITIAL_VIEW_STATE = {
-  latitude: 38.90678,
-  longitude: -77.036495,
-  zoom: 15,
-  bearing: 0,
-  pitch: 0,
-};
+const INITIAL_CENTER = [-77.036495, 38.90678];
+const INITIAL_ZOOM = 15;
 
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
@@ -39,16 +32,6 @@ const MAP_STYLE = {
   glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
   sources: {},
   layers: [],
-};
-
-const ThemeSource = ({ name, url }) => {
-  if (!url) return null;
-  return <Source id={name} type="vector" url={`pmtiles://${url}`} />;
-};
-
-ThemeSource.propTypes = {
-  name: PropTypes.string.isRequired,
-  url: PropTypes.string,
 };
 
 export default function Map({
@@ -63,22 +46,13 @@ export default function Map({
   themeRef,
   visibleTypes,
   setVisibleTypes,
+  onMapReady,
 }) {
-  const mapRef = useRef();
-
-  const [cursor, setCursor] = useState("auto");
+  const mapContainer = useRef(null);
+  const mapRef = useRef(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [pmtilesUrls, setPmtilesUrls] = useState({});
-
-  // Load PMTiles URLs from STAC catalog
-  useEffect(() => {
-    pmtilesPromise.then((urls) => {
-      // Convert Map to object for state
-      const urlsObj = Object.fromEntries(urls);
-      setPmtilesUrls(urlsObj);
-    }).catch((error) => {
-      console.error("Failed to load PMTiles from STAC catalog:", error);
-    });
-  }, []);
+  const [sourcesAdded, setSourcesAdded] = useState(false);
 
   const [activeThemes, setActiveThemes] = useState([
     "places",
@@ -86,93 +60,89 @@ export default function Map({
     "buildings",
     "transportation",
   ]);
-  const [interactiveLayerIds, setInteractiveLayerIds] = useState([]);
 
   const [lastClickedCoords, setLastClickedCoords] = useState();
 
-  // For access of latest value within map events
+  // Refs for latest state to avoid stale closures in map event handlers
   const activeThemesRef = useRef(activeThemes);
   useEffect(() => {
     activeThemesRef.current = activeThemes;
   }, [activeThemes]);
 
-  const syncInteractiveLayerIds = useCallback(() => {
-    const layers = mapRef.current.getStyle().layers;
-    const layersToShow = layers
-      .filter((layer) => {
-        return visibleTypes.indexOf(layer["source-layer"]) >= 0;
-      })
-      .map((layer) => layer.id);
-    setInteractiveLayerIds(layersToShow);
+  const visibleTypesRef = useRef(visibleTypes);
+  useEffect(() => {
+    visibleTypesRef.current = visibleTypes;
   }, [visibleTypes]);
 
-  const onMouseEnter = useCallback(
-    (e) => {
-      if (
-        e.features.some(
-          (f) => visibleTypes.indexOf(f.layer["source-layer"]) >= 0
-        )
-      ) {
-        setCursor("pointer");
-      }
-    },
-    [visibleTypes]
-  );
-  const onMouseLeave = useCallback(() => setCursor("auto"), []);
+  const activeFeatureRef = useRef(null);
 
+  // Load PMTiles URLs from STAC catalog
+  useEffect(() => {
+    pmtilesPromise
+      .then((urls) => {
+        const urlsObj = Object.fromEntries(urls);
+        setPmtilesUrls(urlsObj);
+      })
+      .catch((error) => {
+        console.error("Failed to load PMTiles from STAC catalog:", error);
+      });
+  }, []);
+
+  // Initialize map
   useEffect(() => {
     const protocol = new pmtiles.Protocol();
     maplibregl.addProtocol("pmtiles", protocol.tile);
 
-    return () => {
-      maplibregl.removeProtocol("pmtiles");
-    };
-  }, []);
+    const map = new maplibregl.Map({
+      container: mapContainer.current,
+      style: MAP_STYLE,
+      center: INITIAL_CENTER,
+      zoom: INITIAL_ZOOM,
+      bearing: 0,
+      pitch: 0,
+      hash: true,
+      attributionControl: false,
+    });
 
-  useEffect(() => {
-    window.map = mapRef.current;
-  });
+    map.addControl(new maplibregl.NavigationControl(), "top-right");
+    map.addControl(new maplibregl.GeolocateControl(), "top-right");
+    map.addControl(new maplibregl.ScaleControl(), "bottom-left");
+    map.addControl(
+      new maplibregl.AttributionControl({
+        customAttribution:
+          '<a href="https://openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>, <a href="https://overturemaps.org" target="_blank">Overture Maps Foundation</a>',
+      })
+    );
 
-  const activeFeatureRef = useRef(null);
+    map.on("load", () => {
+      setMapLoaded(true);
+    });
 
-  useEffect(() => {
-    // Remove feature state from previous active feature
-    if (activeFeatureRef.current) {
-      mapRef.current.removeFeatureState({
-        source: activeFeatureRef.current.source,
-        sourceLayer: activeFeatureRef.current.sourceLayer,
-        id: activeFeatureRef.current.id,
-      });
-    }
+    map.on("zoom", () => {
+      setZoom(map.getZoom());
+    });
 
-    // Set feature state for new active feature
-    if (activeFeature) {
-      mapRef.current.setFeatureState(
-        {
-          source: activeFeature.source,
-          sourceLayer: activeFeature.sourceLayer,
-          id: activeFeature.id,
-        },
-        { selected: true }
-      );
-    }
+    // Click handler
+    map.on("click", (e) => {
+      const currentVisibleTypes = visibleTypesRef.current;
+      const interactiveIds = getInteractiveLayerIds(map, currentVisibleTypes);
 
-    activeFeatureRef.current = activeFeature;
-  }, [activeFeature]);
+      const queriedFeatures = interactiveIds.length > 0
+        ? map.queryRenderedFeatures(e.point, { layers: interactiveIds })
+        : [];
 
-  const onClick = useCallback(
-    (event) => {
-      setLastClickedCoords({
-        longitude: event.lngLat.lng,
-        latitude: event.lngLat.lat,
-      });
+      const coords = {
+        longitude: e.lngLat.lng,
+        latitude: e.lngLat.lat,
+      };
+
+      setLastClickedCoords(coords);
 
       const clickedFeatures = [];
       const seenIds = new Set();
 
-      for (const feature of event.features) {
-        if (visibleTypes.indexOf(feature.layer["source-layer"]) >= 0) {
-          // Only add if we haven't seen this ID before
+      for (const feature of queriedFeatures) {
+        if (currentVisibleTypes.indexOf(feature.layer["source-layer"]) >= 0) {
           if (!seenIds.has(feature.properties.id)) {
             clickedFeatures.push(feature);
             seenIds.add(feature.properties.id);
@@ -187,185 +157,97 @@ export default function Map({
         setFeatures([]);
         setActiveFeature(null);
       }
-    },
-    [visibleTypes, setFeatures, setActiveFeature]
-  );
+    });
 
-  const handleZoom = (event) => {
-    setZoom(event.target.getZoom());
-  };
+    // Cursor handler
+    map.on("mousemove", (e) => {
+      const currentVisibleTypes = visibleTypesRef.current;
+      const interactiveIds = getInteractiveLayerIds(map, currentVisibleTypes);
+
+      if (interactiveIds.length === 0) {
+        map.getCanvas().style.cursor = "auto";
+        return;
+      }
+
+      const featuresAtPoint = map.queryRenderedFeatures(e.point, {
+        layers: interactiveIds,
+      });
+
+      map.getCanvas().style.cursor =
+        featuresAtPoint.some(
+          (f) => currentVisibleTypes.indexOf(f.layer["source-layer"]) >= 0
+        )
+          ? "pointer"
+          : "auto";
+    });
+
+    mapRef.current = map;
+    window.map = map;
+    if (onMapReady) onMapReady(map);
+
+    return () => {
+      map.remove();
+      maplibregl.removeProtocol("pmtiles");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Add sources and layers when map is loaded and PMTiles URLs are ready
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current || Object.keys(pmtilesUrls).length === 0) return;
+
+    const map = mapRef.current;
+    addSources(map, pmtilesUrls);
+    addAllLayers(map, activeThemes, visibleTypes, mode);
+    setSourcesAdded(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapLoaded, pmtilesUrls]);
+
+  // Update layer visibility when visibleTypes or activeThemes change
+  useEffect(() => {
+    if (!sourcesAdded || !mapRef.current) return;
+    updateLayerVisibility(mapRef.current, activeThemes, visibleTypes);
+  }, [visibleTypes, activeThemes, sourcesAdded]);
+
+  // Update division label colors on mode change
+  useEffect(() => {
+    if (!sourcesAdded || !mapRef.current) return;
+    updateDivisionLabelMode(mapRef.current, mode);
+  }, [mode, sourcesAdded]);
+
+  // Highlight active feature
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    highlightFeature(mapRef.current, activeFeature, activeFeatureRef.current);
+    activeFeatureRef.current = activeFeature;
+  }, [activeFeature]);
+
+  // Keep window.map in sync
+  useEffect(() => {
+    window.map = mapRef.current;
+  });
 
   return (
     <>
       <div className={`map ${mode} tour-map`}>
-        <MapLibreMap
-          id="myMap"
-          ref={mapRef}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          onLoad={syncInteractiveLayerIds}
-          onClick={onClick}
-          cursor={cursor}
-          hash={true}
-          onZoom={handleZoom}
-          mapStyle={MAP_STYLE}
-          interactiveLayerIds={interactiveLayerIds}
-          initialViewState={INITIAL_VIEW_STATE}
+        <div
+          ref={mapContainer}
           style={{
             position: "fixed",
             width: "100%",
             height: "calc(100vh - 60px)",
           }}
-          attributionControl={false}
-        >
-          <ThemeSource name="base" url={pmtilesUrls["base"]} />
-          <ThemeSource name="buildings" url={pmtilesUrls["buildings"]} />
-          <ThemeSource name="places" url={pmtilesUrls["places"]} />
-          <ThemeSource name="divisions" url={pmtilesUrls["divisions"]} />
-          <ThemeSource name="transportation" url={pmtilesUrls["transportation"]} />
-          <ThemeSource name="addresses" url={pmtilesUrls["addresses"]} />
+        />
 
-          <FeaturePopup
-            coordinates={lastClickedCoords}
-            features={features}
-            onClose={() => setLastClickedCoords(null)}
-            setActiveFeature={setActiveFeature}
-            activeFeature={activeFeature}
-          />
-
-          {[false, true].map((label) => {
-            return layers.map((layerProps, i) => {
-              const {
-                theme,
-                type,
-                color,
-                activeColor,
-                activeOnly,
-                ...otherProps
-              } = layerProps;
-
-              return (
-                <ThemeTypeLayer
-                  key={`${theme}_${type}_${i}`}
-                  {...otherProps}
-                  theme={theme}
-                  type={type}
-                  color={activeThemes.includes(theme)
-                    ? activeColor || color
-                    : color}
-                  visible={
-                    visibleTypes.includes(type) &&
-                    (activeOnly === undefined ||
-                      activeThemes.includes(theme))
-                  }
-                  label={label && activeThemes.includes(theme)}
-                  active={activeThemes.includes(theme)}
-                  activeThemes={activeThemes}
-                  highlightColor={
-                    activeThemes.includes(theme)
-                      ? activeColor
-                        ? color
-                        : undefined
-                      : activeColor
-                  }
-                />
-              );
-            });
-          })}
-          <Layer
-            id="divisions_division"
-            type="symbol"
-            source="divisions"
-            source-layer="division"
-            filter={[
-              "all",
-              ["has", "@name"],
-              [
-                "step",
-                ["zoom"],
-                ["==", "$type", "Point"],
-                2,
-                [
-                  "match",
-                  ["get", "subtype"],
-                  ["country", "dependency"],
-                  true,
-                  false,
-                ],
-                4,
-                [
-                  "match",
-                  ["get", "subtype"],
-                  ["macroregion", "region"],
-                  true,
-                  false,
-                ],
-                8,
-                [
-                  "match",
-                  ["get", "subtype"],
-                  ["macrocounty", "county"],
-                  true,
-                  false,
-                ],
-                10,
-                [
-                  "match",
-                  ["get", "subtype"],
-                  ["county", "localadmin"],
-                  true,
-                  false,
-                ],
-                12,
-                [
-                  "match",
-                  ["get", "subtype"],
-                  [
-                    "localadmin",
-                    "locality",
-                    "borough",
-                    "macrohood",
-                    "neighborhood",
-                    "microhood",
-                  ],
-                  true,
-                  false,
-                ],
-              ],
-            ]}
-            paint={{
-              "text-color":
-                mode === "theme-light" ? "hsla(201, 29%, 15%, 1)" : "white",
-              "text-halo-color": mode === "theme-light" ? "white" : "black",
-              "text-halo-width": 1,
-            }}
-            layout={{
-              "text-font": ["Noto Sans Regular"],
-              "text-field": ["get", "@name"],
-              "text-size": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                2,
-                10,
-                10,
-                14,
-                12,
-                12,
-                16,
-                16,
-              ],
-              "text-line-height": 1,
-              "text-padding": 6,
-              "text-max-width": 4,
-            }}
-          />
-
-          <NavigationControl position="top-right"></NavigationControl>
-          <GeolocateControl />
-          <ScaleControl position="bottom-left" />
-          <AttributionControl customAttribution='<a href="https://openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>, <a href="https://overturemaps.org" target="_blank">Overture Maps Foundation</a>' />
-        </MapLibreMap>
+        <FeaturePopup
+          map={mapRef.current}
+          coordinates={lastClickedCoords}
+          features={features}
+          onClose={() => setLastClickedCoords(null)}
+          setActiveFeature={setActiveFeature}
+          activeFeature={activeFeature}
+        />
 
         <div className="custom-controls">
           <Navigator
@@ -423,4 +305,5 @@ Map.propTypes = {
   themeRef: PropTypes.object.isRequired,
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,
+  onMapReady: PropTypes.func,
 };

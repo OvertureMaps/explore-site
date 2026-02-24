@@ -1,0 +1,26 @@
+{
+  "id": "water-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "paint": {
+    "fill-color": "$base.water.color",
+    "fill-opacity": 0.5,
+    "fill-outline-color": "$base.water.outlineColor"
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:pass": "geometry",
+    "overture:color": "$base.water.color",
+    "overture:activeColor": "$base.water.activeColor"
+  }
+}

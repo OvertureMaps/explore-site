@@ -3,7 +3,7 @@
 import "@/components/CustomControls.css";
 import Header from "@/components/nav/Header";
 import Map from "@/components/Map";
-import { MapProvider } from "react-map-gl/maplibre";
+import MapContext from "@/lib/MapContext";
 import { getTheme, keepTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
 import { useState, useEffect, useRef } from "react";
 import Tour from "@/components/Tour";
@@ -23,6 +23,7 @@ export default function Home() {
   const [zoom, setZoom] = useState(0);
   const themeRef = useRef(null);
   const [activeFeature, setActiveFeature] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
 
   const startTour = () => {
     setOpen(false);
@@ -76,7 +77,7 @@ export default function Home() {
           visibleTypes={visibleTypes}
           setVisibleTypes={setVisibleTypes}
         />
-        <MapProvider>
+        <MapContext.Provider value={mapInstance}>
           <Header
             mode={modeName}
             setMode={setModeName}
@@ -96,8 +97,9 @@ export default function Home() {
             activeFeature={activeFeature}
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
+            onMapReady={setMapInstance}
           />
-        </MapProvider>
+        </MapContext.Provider>
       </ThemeProvider>
     </div>
   );

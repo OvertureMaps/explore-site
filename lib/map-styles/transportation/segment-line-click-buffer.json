@@ -1,0 +1,36 @@
+{
+  "id": "segment-line-click-buffer",
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "LineString"
+  ],
+  "paint": {
+    "line-opacity": 0,
+    "line-color": "black",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      12,
+      6,
+      13,
+      9
+    ]
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:pass": "geometry"
+  }
+}
