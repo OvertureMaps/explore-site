@@ -16,30 +16,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout 📥
+    - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Use Node.js 20.12.0 ⚙️
+    - name: Use Node.js 20
       uses: actions/setup-node@v4
       with:
         node-version: 20
 
-    - name: Install 🎯
-      run: cd site; npm install
+    - name: Install
+      run: npm install
 
-    - name: Lint 🧹
-      run: cd site; npm run lint
+    - name: Lint
+      run: npm run lint
 
-    - name: Build 🏃
-      run: cd site; npm run build
+    - name: Test
+      run: npm test
+
+    - name: Build
+      run: npm run build
       env:
-        BASE_ARIA_URL: ${{ github.event.repository.name }}/pr/${{ github.event.number }}
+        BASEURL: ${{ github.event.repository.name }}/pr/${{ github.event.number }}
 
-    - name: Upload artifacts 📤
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifact
-        path: site/dist
+        path: out
         if-no-files-found: error
 
   deploy:
@@ -51,13 +54,13 @@ jobs:
       url: https://staging.overturemaps.org/${{ github.event.repository.name }}/pr/${{ github.event.number }}/index.html
 
     steps:
-      - name: Configure AWS credentials 🔐
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::763944545891:role/pages-staging-oidc-overturemaps
           aws-region: us-west-2
 
-      - name: Download artifacts 📥
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-artifact

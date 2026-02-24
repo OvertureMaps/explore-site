@@ -15,21 +15,74 @@ The data accessible through the site is drawn from the [Overture Maps Foundation
 
 ## For developers
 
-Running the site requires installation of:
+### Prerequisites
 
-- [Node.js](https://nodejs.org/en/download/package-manager)
-- [vite](https://vitejs.dev/guide/)
-- [eslint](https://eslint.org/docs/latest/use/getting-started)
+- [Node.js](https://nodejs.org/en/download/package-manager) (v20+)
+- [Volta](https://volta.sh/) is configured in `package.json` and recommended for automatic Node version management
 
-Once there prerequisites are installed, execute the `npm run` command to understand the run configurations:
+### Getting started
 
-- dev
-- build
-- lint
-- aws_deploy
-- preview
+```bash
+npm install
+npm run dev
+```
 
-Try it out! For example, executing `npm run dev` will allow you to view the site in your preferred browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Available scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the development server |
+| `npm run build` | Build static export to `out/` |
+| `npm start` | Start the Next.js production server |
+| `npm run preview` | Serve the static export from `out/` locally |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run unit tests |
+| `npm run test:ci` | Run tests in CI mode |
+
+### Testing
+
+Tests use [Jest](https://jestjs.io/) with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) and run in a jsdom environment.
+
+```bash
+npm test
+```
+
+Test files are located in `__tests__/` and mock files for SVG and style imports are in `__mocks__/`.
+
+### Tech stack
+
+- **Framework:** [Next.js](https://nextjs.org/) (App Router, static export)
+- **Mapping:** [MapLibre GL JS](https://maplibre.org/) via [react-map-gl](https://visgl.github.io/react-map-gl/)
+- **Tiles:** [PMTiles](https://protomaps.com/docs/pmtiles) served from [STAC catalog](https://stac.overturemaps.org/catalog.json)
+- **UI:** [MUI](https://mui.com/) (Material UI)
+- **Testing:** [Jest](https://jestjs.io/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+
+### Deployment
+
+- **Production:** Pushes to `main` are automatically built and deployed to [GitHub Pages](https://explore.overturemaps.org/).
+- **Staging:** Pull requests against `main` are built and deployed to an AWS S3/CloudFront staging environment.
+
+Both workflows run linting and tests before deploying.
+
+### Project structure
+
+```
+app/            Next.js App Router (layout, page, global CSS)
+components/     React components
+  nav/          Header, download, dark mode toggle
+  inspector_panel/  Feature property inspector
+  navigator/    Bookmark locations
+  icons/        SVG icons
+lib/            Shared utilities and data
+  Layers.js     Layer definitions
+  stacService.js  STAC catalog integration
+  themeUtils.js   Dark/light mode
+__tests__/      Unit tests
+__mocks__/      Jest mocks (SVG, styles)
+public/         Static assets
+```
 
 ## License
 
