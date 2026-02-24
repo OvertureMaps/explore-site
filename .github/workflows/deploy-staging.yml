@@ -39,7 +39,7 @@ jobs:
         BASEURL: ${{ github.event.repository.name }}/pr/${{ github.event.number }}
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: build-artifact
         path: out
