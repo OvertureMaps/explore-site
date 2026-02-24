@@ -40,8 +40,9 @@
   background: var(--ifm-color-emphasis-200);
 }
 
-.bug-report-link svg {
+.bug-report-link .material-symbols-outlined {
   color: var(--ifm-font-color-base);
+  font-size: 20px;
 }
 
 .inspect-toggle {
@@ -72,11 +73,12 @@
   background: var(--ifm-color-primary-dark);
 }
 
-.inspect-toggle svg {
+.inspect-toggle .material-symbols-outlined {
   color: var(--ifm-font-color-base);
+  font-size: 20px;
 }
 
-.inspect-toggle.active svg {
+.inspect-toggle.active .material-symbols-outlined {
   color: #fff;
 }
 
@@ -108,11 +110,12 @@
   background: var(--ifm-color-primary-dark);
 }
 
-.globe-toggle svg {
+.globe-toggle .material-symbols-outlined {
   color: var(--ifm-font-color-base);
+  font-size: 20px;
 }
 
-.globe-toggle.active svg {
+.globe-toggle.active .material-symbols-outlined {
   color: #fff;
 }
 

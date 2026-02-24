@@ -26,6 +26,19 @@
     max-height: 380px;
     width: 70%;
   }
+}
+
+/* In-drawer variant — no shadow/border/bg, fill width */
+.inspector-panel.in-drawer {
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 8px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
 
   table {
     background-color: rgba(255, 255, 255, 0.95);
@@ -107,15 +120,3 @@ div.panel-row {
   justify-content: space-between;
 }
 
-div.panel-row.theme .actions {
-  display: flex;
-}
-
-div.panel-row.theme .actions .pin {
-  margin-right: 10px;
-  height: 10px;
-}
-
-div.panel-row.theme .actions .pin:hover {
-  cursor: pointer;
-}

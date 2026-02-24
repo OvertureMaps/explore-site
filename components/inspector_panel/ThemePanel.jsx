@@ -3,8 +3,6 @@ import TableRow from "@/components/inspector_panel/TableRow";
 import "./ThemePanel.css";
 import IndentIcon from "@/components/icons/icon-indent.svg?react";
 import InfoToolTip from "@/components/inspector_panel/InfoToolTip";
-import PushPinIcon from "@mui/icons-material/PushPin";
-import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import SourcesRow from "@/components/inspector_panel/SourcesRow";
 import NestedPropertyRow from "@/components/inspector_panel/NestedPropertyRow";
 
@@ -22,7 +20,7 @@ const sharedProperties = [
   "version",
 ];
 
-function ThemePanel({ mode, entity, tips, activeThemes, setActiveThemes }) {
+function ThemePanel({ mode, entity, tips }) {
   return (
     <div className="theme-panel">
       {entity["id"] ? (
@@ -45,31 +43,11 @@ function ThemePanel({ mode, entity, tips, activeThemes, setActiveThemes }) {
           <strong>theme: </strong>
           {entity["theme"]}
         </div>
-        <div className="actions">
-          <div
-            className="pin"
-            onClick={() => {
-              if (activeThemes.includes(entity["theme"])) {
-                setActiveThemes(
-                  activeThemes.filter((t) => t !== entity["theme"])
-                );
-              } else {
-                setActiveThemes(activeThemes.concat(entity["theme"]));
-              }
-            }}
-          >
-            {activeThemes.includes(entity["theme"]) ? (
-              <PushPinIcon />
-            ) : (
-              <PushPinOutlinedIcon />
-            )}
-          </div>
-          <InfoToolTip
-            mode={mode}
-            content={tips.theme}
-            target={"theme-theme-tip"}
-          />
-        </div>
+        <InfoToolTip
+          mode={mode}
+          content={tips.theme}
+          target={"theme-theme-tip"}
+        />
       </div>
       <div className="panel-row type">
         <div>
@@ -163,8 +141,6 @@ ThemePanel.propTypes = {
   mode: PropTypes.string.isRequired,
   entity: PropTypes.object.isRequired,
   tips: PropTypes.object.isRequired,
-  activeThemes: PropTypes.array.isRequired,
-  setActiveThemes: PropTypes.func.isRequired,
 };
 
 export default ThemePanel;

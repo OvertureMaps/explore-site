@@ -22,6 +22,7 @@
     "@mui/base": "^5.0.0-beta.40",
     "@mui/icons-material": "^5.15.21",
     "@mui/material": "^5.15.20",
+    "@mui/x-tree-view": "^8.27.2",
     "apache-arrow": "^15.0.2",
     "iconoir-react": "^7.11.0",
     "infima": "0.2.0-alpha.43",
@@ -32,7 +33,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-floater": "^0.9.3",
-    "react-joyride": "^2.8.2",
     "stac-js": "^0.1.9"
   },
   "devDependencies": {
