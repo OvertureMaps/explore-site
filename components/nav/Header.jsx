@@ -1,60 +1,94 @@
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import DownloadButton from "@/components/nav/DownloadButton";
 import OvertureWordmark from "@/components/nav/OvertureWordmark";
 import DarkModeToggle from "@/components/nav/DarkModeToggle";
 import LanguageSwitcher from "@/components/nav/LanguageSwitcher";
-import PropTypes from "prop-types";
+import ShareButton from "@/components/nav/ShareButton";
 import GithubButton from "@/components/nav/GithubButton";
+import PropTypes from "prop-types";
 
 export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, language, setLanguage, inspectMode, setInspectMode, globeMode, setGlobeMode }) {
+  const isDark = mode === "theme-dark";
+
   return (
-    <nav aria-label="Main" className="navbar navbar--fixed-top">
-      <div className="navbar__inner">
-        <div className="navbar__items">
-          <OvertureWordmark />
-          <a
-            aria-current="page"
-            className="navbar__item navbar__link"
+    <AppBar
+      position="fixed"
+      elevation={3}
+      sx={{
+        bgcolor: isDark ? "#1e1e1e" : "#ffffff",
+        color: isDark ? "#fff" : "#213547",
+        zIndex: 1100,
+      }}
+    >
+      <Toolbar variant="dense" sx={{ minHeight: 60 }}>
+        <OvertureWordmark />
+        <Box sx={{ flexGrow: 1 }} />
+        <GithubButton mode={mode} />
+        <Tooltip title="Documentation">
+          <IconButton
             href="https://docs.overturemaps.org/"
             target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Documentation"
+            sx={{ color: "inherit" }}
           >
-            Docs
-          </a>
-        </div>
-        <div className="navbar__items navbar__items--right">
-          <GithubButton />
-          <a
+            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>docs</span>
+          </IconButton>
+        </Tooltip>
+        <ShareButton visibleTypes={visibleTypes} modeName={mode} />
+        <Tooltip title="Report a bug">
+          <IconButton
             href="https://github.com/OvertureMaps/explore-site/issues/new/choose"
             target="_blank"
             rel="noopener noreferrer"
-            className="navbar__item bug-report-link"
             aria-label="Report a bug"
-            title="Report a bug"
+            sx={{ color: "inherit" }}
           >
-            <span className="material-symbols-outlined">bug_report</span>
-          </a>
-          <button
-            className={`navbar__item inspect-toggle${inspectMode ? " active" : ""}`}
+            <span className="material-symbols-outlined" style={{ fontSize: 24 }}>bug_report</span>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Toggle inspect mode">
+          <IconButton
             onClick={() => setInspectMode(!inspectMode)}
             aria-label="Toggle inspect mode"
-            title="Toggle inspect mode"
+            sx={{
+              color: inspectMode ? "#fff" : "inherit",
+              bgcolor: inspectMode ? "primary.main" : "transparent",
+              "&:hover": {
+                bgcolor: inspectMode ? "primary.dark" : (isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"),
+              },
+            }}
           >
-            <span className="material-symbols-outlined">frame_inspect</span>
-          </button>
-          <button
-            className={`navbar__item globe-toggle${globeMode && zoom < 6 ? " active" : ""}`}
-            onClick={() => setGlobeMode(!globeMode)}
-            aria-label="Toggle globe view"
-            title="Toggle globe view"
-            disabled={zoom >= 6}
-          >
-            <span className="material-symbols-outlined">globe_asia</span>
-          </button>
-          <DarkModeToggle mode={mode} setMode={setMode} />
-          <LanguageSwitcher language={language} setLanguage={setLanguage} />
-          <DownloadButton zoom={zoom} mode={mode} setZoom={setZoom} visibleTypes={visibleTypes}/>
-        </div>
-      </div>
-    </nav>
+            <span className="material-symbols-outlined" style={{ fontSize: 24 }}>frame_inspect</span>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Toggle globe view">
+          <span>
+            <IconButton
+              onClick={() => setGlobeMode(!globeMode)}
+              disabled={zoom >= 6}
+              aria-label="Toggle globe view"
+              sx={{
+                color: globeMode && zoom < 6 ? "#fff" : "inherit",
+                bgcolor: globeMode && zoom < 6 ? "primary.main" : "transparent",
+                "&:hover": {
+                  bgcolor: globeMode && zoom < 6 ? "primary.dark" : (isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"),
+                },
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 24 }}>globe_asia</span>
+            </IconButton>
+          </span>
+        </Tooltip>
+        <DarkModeToggle mode={mode} setMode={setMode} />
+        <LanguageSwitcher language={language} setLanguage={setLanguage} />
+        <DownloadButton zoom={zoom} mode={mode} setZoom={setZoom} visibleTypes={visibleTypes} />
+      </Toolbar>
+    </AppBar>
   );
 }
 

@@ -41,7 +41,7 @@
 
   td:first-child strong {
     font-weight: bold;
-    color: var(--ifm-font-color-base);
+    color: inherit;
     font-size: 13px;
   }
 

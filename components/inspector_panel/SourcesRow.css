@@ -24,8 +24,7 @@
 
 .source-divider {
   margin: 2px 0;
-  border-top: 1px solid var(--ifm-table-border-width) solid
-    var(--ifm-table-border-color);
+  border-top: 1px solid #dadde1;
 }
 
 .panel-row.sources {

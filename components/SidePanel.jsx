@@ -53,10 +53,12 @@ export default function SidePanel({
         anchor="left"
         open={drawerOpen}
         sx={{
+          zIndex: 1000,
           "& .MuiDrawer-paper": {
             width: DRAWER_WIDTH,
-            top: 60,
+            top: "60px !important",
             height: "calc(100vh - 60px)",
+            zIndex: 1000,
             bgcolor: isDark ? "#121212" : "#fff",
             color: isDark ? "#fff" : "#000",
             borderRight: isDark

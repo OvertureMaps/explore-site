@@ -1,5 +1,4 @@
 import './globals.css';
-import 'infima/dist/css/default/default.css';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
@@ -17,7 +16,11 @@ export default function RootLayout({ children }) {
       <head>
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bug_report,find_replace,frame_inspect,globe_asia,my_location,zoom_in,zoom_out&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bug_report,docs,find_replace,frame_inspect,globe_asia,my_location,zoom_in,zoom_out&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap"
         />
       </head>
       <body>{children}</body>

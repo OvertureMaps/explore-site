@@ -6,12 +6,16 @@ export default function OvertureWordmark() {
       href="https://overturemaps.org"
       target="_blank"
       rel="noopener noreferrer"
-      className="navbar__brand"
+      className="wordmark"
+      style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "inherit" }}
     >
-      <div className="navbar__logo">
-        <img src={`${basePath}/omf_logo_transparent.png`} alt="Overture Maps Foundation Logo" />
-      </div>
-      <b className="navbar__title tour-homepage">Overture Maps Explorer</b>
+      <img
+        src="/omf_logo_transparent.png"
+        alt="Overture Maps Foundation Logo"
+        className="logo"
+        style={{ height: "2.5em", padding: "0.25em" }}
+      />
+      <b className="tour-homepage" style={{ whiteSpace: "nowrap" }}>Overture Maps Explorer</b>
     </a>
   );
 }

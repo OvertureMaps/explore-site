@@ -79,7 +79,7 @@ export default function Map({
   const [pmtilesUrls, setPmtilesUrls] = useState({});
   const [sourcesAdded, setSourcesAdded] = useState(false);
 
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("layers");
 
   const [lastClickedCoords, setLastClickedCoords] = useState();
@@ -373,6 +373,7 @@ export default function Map({
           ref={mapContainer}
           style={{
             position: "fixed",
+            top: 60,
             left: drawerOpen ? 340 : 0,
             width: drawerOpen ? "calc(100% - 340px)" : "100%",
             height: "calc(100vh - 60px)",
@@ -390,7 +391,7 @@ export default function Map({
         />
 
         <div className="custom-controls">
-          <BookmarkDial />
+          <BookmarkDial mode={mode} />
         </div>
 
         <SidePanel

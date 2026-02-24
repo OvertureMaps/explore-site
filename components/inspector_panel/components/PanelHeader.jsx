@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 function PanelHeader({ title, onClose }) {
   return (
     <div className="panel-header">
-      <h6 className="title">{title}</h6>
+      <h6 className="title" style={{ fontSize: "1.1rem", fontWeight: 600 }}>{title}</h6>
       <button
         className="close-panel-button"
         onClick={onClose}

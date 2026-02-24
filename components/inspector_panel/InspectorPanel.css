@@ -92,8 +92,7 @@
 
 .theme-light .inspector-panel {
   table {
-    scrollbar-color: var(--ifm-color-secondary-darker)
-      var(--ifm-color-secondary-light);
+    scrollbar-color: #a0a0a0 #f0f0f0;
   }
 }
 
@@ -111,7 +110,7 @@ button.close-panel-button:active {
 }
 
 button.close-panel-button:hover {
-  background: var(--ifm-color-secondary-dark);
+  background: #d4d4d4;
 }
 
 div.panel-row {
