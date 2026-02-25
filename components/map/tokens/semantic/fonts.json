@@ -1,0 +1,37 @@
+{
+  "divisions": {
+    "division": {
+      "font": ["$globals.font.pt-mono.regular"],
+      "country": {
+        "font": {
+          "prominent": ["$globals.font.noto-sans-semicondensed.bold"],
+          "regular": ["$globals.font.noto-sans-semicondensed.regular"]
+        }
+      },
+      "region": {
+        "font": {
+          "prominent": ["$globals.font.noto-sans-semicondensed.bold"],
+          "regular": ["$globals.font.noto-sans-semicondensed.regular"]
+        }
+      },
+      "county": {
+        "font": {
+          "prominent": ["$globals.font.noto-sans-semicondensed.bold"],
+          "regular": ["$globals.font.noto-sans-semicondensed.regular"]
+        }
+      },
+      "locality": {
+        "font": {
+          "prominent": ["$globals.font.noto-sans-semicondensed.bold"],
+          "regular": ["$globals.font.noto-sans-semicondensed.medium"]
+        }
+      },
+      "localadmin_local": {
+        "font": {
+          "prominent": ["$globals.font.noto-sans-semicondensed.medium"],
+          "regular": ["$globals.font.noto-sans-semicondensed.regular"]
+        }
+      }
+    }
+  }
+}

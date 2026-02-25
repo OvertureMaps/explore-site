@@ -1,0 +1,24 @@
+{
+  "id": "water-intermittent-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "all",
+    ["==", ["geometry-type"], "Polygon"],
+    ["has", "subtype"],
+    ["has", "is_intermittent"]
+  ],
+  "paint": {
+    "fill-color": "$base.water.intermittent.color.fill",
+    "fill-opacity": 0.25,
+    "fill-outline-color": "$base.water.intermittent.color.fillOutline"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:group": "base-land",
+    "overture:selectable": true,
+    "overture:item": "lakes-rivers"
+  }
+}

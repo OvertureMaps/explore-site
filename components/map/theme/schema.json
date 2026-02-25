@@ -1,0 +1,1739 @@
+{
+  "$generated": "2026-02-25",
+  "$source": "https://github.com/OvertureMaps/schema",
+  "$release": "v1.16.0",
+  "defs": {
+    "root": {
+      "address": {
+        "type": "object"
+      },
+      "allNames": {
+        "type": "object"
+      },
+      "commonNames": {
+        "type": "object",
+        "description": "The common translations of the name."
+      },
+      "featureType": {
+        "type": "string",
+        "enum": [
+          "address",
+          "bathymetry",
+          "building",
+          "connector",
+          "division",
+          "division_area",
+          "division_boundary",
+          "infrastructure",
+          "land",
+          "land_cover",
+          "land_use",
+          "building_part",
+          "place",
+          "segment",
+          "water"
+        ],
+        "description": "Specific feature type within the theme"
+      },
+      "featureUpdateTime": {
+        "type": "string",
+        "pattern": "^([1-9]\\d{3})-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])T([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(\\.\\d{1,3})?(Z|[-+]([01]\\d|2[0-3]):[0-5]\\d)$",
+        "format": "date-time",
+        "description": "Timestamp when the feature was last updated"
+      },
+      "featureVersion": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Version number of the feature, incremented in each Overture release where the geometry or attributes of this feature changed."
+      },
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(\\S.*)?\\S$",
+        "description": "A feature ID. This may be an ID associated with the Global Entity Reference System (GERS) if—and-only-if the feature represents an entity that is part of GERS."
+      },
+      "iso3166_1Alpha2CountryCode": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2,
+        "pattern": "^[A-Z]{2}$",
+        "description": "ISO 3166-1 alpha-2 country code."
+      },
+      "iso3166_2SubdivisionCode": {
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 6,
+        "pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$",
+        "description": "ISO 3166-2 principal subdivision code."
+      },
+      "language": {
+        "type": "string",
+        "pattern": "^(?:(?:[A-Za-z]{2,3}(?:-[A-Za-z]{3}){0,3}?)|(?:[A-Za-z]{4,8}))(?:-[A-Za-z]{4})?(?:-[A-Za-z]{2}|[0-9]{3})?(?:-(?:[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(?:-[A-WY-Za-wy-z0-9](?:-[A-Za-z0-9]{2,8})+)*$",
+        "description": "A IETF-BCP47 language tag.\nThe validating regular expression for this property follows the pattern described in https://www.rfc-editor.org/rfc/bcp/bcp47.txt with the exception that private use subtags are omitted from the pattern."
+      },
+      "level": {
+        "type": "integer",
+        "default": 0,
+        "description": "Z-order of the feature where 0 is visual level"
+      },
+      "linearlyReferencedPosition": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "description": "Represents a linearly-referenced position between 0% and 100% of the distance along a path such as a road segment or a river center-line segment."
+      },
+      "linearlyReferencedRange": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "uniqueItems": true,
+        "description": "Represents a non-empty range of positions along a path as a pair linearly-referenced positions. For example, the pair [0.25, 0.5] represents the range beginning 25% of the distance from the start of the path and ending 50% of the distance from the path start."
+      },
+      "nameRule": {
+        "type": "object"
+      },
+      "openingHours": {
+        "type": "string",
+        "description": "Time span or time spans during which something is open or active, specified in the OSM opening hours specification:\n  https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification"
+      },
+      "side": {
+        "type": "string",
+        "enum": [
+          "left",
+          "right"
+        ],
+        "description": "Represents the side on which something appears relative to a facing or heading direction, e.g. the side of a road relative to the road orientation, or relative to the direction of travel of a person or vehicle."
+      },
+      "sourcePropertyItem": {
+        "type": "object",
+        "description": "An object storing the source for a specificed property. The property is a reference to the property element within this Feature, and will be referenced using JSON Pointer Notation RFC 6901 (https://datatracker.ietf.org/doc/rfc6901/). The source dataset for that referenced property will be specified in the overture list of approved sources from the Overture Data Working Group that contains the relevant metadata for that dataset including license source organization."
+      },
+      "sources": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "description": "The array of source information for the properties of a given feature, with each entry being a source object which lists the property in JSON Pointer notation and the dataset that specific value came from. All features must have a root level source which is the default source if a specific property's source is not specified."
+      },
+      "theme": {
+        "type": "string",
+        "enum": [
+          "addresses",
+          "base",
+          "buildings",
+          "divisions",
+          "places",
+          "transportation"
+        ],
+        "description": "Top-level Overture theme this feature belongs to"
+      },
+      "wikidata": {
+        "type": "string",
+        "pattern": "^Q\\d+",
+        "description": "A wikidata ID if available, as found on https://www.wikidata.org/."
+      },
+      "cartographyContainer.cartography": {
+        "type": "object"
+      },
+      "prominence": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "description": "Represents Overture's view of a place's significance or importance. This value can be used to help drive cartographic display of a place and is derived from various factors including, but not limited to: population, capital status, place tags, and type."
+      },
+      "min_zoom": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 23,
+        "description": "Recommended minimum tile zoom per the Slippy Maps convention.\nThe Slippy Maps zooms are explained in the following references:\n - https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames\n - https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection"
+      },
+      "max_zoom": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 23,
+        "description": "Recommended maximum tile zoom per the Slippy Maps convention.\nThe Slippy Maps zooms are explained in the following references:\n - https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames\n - https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection"
+      },
+      "sort_key": {
+        "type": "integer",
+        "default": 0,
+        "description": "An ascending numeric that defines the recommended order features should be drawn in. Features with lower number should be shown on top of features with a higher number."
+      }
+    },
+    "base": {
+      "elevation": {
+        "type": "integer",
+        "maximum": 9000,
+        "description": "Elevation above sea level (in meters) of the feature."
+      },
+      "depth": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Depth below surface level (in meters) of the feature."
+      },
+      "height": {
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "description": "Height of the feature in meters."
+      },
+      "sourceTags": {
+        "type": "object",
+        "description": "Any attributes/tags from the original source data that should be passed through."
+      },
+      "surface": {
+        "type": "string",
+        "enum": [
+          "asphalt",
+          "cobblestone",
+          "compacted",
+          "concrete",
+          "concrete_plates",
+          "dirt",
+          "earth",
+          "fine_gravel",
+          "grass",
+          "gravel",
+          "ground",
+          "paved",
+          "paving_stones",
+          "pebblestone",
+          "recreation_grass",
+          "recreation_paved",
+          "recreation_sand",
+          "rubber",
+          "sand",
+          "sett",
+          "tartan",
+          "unpaved",
+          "wood",
+          "woodchips"
+        ],
+        "description": "Surface material, mostly from the OSM tag, with some normalization."
+      },
+      "osmPropertiesContainer.wikidata": {
+        "type": "string",
+        "pattern": "^Q\\d+",
+        "description": "A wikidata ID if available, as found on https://www.wikidata.org/."
+      }
+    },
+    "buildings": {
+      "shapeContainer.height": {
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "description": "Height of the building or part in meters. The height is the distance from the lowest point to the highest point."
+      },
+      "shapeContainer.is_underground": {
+        "type": "boolean",
+        "description": "Whether the entire building or part is completely below ground. This is useful for rendering which typically omits these buildings or styles them differently because they are not visible above ground. This is different than the level column which is used to indicate z-ordering of elements and negative values may be above ground."
+      },
+      "shapeContainer.num_floors": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "description": "Number of above-ground floors of the building or part."
+      },
+      "shapeContainer.num_floors_underground": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "description": "Number of below-ground floors of the building or part."
+      },
+      "shapeContainer.min_height": {
+        "type": "number",
+        "description": "The height of the bottom part of building in meters. Used if a building or part of building starts above the ground level."
+      },
+      "shapeContainer.min_floor": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "description": "The \"start\" floor of this building or part. Indicates that the building or part is \"floating\" and its bottom-most floor is above ground level, usually because it is part of a larger building in which some parts do reach down to ground level. An example is a building that has an entry road or driveway at ground level into an interior courtyard, where part of the building bridges above the entry road. This property may sometimes be populated when min_height is missing and in these cases can be used as a proxy for min_height."
+      },
+      "shapeContainer.facade_color": {
+        "type": "string",
+        "description": "The color (name or color triplet) of the facade of a building or building part in hexadecimal"
+      },
+      "shapeContainer.facade_material": {
+        "type": "string",
+        "enum": [
+          "brick",
+          "cement_block",
+          "clay",
+          "concrete",
+          "glass",
+          "metal",
+          "plaster",
+          "plastic",
+          "stone",
+          "timber_framing",
+          "wood"
+        ],
+        "description": "The outer surface material of building facade."
+      },
+      "shapeContainer.roof_material": {
+        "type": "string",
+        "enum": [
+          "concrete",
+          "copper",
+          "eternit",
+          "glass",
+          "grass",
+          "gravel",
+          "metal",
+          "plastic",
+          "roof_tiles",
+          "slate",
+          "solar_panels",
+          "thatch",
+          "tar_paper",
+          "wood"
+        ],
+        "description": "The outermost material of the roof."
+      },
+      "shapeContainer.roof_shape": {
+        "type": "string",
+        "enum": [
+          "dome",
+          "flat",
+          "gabled",
+          "gambrel",
+          "half_hipped",
+          "hipped",
+          "mansard",
+          "onion",
+          "pyramidal",
+          "round",
+          "saltbox",
+          "sawtooth",
+          "skillion",
+          "spherical"
+        ],
+        "description": "The shape of the roof"
+      },
+      "shapeContainer.roof_direction": {
+        "type": "number",
+        "exclusiveMaximum": 360,
+        "description": "Bearing of the roof ridge line in degrees."
+      },
+      "shapeContainer.roof_orientation": {
+        "type": "string",
+        "enum": [
+          "across",
+          "along"
+        ],
+        "description": "Orientation of the roof shape relative to the footprint shape. Either \"along\" or \"across\"."
+      },
+      "shapeContainer.roof_color": {
+        "type": "string",
+        "description": "The color (name or color triplet) of the roof of a building or building part in hexadecimal"
+      },
+      "shapeContainer.roof_height": {
+        "type": "number",
+        "description": "The height of the building roof in meters. This represents the distance from the base of the roof to the highest point of the roof."
+      }
+    },
+    "divisions": {
+      "placetype": {
+        "type": "string",
+        "enum": [
+          "country",
+          "dependency",
+          "macroregion",
+          "region",
+          "macrocounty",
+          "county",
+          "localadmin",
+          "locality",
+          "borough",
+          "macrohood",
+          "neighborhood",
+          "microhood"
+        ],
+        "description": "Category of the division from a finite, hierarchical, ordered list of categories (e.g. country, region, locality, etc.) similar to a Who's on First placetype."
+      },
+      "admin_level": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Integer representing this division's position in its country's administrative hierarchy, where lower numbers correspond to higher level administrative units.\nIn Overture data releases, this value is typically equal to the number of ancestor features in the division's primary hierarchy (the one defined by following `parent_division_id`). Thus, a country always has an `admin_level` of 0, a region has an `admin_level` of 1, while further subdivisions have `admin_level` values greater than 1."
+      },
+      "hierarchy": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "description": "A hierarchy of divisions, with the first entry being a country; each subsequent entry, if any, being a division that is a direct child of the previous entry; and the last entry representing the division that contains the hierarchy.\nFor example, a hierarchy for the United States is simply [United States]. A hierarchy for the U.S. state of New Hampshire would be [United States, New Hampshire], and a hierarchy for the city of Concord, NH would be [United States, New Hampshire, Merrimack County, Concord]."
+      },
+      "hierarchyItem": {
+        "type": "object",
+        "description": "One division in a hierarchy"
+      },
+      "perspectives": {
+        "type": "object",
+        "description": "Political perspectives from which division is viewed."
+      },
+      "capitalOfDivisionItem": {
+        "type": "object",
+        "description": "One division that has capital"
+      }
+    },
+    "places": {
+      "category": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+        "description": "Category of a place."
+      }
+    }
+  },
+  "themes": {
+    "addresses": {
+      "types": {
+        "address": {
+          "properties": {
+            "country": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2,
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code."
+            },
+            "postcode": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(\\S.*)?\\S$",
+              "description": "The postcode for the address"
+            },
+            "street": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(\\S.*)?\\S$",
+              "description": "The street name associated with this address. The street name can include the street \"type\" or street suffix, e.g., Main Street. Ideally this is fully spelled out and not abbreviated but we acknowledge that many address datasets abbreviate the street name so it is acceptable."
+            },
+            "number": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(\\S.*)?\\S$",
+              "description": "The house number for this address.  This field may not strictly be a number. Values such as \"74B\", \"189 1/2\", \"208.5\" are common as the number part of an address and they are not part of the \"unit\" of this address."
+            },
+            "unit": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(\\S.*)?\\S$",
+              "description": "The suite/unit/apartment/floor number"
+            },
+            "address_levels": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 5,
+              "description": "The administrative levels present in an address. The number of values in this list and their meaning is country-dependent. For example, in the United States we expect two values: the state and the municipality. In other countries there might be only one. Other countries could have three or more. The array is ordered with the highest levels first.\nNote: when a level is not known - most likely because the data provider has not supplied it and we have not derived it from another source, the array element container must be present, but the \"value\" field should be omitted"
+            },
+            "postal_city": {
+              "type": "string",
+              "pattern": "^(\\S.*)?\\S$",
+              "description": "In some countries or regions, a mailing address may need to specify a different city name than the city that actually contains the address coordinates. This optional field can be used to specify the alternate city name to use.\nExample from US National Address Database: 716 East County Road, Winchester, Indiana has \"Ridgeville\" as its postal city\nAnother example in Slovenia: Tomaj 71, 6221 Dutovlje, Slovenia"
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(\\S.*)?\\S$"
+            }
+          }
+        }
+      }
+    },
+    "base": {
+      "types": {
+        "bathymetry": {
+          "properties": {
+            "depth": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Depth below surface level (in meters) of the feature."
+            }
+          }
+        },
+        "infrastructure": {
+          "subtypes": [
+            "aerialway",
+            "airport",
+            "barrier",
+            "bridge",
+            "communication",
+            "emergency",
+            "manhole",
+            "pedestrian",
+            "pier",
+            "power",
+            "quay",
+            "recreation",
+            "tower",
+            "transit",
+            "transportation",
+            "utility",
+            "waste_management",
+            "water"
+          ],
+          "classes": [
+            "aerialway_station",
+            "airport",
+            "airport_gate",
+            "airstrip",
+            "apron",
+            "aqueduct",
+            "artwork",
+            "atm",
+            "barrier",
+            "bell_tower",
+            "bench",
+            "bicycle_parking",
+            "bicycle_rental",
+            "block",
+            "boardwalk",
+            "bollard",
+            "border_control",
+            "breakwater",
+            "bridge",
+            "bridge_support",
+            "bump_gate",
+            "bus_route",
+            "bus_station",
+            "bus_stop",
+            "bus_trap",
+            "cable",
+            "cable_barrier",
+            "cable_car",
+            "cable_distribution",
+            "camp_site",
+            "cantilever",
+            "catenary_mast",
+            "cattle_grid",
+            "chain",
+            "chair_lift",
+            "charging_station",
+            "city_wall",
+            "communication_line",
+            "communication_pole",
+            "communication_tower",
+            "connection",
+            "cooling",
+            "covered",
+            "crossing",
+            "cutline",
+            "cycle_barrier",
+            "dam",
+            "defensive",
+            "ditch",
+            "diving",
+            "drag_lift",
+            "drain",
+            "drinking_water",
+            "entrance",
+            "fence",
+            "ferry_terminal",
+            "fire_hydrant",
+            "fountain",
+            "full-height_turnstile",
+            "gasometer",
+            "gate",
+            "generator",
+            "give_way",
+            "gondola",
+            "goods",
+            "guard_rail",
+            "hampshire_gate",
+            "handrail",
+            "hedge",
+            "height_restrictor",
+            "heliostat",
+            "helipad",
+            "heliport",
+            "hose",
+            "information",
+            "insulator",
+            "international_airport",
+            "j-bar",
+            "jersey_barrier",
+            "kerb",
+            "kissing_gate",
+            "launchpad",
+            "lift_gate",
+            "lighting",
+            "lightning_protection",
+            "magic_carpet",
+            "manhole",
+            "milestone",
+            "military_airport",
+            "minaret",
+            "minor_line",
+            "mixed_lift",
+            "mobile_phone_tower",
+            "monitoring",
+            "motorcycle_parking",
+            "motorway_junction",
+            "movable",
+            "municipal_airport",
+            "observation",
+            "parking",
+            "parking_entrance",
+            "parking_space",
+            "pedestrian_crossing",
+            "picnic_table",
+            "pier",
+            "pipeline",
+            "plant",
+            "planter",
+            "platform",
+            "platter",
+            "portal",
+            "post_box",
+            "power_line",
+            "power_pole",
+            "power_tower",
+            "private_airport",
+            "pylon",
+            "quay",
+            "radar",
+            "railway_halt",
+            "railway_station",
+            "recycling",
+            "regional_airport",
+            "reservoir_covered",
+            "retaining_wall",
+            "roller_coaster",
+            "rope_tow",
+            "runway",
+            "sally_port",
+            "seaplane_airport",
+            "sewer",
+            "silo",
+            "siren",
+            "stile",
+            "stop",
+            "stop_position",
+            "stopway",
+            "storage_tank",
+            "street_cabinet",
+            "street_lamp",
+            "substation",
+            "subway_station",
+            "swing_gate",
+            "switch",
+            "t-bar",
+            "taxilane",
+            "taxiway",
+            "terminal",
+            "toilets",
+            "toll_booth",
+            "traffic_signals",
+            "transformer",
+            "trestle",
+            "utility_pole",
+            "vending_machine",
+            "viaduct",
+            "viewpoint",
+            "wall",
+            "waste_basket",
+            "waste_disposal",
+            "watchtower",
+            "water_tower",
+            "weir",
+            "zip_line"
+          ],
+          "properties": {
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Height of the feature in meters."
+            },
+            "surface": {
+              "type": "string",
+              "enum": [
+                "asphalt",
+                "cobblestone",
+                "compacted",
+                "concrete",
+                "concrete_plates",
+                "dirt",
+                "earth",
+                "fine_gravel",
+                "grass",
+                "gravel",
+                "ground",
+                "paved",
+                "paving_stones",
+                "pebblestone",
+                "recreation_grass",
+                "recreation_paved",
+                "recreation_sand",
+                "rubber",
+                "sand",
+                "sett",
+                "tartan",
+                "unpaved",
+                "wood",
+                "woodchips"
+              ],
+              "description": "Surface material, mostly from the OSM tag, with some normalization."
+            }
+          }
+        },
+        "land": {
+          "subtypes": [
+            "crater",
+            "desert",
+            "forest",
+            "glacier",
+            "grass",
+            "land",
+            "physical",
+            "reef",
+            "rock",
+            "sand",
+            "shrub",
+            "tree",
+            "wetland"
+          ],
+          "classes": [
+            "archipelago",
+            "bare_rock",
+            "beach",
+            "cave_entrance",
+            "cliff",
+            "desert",
+            "dune",
+            "fell",
+            "forest",
+            "glacier",
+            "grass",
+            "grassland",
+            "heath",
+            "hill",
+            "island",
+            "islet",
+            "land",
+            "meadow",
+            "meteor_crater",
+            "mountain_range",
+            "peak",
+            "peninsula",
+            "plateau",
+            "reef",
+            "ridge",
+            "rock",
+            "saddle",
+            "sand",
+            "scree",
+            "scrub",
+            "shingle",
+            "shrub",
+            "shrubbery",
+            "stone",
+            "tree",
+            "tree_row",
+            "tundra",
+            "valley",
+            "volcanic_caldera_rim",
+            "volcano",
+            "wetland",
+            "wood"
+          ],
+          "properties": {
+            "elevation": {
+              "type": "integer",
+              "maximum": 9000,
+              "description": "Elevation above sea level (in meters) of the feature."
+            },
+            "surface": {
+              "type": "string",
+              "enum": [
+                "asphalt",
+                "cobblestone",
+                "compacted",
+                "concrete",
+                "concrete_plates",
+                "dirt",
+                "earth",
+                "fine_gravel",
+                "grass",
+                "gravel",
+                "ground",
+                "paved",
+                "paving_stones",
+                "pebblestone",
+                "recreation_grass",
+                "recreation_paved",
+                "recreation_sand",
+                "rubber",
+                "sand",
+                "sett",
+                "tartan",
+                "unpaved",
+                "wood",
+                "woodchips"
+              ],
+              "description": "Surface material, mostly from the OSM tag, with some normalization."
+            }
+          }
+        },
+        "land_cover": {
+          "subtypes": [
+            "barren",
+            "crop",
+            "forest",
+            "grass",
+            "mangrove",
+            "moss",
+            "shrub",
+            "snow",
+            "urban",
+            "wetland"
+          ]
+        },
+        "land_use": {
+          "subtypes": [
+            "agriculture",
+            "aquaculture",
+            "campground",
+            "cemetery",
+            "construction",
+            "developed",
+            "education",
+            "entertainment",
+            "golf",
+            "grass",
+            "horticulture",
+            "landfill",
+            "managed",
+            "medical",
+            "military",
+            "park",
+            "pedestrian",
+            "protected",
+            "recreation",
+            "religious",
+            "residential",
+            "resource_extraction",
+            "transportation",
+            "winter_sports"
+          ],
+          "classes": [
+            "aboriginal_land",
+            "airfield",
+            "allotments",
+            "animal_keeping",
+            "aquaculture",
+            "barracks",
+            "base",
+            "beach_resort",
+            "brownfield",
+            "bunker",
+            "camp_site",
+            "cemetery",
+            "clinic",
+            "college",
+            "commercial",
+            "connection",
+            "construction",
+            "danger_area",
+            "doctors",
+            "dog_park",
+            "downhill",
+            "driving_range",
+            "driving_school",
+            "education",
+            "environmental",
+            "fairway",
+            "farmland",
+            "farmyard",
+            "fatbike",
+            "flowerbed",
+            "forest",
+            "garages",
+            "garden",
+            "golf_course",
+            "grass",
+            "grave_yard",
+            "green",
+            "greenfield",
+            "greenhouse_horticulture",
+            "highway",
+            "hike",
+            "hospital",
+            "ice_skate",
+            "industrial",
+            "institutional",
+            "kindergarten",
+            "landfill",
+            "lateral_water_hazard",
+            "logging",
+            "marina",
+            "meadow",
+            "military",
+            "military_hospital",
+            "military_school",
+            "music_school",
+            "national_park",
+            "natural_monument",
+            "nature_reserve",
+            "naval_base",
+            "nordic",
+            "nuclear_explosion_site",
+            "obstacle_course",
+            "orchard",
+            "park",
+            "peat_cutting",
+            "pedestrian",
+            "pitch",
+            "plant_nursery",
+            "playground",
+            "plaza",
+            "protected",
+            "protected_landscape_seascape",
+            "quarry",
+            "railway",
+            "range",
+            "recreation_ground",
+            "religious",
+            "residential",
+            "resort",
+            "retail",
+            "rough",
+            "salt_pond",
+            "school",
+            "schoolyard",
+            "ski_jump",
+            "skitour",
+            "sled",
+            "sleigh",
+            "snow_park",
+            "species_management_area",
+            "stadium",
+            "state_park",
+            "static_caravan",
+            "strict_nature_reserve",
+            "tee",
+            "theme_park",
+            "track",
+            "traffic_island",
+            "training_area",
+            "trench",
+            "university",
+            "village_green",
+            "vineyard",
+            "water_hazard",
+            "water_park",
+            "wilderness_area",
+            "winter_sports",
+            "works",
+            "zoo"
+          ],
+          "properties": {
+            "elevation": {
+              "type": "integer",
+              "maximum": 9000,
+              "description": "Elevation above sea level (in meters) of the feature."
+            },
+            "surface": {
+              "type": "string",
+              "enum": [
+                "asphalt",
+                "cobblestone",
+                "compacted",
+                "concrete",
+                "concrete_plates",
+                "dirt",
+                "earth",
+                "fine_gravel",
+                "grass",
+                "gravel",
+                "ground",
+                "paved",
+                "paving_stones",
+                "pebblestone",
+                "recreation_grass",
+                "recreation_paved",
+                "recreation_sand",
+                "rubber",
+                "sand",
+                "sett",
+                "tartan",
+                "unpaved",
+                "wood",
+                "woodchips"
+              ],
+              "description": "Surface material, mostly from the OSM tag, with some normalization."
+            }
+          }
+        },
+        "water": {
+          "subtypes": [
+            "canal",
+            "human_made",
+            "lake",
+            "ocean",
+            "physical",
+            "pond",
+            "reservoir",
+            "river",
+            "spring",
+            "stream",
+            "wastewater",
+            "water"
+          ],
+          "classes": [
+            "basin",
+            "bay",
+            "blowhole",
+            "canal",
+            "cape",
+            "ditch",
+            "dock",
+            "drain",
+            "fairway",
+            "fish_pass",
+            "fishpond",
+            "geyser",
+            "hot_spring",
+            "lagoon",
+            "lake",
+            "moat",
+            "ocean",
+            "oxbow",
+            "pond",
+            "reflecting_pool",
+            "reservoir",
+            "river",
+            "salt_pond",
+            "sea",
+            "sewage",
+            "shoal",
+            "spring",
+            "strait",
+            "stream",
+            "swimming_pool",
+            "tidal_channel",
+            "wastewater",
+            "water",
+            "water_storage",
+            "waterfall"
+          ],
+          "properties": {
+            "is_salt": {
+              "type": "boolean",
+              "description": "Is it salt water or not"
+            },
+            "is_intermittent": {
+              "type": "boolean",
+              "description": "Is it intermittent water or not"
+            }
+          }
+        }
+      }
+    },
+    "buildings": {
+      "types": {
+        "building": {
+          "subtypes": [
+            "agricultural",
+            "civic",
+            "commercial",
+            "education",
+            "entertainment",
+            "industrial",
+            "medical",
+            "military",
+            "outbuilding",
+            "religious",
+            "residential",
+            "service",
+            "transportation"
+          ],
+          "classes": [
+            "agricultural",
+            "allotment_house",
+            "apartments",
+            "barn",
+            "beach_hut",
+            "boathouse",
+            "bridge_structure",
+            "bungalow",
+            "bunker",
+            "cabin",
+            "carport",
+            "cathedral",
+            "chapel",
+            "church",
+            "civic",
+            "college",
+            "commercial",
+            "cowshed",
+            "detached",
+            "digester",
+            "dormitory",
+            "dwelling_house",
+            "factory",
+            "farm",
+            "farm_auxiliary",
+            "fire_station",
+            "garage",
+            "garages",
+            "ger",
+            "glasshouse",
+            "government",
+            "grandstand",
+            "greenhouse",
+            "guardhouse",
+            "hangar",
+            "hospital",
+            "hotel",
+            "house",
+            "houseboat",
+            "hut",
+            "industrial",
+            "kindergarten",
+            "kiosk",
+            "library",
+            "manufacture",
+            "military",
+            "monastery",
+            "mosque",
+            "office",
+            "outbuilding",
+            "parking",
+            "pavilion",
+            "post_office",
+            "presbytery",
+            "public",
+            "religious",
+            "residential",
+            "retail",
+            "roof",
+            "school",
+            "semi",
+            "semidetached_house",
+            "service",
+            "shed",
+            "shrine",
+            "silo",
+            "slurry_tank",
+            "sports_centre",
+            "sports_hall",
+            "stable",
+            "stadium",
+            "static_caravan",
+            "stilt_house",
+            "storage_tank",
+            "sty",
+            "supermarket",
+            "synagogue",
+            "temple",
+            "terrace",
+            "toilets",
+            "train_station",
+            "transformer_tower",
+            "transportation",
+            "trullo",
+            "university",
+            "warehouse",
+            "wayside_shrine"
+          ],
+          "properties": {
+            "has_parts": {
+              "type": "boolean",
+              "description": "Flag indicating whether the building has parts"
+            }
+          }
+        },
+        "building_part": {
+          "properties": {
+            "building_id": {
+              "type": "string",
+              "description": "The building ID to which this part belongs"
+            }
+          }
+        }
+      }
+    },
+    "divisions": {
+      "types": {
+        "division_boundary": {
+          "subtypes": [
+            "country",
+            "dependency",
+            "macroregion",
+            "region",
+            "macrocounty",
+            "county",
+            "localadmin",
+            "locality",
+            "borough",
+            "macrohood",
+            "neighborhood",
+            "microhood"
+          ],
+          "classes": [
+            "land",
+            "maritime"
+          ],
+          "properties": {
+            "is_land": {
+              "type": "boolean",
+              "description": "A boolean to indicate whether or not the feature geometry represents the land-clipped, non-maritime boundary. The geometry can be used for map rendering, cartographic display, and similar purposes."
+            },
+            "is_territorial": {
+              "type": "boolean",
+              "description": "A boolean to indicate whether or not the feature geometry represents Overture's best approximation of this place's maritime boundary. For coastal places, this would tend to include the water area. The geometry can be used for data processing, reverse-geocoding, and similar purposes."
+            },
+            "division_ids": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "description": "Identifies the two divisions to the left and right, respectively, of the boundary line. The left- and right-hand sides of the boundary are considered from the perspective of a person standing on the line facing in the direction in which the geometry is oriented, i.e. facing toward the end of the line.\nThe first array element is the Overture ID of the left division. The second element is the Overture ID of the right division."
+            },
+            "country": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2,
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code."
+            },
+            "region": {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 6,
+              "pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$",
+              "description": "ISO 3166-2 principal subdivision code."
+            },
+            "admin_level": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Integer representing this division's position in its country's administrative hierarchy, where lower numbers correspond to higher level administrative units.\nIn Overture data releases, this value is typically equal to the number of ancestor features in the division's primary hierarchy (the one defined by following `parent_division_id`). Thus, a country always has an `admin_level` of 0, a region has an `admin_level` of 1, while further subdivisions have `admin_level` values greater than 1."
+            },
+            "is_disputed": {
+              "type": "boolean",
+              "description": "Indicator if there are entities disputing this division boundary. Information about entities disputing this boundary should be included in perspectives property.\nThis property should also be true if boundary between two entities is unclear and this is \"best guess\". So having it true and no perspectives gives map creators reason not to fully trust the boundary, but use it if they have no other."
+            },
+            "perspectives": {
+              "type": "object",
+              "description": "Political perspectives from which division is viewed."
+            }
+          }
+        },
+        "division": {
+          "subtypes": [
+            "country",
+            "dependency",
+            "macroregion",
+            "region",
+            "macrocounty",
+            "county",
+            "localadmin",
+            "locality",
+            "borough",
+            "macrohood",
+            "neighborhood",
+            "microhood"
+          ],
+          "classes": [
+            "megacity",
+            "city",
+            "town",
+            "village",
+            "hamlet"
+          ],
+          "properties": {
+            "local_type": {
+              "type": "object",
+              "description": "The common translations of the name."
+            },
+            "country": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2,
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code."
+            },
+            "region": {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 6,
+              "pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$",
+              "description": "ISO 3166-2 principal subdivision code."
+            },
+            "hierarchies": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Hierarchies in which this division participates.\nEvery division participates in at least one hierarchy. Most participate in only one. Some divisions may participate in more than one hierarchy, for example if they are claimed by different parent divisions from different political perspectives; or if there are other real-world reasons why the division or one of its ancestors has multiple parents.\nThe first hierarchy in the list is the default hierarchy, and the second-to-last entry in the default hierarchy (if there is such an entry) always corresponds to the `parent_division_id' property. The ordering of hierarchies after the first one is arbitrary."
+            },
+            "parent_division_id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(\\S.*)?\\S$",
+              "description": "A feature ID. This may be an ID associated with the Global Entity Reference System (GERS) if—and-only-if the feature represents an entity that is part of GERS."
+            },
+            "admin_level": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Integer representing this division's position in its country's administrative hierarchy, where lower numbers correspond to higher level administrative units.\nIn Overture data releases, this value is typically equal to the number of ancestor features in the division's primary hierarchy (the one defined by following `parent_division_id`). Thus, a country always has an `admin_level` of 0, a region has an `admin_level` of 1, while further subdivisions have `admin_level` values greater than 1."
+            },
+            "perspectives": {
+              "type": "object",
+              "description": "Political perspectives from which division is viewed."
+            },
+            "norms": {
+              "type": "object",
+              "description": "Collects information about local norms and rules within the division that are generally useful for mapping and map-related use cases.\nIf the norms property or a desired sub-property of the norms property is missing on a division, but at least one of its ancestor divisions has the norms property and the desired sub-property, then the value from the nearest ancestor division may be assumed."
+            },
+            "population": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Population of the division"
+            },
+            "capital_division_ids": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Division IDs of this division's capital divisions. If present, this property will refer to the division IDs of the capital cities, county seats, etc. of a division."
+            },
+            "capital_of_divisions": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Division IDs and subtypes of divisions this division is a capital of."
+            },
+            "wikidata": {
+              "type": "string",
+              "pattern": "^Q\\d+",
+              "description": "A wikidata ID if available, as found on https://www.wikidata.org/."
+            }
+          }
+        },
+        "division_area": {
+          "subtypes": [
+            "country",
+            "dependency",
+            "macroregion",
+            "region",
+            "macrocounty",
+            "county",
+            "localadmin",
+            "locality",
+            "borough",
+            "macrohood",
+            "neighborhood",
+            "microhood"
+          ],
+          "classes": [
+            "land",
+            "maritime"
+          ],
+          "properties": {
+            "is_land": {
+              "type": "boolean",
+              "description": "A boolean to indicate whether or not the feature geometry represents the land-clipped, non-maritime boundary. The geometry can be used for map rendering, cartographic display, and similar purposes."
+            },
+            "is_territorial": {
+              "type": "boolean",
+              "description": "A boolean to indicate whether or not the feature geometry represents Overture's best approximation of this place's maritime boundary. For coastal places, this would tend to include the water area. The geometry can be used for data processing, reverse-geocoding, and similar purposes."
+            },
+            "division_id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(\\S.*)?\\S$",
+              "description": "A feature ID. This may be an ID associated with the Global Entity Reference System (GERS) if—and-only-if the feature represents an entity that is part of GERS."
+            },
+            "country": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2,
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code."
+            },
+            "region": {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 6,
+              "pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$",
+              "description": "ISO 3166-2 principal subdivision code."
+            },
+            "admin_level": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Integer representing this division's position in its country's administrative hierarchy, where lower numbers correspond to higher level administrative units.\nIn Overture data releases, this value is typically equal to the number of ancestor features in the division's primary hierarchy (the one defined by following `parent_division_id`). Thus, a country always has an `admin_level` of 0, a region has an `admin_level` of 1, while further subdivisions have `admin_level` values greater than 1."
+            }
+          }
+        }
+      }
+    },
+    "places": {
+      "types": {
+        "place": {
+          "properties": {
+            "categories": {
+              "type": "object",
+              "description": "The categories of the place. Complete list is available on\nGitHub: https://github.com/OvertureMaps/schema/blob/main/docs/schema/concepts/by-theme/places/overture_categories.csv\n"
+            },
+            "basic_category": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+              "description": "Category of a place."
+            },
+            "taxonomy": {
+              "type": "object",
+              "description": "A new representation of the place's category within the Overture taxonomy. Provides the primary classification, full hierarchy path, and alternate categories."
+            },
+            "confidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "The confidence of the existence of the place. It's a number between 0 and 1. 0 means that we're sure that the place doesn't exist (anymore). 1 means that we're sure that the place exists. If there's no value for the confidence, it means that we don't have any confidence information. Places with operating_status set to 'closed' will have a confidence score of 0"
+            },
+            "websites": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "The websites of the place."
+            },
+            "socials": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "The social media URLs of the place."
+            },
+            "emails": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "The email addresses of the place."
+            },
+            "phones": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "The phone numbers of the place."
+            },
+            "brand": {
+              "type": "object",
+              "description": "Properties defining the names of a feature."
+            },
+            "addresses": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "The addresses of the place."
+            },
+            "operating_status": {
+              "type": "string",
+              "enum": [
+                "open",
+                "permanently_closed",
+                "temporarily_closed"
+              ],
+              "description": "Indicates the operating status of a place, can be one of [\"open\", \"permanently_closed\", \"temporarily_closed\"]. This is not an indication of 'opening hours' or that the place is open/closed at the current time-of-day or day-of-week."
+            }
+          }
+        }
+      }
+    },
+    "transportation": {
+      "types": {
+        "connector": {},
+        "segment": {
+          "subtypes": [
+            "road",
+            "rail",
+            "water"
+          ],
+          "road_classes": [
+            "motorway",
+            "primary",
+            "secondary",
+            "tertiary",
+            "residential",
+            "living_street",
+            "trunk",
+            "unclassified",
+            "service",
+            "pedestrian",
+            "footway",
+            "steps",
+            "path",
+            "track",
+            "cycleway",
+            "bridleway",
+            "unknown"
+          ],
+          "rail_classes": [
+            "funicular",
+            "light_rail",
+            "monorail",
+            "narrow_gauge",
+            "standard_gauge",
+            "subway",
+            "tram",
+            "unknown"
+          ],
+          "properties": {
+            "connectors": {
+              "type": "array",
+              "minItems": 2,
+              "uniqueItems": true,
+              "default": [],
+              "description": "List of connectors which this segment is physically connected to and their relative location. Each connector is a possible routing decision point, meaning it defines a place along the segment in which there is possibility to transition to other segments which share the same connector."
+            },
+            "destinationLabelType": {
+              "type": "string",
+              "enum": [
+                "street",
+                "country",
+                "route_ref",
+                "toward_route_ref",
+                "unknown"
+              ],
+              "description": "The type of object of the destination label."
+            },
+            "destinations": {
+              "type": "array",
+              "description": "Describes objects that can be reached by following a transportation segment in the same way those objects are described on signposts or ground writing that a traveller following the segment would observe in the real world. This allows navigation systems to refer to signs and observable writing that a traveller actually sees."
+            },
+            "heading": {
+              "type": "string",
+              "enum": [
+                "forward",
+                "backward"
+              ],
+              "description": "Enumerates possible travel headings along segment geometry."
+            },
+            "travelMode": {
+              "type": "string",
+              "enum": [
+                "vehicle",
+                "motor_vehicle",
+                "car",
+                "truck",
+                "motorcycle",
+                "foot",
+                "bicycle",
+                "bus",
+                "hgv",
+                "hov",
+                "emergency"
+              ],
+              "description": "Enumerates possible travel modes. Some modes represent groups of modes."
+            },
+            "destinationSignSymbol": {
+              "type": "string",
+              "enum": [
+                "motorway",
+                "airport",
+                "hospital",
+                "center",
+                "industrial",
+                "parking",
+                "bus",
+                "train_station",
+                "rest_area",
+                "ferry",
+                "motorroad",
+                "fuel",
+                "viewpoint",
+                "fuel_diesel",
+                "food",
+                "lodging",
+                "info",
+                "camp_site",
+                "interchange",
+                "restrooms"
+              ],
+              "description": "Indicates what special symbol/icon is present on a signpost, visible as road marking or similar."
+            },
+            "roadFlag": {
+              "type": "string",
+              "enum": [
+                "is_bridge",
+                "is_link",
+                "is_tunnel",
+                "is_under_construction",
+                "is_abandoned",
+                "is_covered",
+                "is_indoor"
+              ],
+              "description": "Simple flags that can be on or off for a road segment. Specifies physical characteristics and can overlap."
+            },
+            "railFlag": {
+              "type": "string",
+              "enum": [
+                "is_bridge",
+                "is_tunnel",
+                "is_under_construction",
+                "is_abandoned",
+                "is_covered",
+                "is_passenger",
+                "is_freight",
+                "is_disused"
+              ],
+              "description": "Simple flags that can be on or off for a railway segment. Specifies physical characteristics and can overlap."
+            },
+            "roadSurface": {
+              "type": "string",
+              "enum": [
+                "unknown",
+                "paved",
+                "unpaved",
+                "gravel",
+                "dirt",
+                "paving_stones",
+                "metal"
+              ],
+              "description": "Physical surface of the road"
+            },
+            "routes": {
+              "type": "array",
+              "description": "Routes this segment belongs to"
+            },
+            "subclass": {
+              "type": "string",
+              "enum": [
+                "link",
+                "sidewalk",
+                "crosswalk",
+                "parking_aisle",
+                "driveway",
+                "alley",
+                "cycle_crossing"
+              ],
+              "description": "Refines expected usage of the segment, must not overlap."
+            },
+            "speed": {
+              "type": "object",
+              "description": "A speed value, i.e. a certain number of distance units travelled per unit time."
+            },
+            "purposeOfUse": {
+              "type": "string",
+              "enum": [
+                "as_customer",
+                "at_destination",
+                "to_deliver",
+                "to_farm",
+                "for_forestry"
+              ],
+              "description": "Reason why a person or entity travelling on the transportation network is using a particular location."
+            },
+            "recognizedStatus": {
+              "type": "string",
+              "enum": [
+                "as_permitted",
+                "as_private",
+                "as_disabled",
+                "as_employee",
+                "as_student"
+              ],
+              "description": "Status of the person or entity travelling as recognized by authorities controlling the particular location"
+            },
+            "integerRelation": {
+              "type": "object",
+              "description": "Completes an integer relational expression of the form <lhs> <operator> <integer_value>. An example of such an expression is:\n  `{ axle_count: { is_more_than: 2 } }`."
+            },
+            "vehicleScopeDimension": {
+              "type": "string",
+              "enum": [
+                "axle_count",
+                "height",
+                "length",
+                "weight",
+                "width"
+              ],
+              "description": "Enumerates possible vehicle dimensions for use in restrictions"
+            },
+            "vehicleScopeComparison": {
+              "type": "string",
+              "enum": [
+                "greater_than",
+                "greater_than_equal",
+                "equal",
+                "less_than",
+                "less_than_equal"
+              ],
+              "description": "Enumerates possible comparison operators for use in scoping"
+            },
+            "vehicleScopeUnit": {
+              "description": "Parent enum of both length and width for use in vehicle scoping"
+            },
+            "lengthUnit": {
+              "type": "string",
+              "enum": [
+                "in",
+                "ft",
+                "yd",
+                "mi",
+                "cm",
+                "m",
+                "km"
+              ],
+              "description": "Enumerates length units supported by the Overture schema."
+            },
+            "lengthValueWithUnit": {
+              "type": "object",
+              "description": "Combines a length value with a length unit."
+            },
+            "lengthRelation": {
+              "type": "object",
+              "description": "Completes a length relational expression of the form <lhs> <operator> <length_value>. An example of such an expression is:\n  `{ height: { is_less_than: { value: 3, unit: 'm' } } }`."
+            },
+            "weightUnit": {
+              "type": "string",
+              "enum": [
+                "oz",
+                "lb",
+                "st",
+                "lt",
+                "g",
+                "kg",
+                "t"
+              ],
+              "description": "Enumerates weight units supported by the Overture schema."
+            },
+            "weightValueWithUnit": {
+              "type": "object",
+              "description": "Combines a weight value with a weight unit."
+            },
+            "weightRelation": {
+              "type": "object",
+              "description": "Completes a weight relational expression of the form <lhs> <operator> <weight_value>. An example of such an expression is:\n  `{ weight: { is_more_than: { value: 2, unit: 't' } } }`."
+            },
+            "width": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "sequenceEntry": {
+              "type": "object",
+              "description": "A segment/connector pair in a prohibited transition sequence."
+            },
+            "using": {
+              "type": "array",
+              "minLength": 1,
+              "uniqueItems": true
+            },
+            "during": {
+              "type": "string",
+              "description": "Time span or time spans during which something is open or active, specified in the OSM opening hours specification:\n  https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification"
+            },
+            "mode": {
+              "type": "array",
+              "minLength": 1,
+              "uniqueItems": true,
+              "description": "Travel mode(s) to which the rule applies"
+            },
+            "recognized": {
+              "type": "array",
+              "minLength": 1,
+              "uniqueItems": true
+            },
+            "vehicle": {
+              "type": "array",
+              "minLength": 1,
+              "uniqueItems": true,
+              "description": "Vehicle attributes for which the rule applies"
+            }
+          }
+        }
+      }
+    }
+  }
+}

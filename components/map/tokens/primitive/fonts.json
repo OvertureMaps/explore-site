@@ -1,0 +1,25 @@
+{
+  "noto-sans": {
+    "bold": "Noto Sans Bold",
+    "bold-italic": "Noto Sans Bold Italic",
+    "italic": "Noto Sans Italic",
+    "light": "Noto Sans Light",
+    "light-italic": "Noto Sans Light Italic",
+    "medium": "Noto Sans Medium",
+    "medium-italic": "Noto Sans Medium Italic",
+    "regular": "Noto Sans Regular"
+  },
+  "noto-sans-semicondensed": {
+    "bold": "Noto Sans SemiCondensed Bold",
+    "bold-italic": "Noto Sans SemiCondensed Bold Italic",
+    "italic": "Noto Sans SemiCondensed Italic",
+    "light": "Noto Sans SemiCondensed Light",
+    "light-italic": "Noto Sans SemiCondensed Light Italic",
+    "medium": "Noto Sans SemiCondensed Medium",
+    "medium-italic": "Noto Sans SemiCondensed Medium Italic",
+    "regular": "Noto Sans SemiCondensed Regular"
+  },
+  "pt-mono": {
+    "regular": "PT Mono Regular"
+  }
+}

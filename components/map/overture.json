@@ -20,14 +20,14 @@
       "base-bathymetry": {
         "name": "Bathymetry", "order": 2, "collapsed": true,
         "items": {
-          "bathymetry-g0": { "name": "0–90m", "order": 1 },
-          "bathymetry-g1": { "name": "100m", "order": 2 },
-          "bathymetry-g2": { "name": "500m", "order": 3 },
-          "bathymetry-g3": { "name": "1000m", "order": 4 },
-          "bathymetry-g4": { "name": "1500m", "order": 5 },
-          "bathymetry-g5": { "name": "2000m", "order": 6 },
-          "bathymetry-g6": { "name": "2500m", "order": 7 },
-          "bathymetry-g7": { "name": "3000m", "order": 8 }
+          "bathymetry-d0-fill": { "name": "0–90m", "order": 1 },
+          "bathymetry-d100-fill": { "name": "100m", "order": 2 },
+          "bathymetry-d500-fill": { "name": "500m", "order": 3 },
+          "bathymetry-d1000-fill": { "name": "1000m", "order": 4 },
+          "bathymetry-d1500-fill": { "name": "1500m", "order": 5 },
+          "bathymetry-d2000-fill": { "name": "2000m", "order": 6 },
+          "bathymetry-d2500-fill": { "name": "2500m", "order": 7 },
+          "bathymetry-d3000-fill": { "name": "3000m", "order": 8 }
         }
       },
       "base-land-cover": {
@@ -47,73 +47,56 @@
       "base-land-use": {
         "name": "Land Use", "order": 5, "collapsed": true,
         "items": {
-          "park": { "name": "Park + Golf Course", "order": 1 },
-          "cemetery": { "name": "Cemetery", "order": 2 },
-          "education": { "name": "College Campus", "order": 3 },
-          "military": { "name": "Military Installation", "order": 4 },
-          "medical": { "name": "Medical Campus", "order": 5 }
+          "park": { "name": "Park", "order": 1 },
+          "recreation": { "name": "Recreation", "order": 2 },
+          "cemetery": { "name": "Cemetery", "order": 3 },
+          "college-university": { "name": "College Campus", "order": 4 },
+          "military": { "name": "Military Installation", "order": 5 },
+          "medical": { "name": "Medical Campus", "order": 6 }
         }
       },
       "base-infrastructure": {
         "name": "Infrastructure", "order": 6, "collapsed": true,
         "items": {
-          "airport_area": { "name": "Airport", "order": 1 },
+          "airport-area": { "name": "Airport", "order": 1 },
           "aerialway": { "name": "Runway + Taxiway", "order": 2 },
           "pier": { "name": "Pier", "order": 3 }
         }
       }
     },
     "divisions": {
-      "divisions-country": {
-        "name": "Country", "order": 1, "collapsed": true,
+      "divisions-division": {
+        "name": "Division", "order": 1, "collapsed": true,
         "items": {
-          "country_boundary": { "name": "Boundary", "order": 1 },
-          "country_label": { "name": "Label", "order": 2 }
+          "country-label": { "name": "Country", "order": 1 },
+          "region-label": { "name": "Region", "order": 2 },
+          "county-label": { "name": "County", "order": 3 },
+          "locality-label": { "name": "Locality", "order": 4 },
+          "localadmin-local-label": { "name": "Localadmin + Local", "order": 5 },
+          "division-area": { "name": "Division Areas", "order": 6 }
         }
       },
-      "divisions-region": {
-        "name": "Region", "order": 2, "collapsed": true,
+      "divisions-boundary": {
+        "name": "Division Boundary", "order": 2, "collapsed": true,
         "items": {
-          "region_boundary": { "name": "Boundary", "order": 1 },
-          "region_label": { "name": "Label", "order": 2 }
+          "division-boundary": { "name": "Boundary", "order": 1 },
+          "division-boundary-maritime": { "name": "Maritime Boundary", "order": 2 }
         }
-      },
-      "divisions-county": {
-        "name": "County", "order": 3, "collapsed": true,
-        "items": {
-          "county_boundary": { "name": "Boundary", "order": 1 },
-          "county_label": { "name": "Label", "order": 2 }
-        }
-      },
-      "divisions-other": {
-        "name": "Other", "order": 4, "collapsed": true,
-        "items": {
-          "other_boundary": { "name": "Boundary", "order": 1 },
-          "other_label": { "name": "Label", "order": 2 }
-        }
-      },
-      "divisions-cities": {
-        "name": "Cities", "order": 5, "collapsed": true,
-        "items": { "city_label": { "name": "Labels", "order": 1 } }
-      },
-      "divisions-areas": {
-        "name": "Areas", "order": 6, "collapsed": true,
-        "items": { "division_area": { "name": "Division Areas", "order": 1 } }
       }
     },
     "buildings": {
       "buildings-3d": {
         "name": "3D Buildings", "order": 1, "collapsed": true,
         "items": {
-          "building_3d": { "name": "Buildings", "order": 1 },
-          "building_part_3d": { "name": "Building Parts", "order": 2 }
+          "building-3d": { "name": "Buildings", "order": 1 },
+          "building-part-3d": { "name": "Building Parts", "order": 2 }
         }
       },
       "buildings-footprints": {
         "name": "Footprints", "order": 2, "collapsed": true,
         "items": {
-          "building_footprint": { "name": "Buildings", "order": 1 },
-          "building_part_footprint": { "name": "Building Parts", "order": 2 }
+          "building-footprint": { "name": "Buildings", "order": 1 },
+          "building-part-footprint": { "name": "Building Parts", "order": 2 }
         }
       }
     },
@@ -153,13 +136,13 @@
           "college": { "name": "Colleges & Universities", "order": 3 },
           "convenience": { "name": "Convenience Stores", "order": 4 },
           "fuel": { "name": "Gas Stations", "order": 5 },
-          "place_golf": { "name": "Golf", "order": 6 },
+          "place-golf": { "name": "Golf", "order": 6 },
           "grocery": { "name": "Grocery Stores", "order": 7 },
           "hospital": { "name": "Hospitals", "order": 8 },
           "lodging": { "name": "Lodging", "order": 9 },
           "parking": { "name": "Parking", "order": 10 },
-          "place_park": { "name": "Parks", "order": 11 },
-          "rail_station": { "name": "Rail Stations", "order": 12 },
+          "place-park": { "name": "Parks", "order": 11 },
+          "rail-station": { "name": "Rail Stations", "order": 12 },
           "restaurant": { "name": "Restaurants", "order": 13 },
           "shop": { "name": "Shops", "order": 14 },
           "stadium": { "name": "Stadiums & Arenas", "order": 15 }
@@ -168,8 +151,8 @@
       "places-all": {
         "name": "All Places", "order": 2, "collapsed": true,
         "items": {
-          "place_heat": { "name": "All", "order": 1 },
-          "place_poi": { "name": "All", "order": 2 }
+          "place-all-density-circle": { "name": "All", "order": 1 },
+          "place-all-circle": { "name": "All", "order": 2 }
         }
       }
     },
@@ -177,464 +160,6 @@
       "addresses": {
         "name": "Addresses", "order": 1, "collapsed": true,
         "items": { "address": { "name": "Addresses", "order": 1 } }
-      }
-    }
-  },
-  "overture:globals": {
-    "color": {
-      "selection": "hsla(120, 80%, 45%, 0.5)",
-      "selectionInspect": "hsla(0, 100%, 50%, 0.5)",
-      "textHalo": "hsla(0, 0%, 100%, 1)",
-      "transparent": "hsla(0, 0%, 0%, 0)",
-      "white": "hsla(0, 0%, 100%, 1)",
-      "black": "hsla(0, 0%, 0%, 1)",
-      "gray": {
-          "1": "#fcfcfc",
-          "2": "#f9f9f9",
-          "3": "#f6f6f6",
-          "4": "#f3f3f3",
-          "5": "#f0f0f0",
-          "10": "#e6e6e6",
-          "20": "#c9c9c9",
-          "30": "#adadad",
-          "40": "#919191",
-          "50": "#757575",
-          "60": "#5c5c5c",
-          "70": "#454545",
-          "80": "#2e2e2e",
-          "90": "#1b1b1b"
-      },
-      "green": {
-          "5": "#eaf4dd",
-          "5-vivid": "#ddf9c7",
-          "5-warm": "#f1f4d7",
-          "5-warm-vivid": "#f5fbc1",
-          "10": "#dfeacd",
-          "10-warm": "#e7eab7",
-          "10-vivid": "#c5ee93",
-          "20-vivid": "#98d035",
-          "30-vivid": "#7fb135"
-      },
-      "yellow": {
-          "5-vivid": "#fff5c2",
-          "10-vivid": "#fee685",
-          "20-vivid": "#face00",
-          "30-vivid": "#ddaa01"
-      },
-      "mint": {
-          "5-cool": "#dbf6ed",
-          "10-cool": "#c4eeeb",
-          "5-vivid": "#c9fbeb",
-          "10-vivid": "#83fcd4"
-      },
-      "orange-warm": {
-          "5": "#faeee5",
-          "5-vivid": "#fff3ea"
-      },
-      "gray-cool": {
-          "2": "#f7f9fa"
-      },
-      "gold": {
-          "5": "#f5f0e6",
-          "10": "#f1e5cd",
-          "20": "#dec69a",
-          "30": "#c7a97b"
-      },
-      "mint-cool": {
-          "5": "#e0f7f6",
-          "10": "#c4eeeb"
-      },
-      "green-cool": {
-          "5": "#ccdcca",
-          "5-vivid": "#e3f5e1"
-      },
-      "blue": {
-          "5-cool-vivid": "#e1f3f8",
-          "10-cool-vivid": "#c3ebfa",
-          "20-cool-vivid": "#97d4ea",
-          "30-cool-vivid": "#59b9de",
-          "40-cool-vivid": "#28a0cb",
-          "50-cool-vivid": "#0d7ea2"
-      }
-    },
-    "font": {
-      "noto-sans-bold": "Noto Sans Bold",
-      "noto-sans-bold-italic": "Noto Sans Bold Italic",
-      "noto-sans-italic": "Noto Sans Italic",
-      "noto-sans-light": "Noto Sans Light",
-      "noto-sans-light-italic": "Noto Sans Light Italic",
-      "noto-sans-medium": "Noto Sans Medium",
-      "noto-sans-medium-italic": "Noto Sans Medium Italic",
-      "noto-sans-regular": "Noto Sans Regular",
-      "noto-sans-semicondensed-bold": "Noto Sans SemiCondensed Bold",
-      "noto-sans-semicondensed-bold-italic": "Noto Sans SemiCondensed Bold Italic",
-      "noto-sans-semicondensed-italic": "Noto Sans SemiCondensed Italic",
-      "noto-sans-semicondensed-light": "Noto Sans SemiCondensed Light",
-      "noto-sans-semicondensed-light-italic": "Noto Sans SemiCondensed Light Italic",
-      "noto-sans-semicondensed-medium": "Noto Sans SemiCondensed Medium",
-      "noto-sans-semicondensed-medium-italic": "Noto Sans SemiCondensed Medium Italic",
-      "noto-sans-semicondensed-regular": "Noto Sans SemiCondensed Regular",
-      "pt-mono": "PT Mono Regular",
-      "label": ["Noto Sans Regular"]
-    },
-    "fontSize": {
-      "sm": 10,
-      "md": 12,
-      "lg": 16
-    }
-  },
-  "background": {
-    "background": {
-      "color": "hsl(38, 35%, 91%)"
-    }
-  },
-  "base": {
-    "land": {
-      "color": {
-        "fill": {
-          "low": "hsl(31, 34.0%, 95.8%)",
-          "high": "hsl(31, 34.0%, 95.8%)"
-        },
-        "fillOutline": "$globals.color.transparent"
-      }
-    },
-    "water": {
-      "ocean": {
-        "color": {
-          "fill": "hsl(200, 88%, 72%)",
-          "fillOutline": "$globals.color.transparent"
-        }
-      },
-      "lakes": {
-        "color": {
-          "fill": "hsl(200, 98%, 83%)",
-          "fillOutline": "$globals.color.transparent",
-          "line": "hsl(200, 98%, 83%)",
-          "text": "$globals.color.blue.50-cool-vivid"
-        }
-      },
-      "intermittent": {
-        "color": {
-          "fill": "hsl(200, 98%, 83%)",
-          "fillOutline": "$globals.color.transparent",
-          "line": "hsl(200, 98%, 83%)"
-        }
-      }
-    },
-    "bathymetry": {
-      "color": {
-        "fill": {
-"g0":       "hsl(200, 98%, 82%)",
-"g1":       "hsl(200, 97%, 81%)",
-"g2":       "hsl(200, 96%, 80%)",
-"g3":       "hsl(200, 95%, 79%)",
-"g4":       "hsl(200, 94%, 78%)",
-"g5":       "hsl(200, 92%, 76%)",
-"g6":       "hsl(200, 91%, 75%)",
-"g7":       "hsl(200, 90%, 74%)",
-"g8":       "hsl(200, 89%, 73%)",
-"g9":       "hsl(200, 88%, 72%)",
-          "fallback": "#c7e4f0"
-        },
-        "fillOutline": "$globals.color.transparent"
-      }
-    },
-    "land_cover": {
-      "opacity": ["interpolate",["linear"],["zoom"],
-      0,1,
-      6,1,
-      11,0.2,
-      13,0
-    ],
-      "color": {
-        "fill": {
-"barren":   "hsl(48,  52%, 87%)",
-"forest":   "hsl(122, 52%, 76%)",
-"grass":    "hsl(95,  60%, 79%)",
-"moss":     "hsl(138, 48%, 72%)",
-"shrub":    "hsl(78,  58%, 80%)",
-"crop":     "hsl(62,  62%, 81%)",
-"wetland":  "hsl(178, 56%, 80%)",
-"mangrove": "hsl(162, 54%, 76%)",
-"snow":     "hsl(210, 22%, 96%)"
-        },
-        "fillOutline": "$globals.color.transparent"
-      }
-    },
-    "land_use": {
-      "color": {
-        "fill": "hsla(222, 49%, 91%, 1)",
-        "fillOutline": "hsla(222, 49%, 81%, 1)"
-      },
-      "park": {
-        "color": {
-          "fill": "hsl(118, 38%, 88%)",
-          "fillOutline": "hsl(118, 38%, 86%)"
-        }
-      },
-      "medical": {
-        "color": {
-          "fill": "hsl(0,38%, 95%)",
-          "fillOutline": "hsl(0,38%, 94%)"
-        }
-      },
-      "education": {
-        "color": {
-          "fill": "hsl(48, 42%, 93%)",
-          "fillOutline": "hsl(48, 42%, 91%)"
-        }
-      },
-      "golf": {
-        "color": {
-          "fill": "hsl(118, 38%, 88%)",
-          "fillOutline": "hsl(118, 38%, 86%)"
-        }
-      },
-      "military": {
-        "color": {
-          "fill": "hsla(213, 10%, 97%, 1)",
-          "fillOutline": "hsla(213, 19%, 96%, 1)"
-        }
-      },
-      "cemetery": {
-        "color": {
-          "fill": "hsl(75,  28%, 92%)",
-          "fillOutline": "hsl(75,  28%, 90%)"
-        }
-      }
-    },
-    "infrastructure": {
-      "airport": {
-        "color": {
-          "fill": "hsl(220, 42%, 92%)",
-          "fillOutline": "hsl(220, 42%, 90%)"
-        }
-      },
-      "aerialway": {
-        "color": {
-          "fill": "hsl(220, 42%, 92%)",
-          "fillOutline": "hsl(220, 42%, 88%)",
-          "line": "hsl(220, 42%, 88%)"
-        }
-      },
-      "pier": {
-        "color": {
-          "fill": "hsl(31, 34%, 93%)",
-          "fillOutline": "hsl(31, 34%, 92%)",
-          "line": "hsl(31, 34%, 93%)"
-        }
-      }
-    }
-  },
-  "buildings": {
-    "building": {
-      "color": {
-        "fill": "hsl(31, 35%, 93%)",
-        "fillExtrusion": "hsla(31, 30%, 87%, 1)",
-        "fillOutline": "hsl(31, 35%, 91%)"
-      }
-    },
-    "building_part": {
-      "color": {
-        "fill": "hsl(31, 35%, 91%)",
-        "fillExtrusion": "hsla(31, 30%, 86%, 1)",
-        "fillOutline": "hsl(31, 35%, 89%)"
-      }
-    }
-  },
-  "transportation": {
-    "segment": {
-      "color": {
-        "line": "hsla(0, 100%, 100%, 1)",
-        "text": "hsla(214, 100%, 40%, 1)",
-        "textHalo": "hsla(0, 100%, 100%, 1)"
-      }
-    },
-    "motorway": {
-      "color": {
-        "roadFill": "hsl(38, 18%, 85%)",
-        "casing": "hsl(38, 18%, 77%)",
-        "text": "hsl(38, 18%, 40%)",
-        "textHalo": "hsla(0, 100%, 100%, 0.7)"
-      }
-    },
-    "road": {
-      "color": {
-        "roadFill": "hsl(0, 100%, 100%)",
-        "casing": "hsla(213, 19%, 91%, 1)",
-        "text": "hsl(38, 18%, 40%)",
-        "textHalo": "hsla(0, 100%, 100%, 0.7)"
-      }
-    },
-    "pedestrian": {
-      "color": {
-        "roadFill": "hsla(0, 100%, 100%, 0.7)",
-        "casing": "hsla(0, 100%, 100%, 0)"
-      }
-    },
-    "rail": {
-      "color": {
-        "line": "hsla(38, 38%, 80%, 0.7)",
-        "text": "hsl(38, 18%, 40%)",
-        "textHalo": "hsla(0, 100%, 100%, 0.7)"
-      }
-    },
-    "water": {
-      "color": {
-        "line": "hsla(210, 16%, 82%, 0.4)",
-        "text": "hsl(38, 18%, 40%)",
-        "textHalo": "hsla(0, 100%, 100%, 0.7)"
-      }
-    }
-  },
-  "addresses": {
-    "address": {
-      "color": {
-        "text": "$globals.color.gray.90",
-        "textHalo": "hsla(0, 100%, 100%, 0.3)"
-      }
-    }
-  },
-  "places": {
-    "place": {
-      "color": {
-        "circle": "#ca2b45",
-        "text": "$globals.color.gray.90",
-        "textHalo": "hsla(0, 100%, 100%, 0.3)"
-      }
-    }
-  },
-  "divisions": {
-    "division": {
-      "font": ["$globals.font.pt-mono"],
-      "fonts": {
-          "bold": ["$globals.font.noto-sans-bold"],
-          "medium": ["$globals.font.noto-sans-semicondensed-medium"],
-          "medium2": ["$globals.font.noto-sans-medium"],
-          "regular": ["$globals.font.noto-sans-semicondensed-regular"],
-          "light": ["$globals.font.noto-sans-light"]
-        },
-      "country": {
-        "font": ["$globals.font.noto-sans-semicondensed-medium"],
-        "color": {
-          "text": "hsl(285, 25%, 50%)",
-          "textHalo":  "hsla(0, 100%, 100%, 0.4)"
-        }
-      },
-      "region": {
-        "color": {
-          "text": "hsl(285, 25%, 50%)",
-          "textHalo":  "hsla(0, 100%, 100%, 0.6)"
-        }
-      },
-      "county": {
-        "color": {
-          "text": "hsl(285, 25%, 50%)",
-          "textHalo":  "hsla(0, 100%, 100%, 0.4)"
-        }
-      },
-      "city": {
-        "color": {
-          "text": "hsl(285, 25%, 50%)",
-          "textHalo":  "hsla(0, 100%, 100%, 0.4)"
-        }
-      },
-      "other": {
-        "color": {
-          "text": "hsl(285, 25%, 50%)",
-          "textHalo":  "hsla(0, 100%, 100%, 0.4)"
-        }
-      }
-    },
-    "division_area": {
-      "color": {
-        "fill": "hsla(0, 0%, 0%, 0)",
-        "fillOutline": "hsla(0, 0%, 0%, 0)"
-      }
-    },
-    "division_boundary": {
-      "color": {
-        "line": "hsl(285, 25%, 50%)",
-        "maritime": "$globals.color.white"
-      }
-    }
-  },
-  "inspect": {
-    "water": {
-      "color": {
-        "fill": "hsla(209, 100%, 50%, 1)",
-        "line": "hsla(209, 100%, 50%, 1)",
-        "text": "hsla(209, 100%, 50%, 1)",
-        "textHalo": "hsla(0, 0%, 100%, 1)"
-      }
-    },
-    "land": {
-      "color": {
-        "fill": "hsla(31, 100%, 50%, 1)",
-        "line": "hsla(31, 100%, 50%, 1)",
-        "text": "hsla(31, 100%, 50%, 1)",
-        "textHalo": "hsla(0, 0%, 100%, 1)"
-      }
-    },
-    "land_cover": {
-      "color": {
-        "fill": "hsla(98, 60%, 45%, 1)"
-      }
-    },
-    "land_use": {
-      "color": {
-        "fill": "hsla(254, 80%, 55%, 1)",
-        "line": "hsla(254, 80%, 55%, 1)",
-        "text": "hsla(254, 80%, 55%, 1)",
-        "textHalo": "hsla(0, 0%, 100%, 1)"
-      }
-    },
-    "bathymetry": {
-      "color": {
-        "fill": "hsla(195, 80%, 50%, 1)"
-      }
-    },
-    "segment": {
-      "color": {
-        "line": "hsla(214, 80%, 60%, 1)",
-        "text": "hsla(214, 80%, 60%, 1)",
-        "textHalo": "hsla(0, 0%, 100%, 1)"
-      }
-    },
-    "division": {
-      "color": {
-        "fill": "hsla(17, 70%, 55%, 1)",
-        "line": "hsla(201, 70%, 40%, 1)",
-        "circle": "hsla(210, 50%, 50%, 1)",
-        "circleStroke": "hsla(0, 0%, 100%, 0.8)",
-        "text": "hsla(210, 50%, 50%, 1)",
-        "textHalo": "hsla(0, 0%, 100%, 1)"
-      }
-    },
-    "building": {
-      "color": {
-        "fill": "hsla(344, 100%, 50%, 1)"
-      }
-    },
-    "building_part": {
-      "color": {
-        "fill": "hsla(344, 80%, 60%, 1)"
-      }
-    },
-    "place": {
-      "color": {
-        "circle": "hsla(249, 100%, 55%, 1)",
-        "circleStroke": "hsla(0, 0%, 100%, 0.8)",
-        "text": "hsla(249, 100%, 55%, 1)",
-        "textHalo": "hsla(0, 0%, 100%, 1)"
-      }
-    },
-    "address": {
-      "color": {
-        "circle": "hsla(43, 100%, 50%, 1)",
-        "circleStroke": "hsla(0, 0%, 100%, 0.8)",
-        "text": "hsla(43, 100%, 50%, 1)",
-        "textHalo": "hsla(0, 0%, 100%, 1)"
       }
     }
   }

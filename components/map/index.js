@@ -1,66 +1,23 @@
 import overture from "./overture.json";
+import colors from "./tokens/primitive/colors.json";
+import fonts from "./tokens/primitive/fonts.json";
+import semanticColors from "./tokens/semantic/colors.json";
+import semanticFonts from "./tokens/semantic/fonts.json";
 import overtureInspect from "./overture-inspect.json";
-import { defaultLayers, inspectLayers } from "./layer-lists";
+import inspectMode from "./modes/inspect/inspect.json";
+import exploreMode from "./modes/explore/explore.json";
+import defaultLayers from "./modes/explore/layers.json";
+import inspectLayers from "./modes/inspect/layers.json";
+
+// Assemble primitives from split files
+const primitives = { color: { ...colors, inspect: inspectMode.color }, font: fonts };
 
 // ---------------------------------------------------------------------------
-// Resolve $globals references within overture token definitions
+// Resolve $globals references within semantic theme token definitions
 // ---------------------------------------------------------------------------
 
-const overtureGlobals = overture["overture:globals"];
-
-function resolveTokenValue(val) {
-  if (typeof val === "string" && val.startsWith("$globals.")) {
-    const parts = val.slice("$globals.".length).split(".");
-    let resolved = overtureGlobals;
-    for (const part of parts) {
-      resolved = resolved?.[part];
-      if (resolved === undefined) return val;
-    }
-    return resolved;
-  }
-  if (val && typeof val === "object" && !Array.isArray(val)) {
-    const result = {};
-    for (const [k, v] of Object.entries(val)) {
-      result[k] = resolveTokenValue(v);
-    }
-    return result;
-  }
-  if (Array.isArray(val)) {
-    return val.map(resolveTokenValue);
-  }
-  return val;
-}
-
-for (const key of Object.keys(overture)) {
-  if (key.startsWith("overture:")) continue;
-  overture[key] = resolveTokenValue(overture[key]);
-}
-
-// ---------------------------------------------------------------------------
-// Groups for LayerTree
-// ---------------------------------------------------------------------------
-
-export const themes = overture["overture:themes"];
-export const groups = overture["overture:groups"];
-export const globals = overture["overture:globals"];
-
-// ---------------------------------------------------------------------------
-// Token access
-// ---------------------------------------------------------------------------
-
-/**
- * Get the token data for a specific theme/type from overture.json.
- * Returns color/font/selection values.
- */
-export function getLayerTokens(theme, type) {
-  return overture[theme]?.[type];
-}
-
-/**
- * Deep-merge override onto base. Returns a new object.
- * Only merges plain objects; arrays and primitives are replaced.
- */
-function deepMerge(base, override) {
+// Deep merge utility
+function merge(base, override) {
   if (!override) return base;
   const result = { ...base };
   for (const key of Object.keys(override)) {
@@ -71,7 +28,7 @@ function deepMerge(base, override) {
       typeof override[key] === "object" &&
       !Array.isArray(override[key])
     ) {
-      result[key] = deepMerge(result[key], override[key]);
+      result[key] = merge(result[key], override[key]);
     } else {
       result[key] = override[key];
     }
@@ -79,13 +36,113 @@ function deepMerge(base, override) {
   return result;
 }
 
+// Pass 1: Resolve $globals.* in semantic tokens
+function resolveGlobals(val) {
+  if (typeof val === "string" && val.startsWith("$globals.")) {
+    const parts = val.slice("$globals.".length).split(".");
+    let resolved = primitives;
+    for (const part of parts) {
+      resolved = resolved?.[part];
+      if (resolved === undefined) return val;
+    }
+    return resolved;
+  }
+  if (val && typeof val === "object" && !Array.isArray(val)) {
+    const result = {};
+    for (const [k, v] of Object.entries(val)) {
+      result[k] = resolveGlobals(v);
+    }
+    return result;
+  }
+  if (Array.isArray(val)) {
+    return val.map(resolveGlobals);
+  }
+  return val;
+}
+
+const resolvedSemantics = {};
+for (const key of Object.keys(semanticColors)) {
+  resolvedSemantics[key] = resolveGlobals(semanticColors[key]);
+}
+
+const resolvedSemanticFonts = {};
+for (const key of Object.keys(semanticFonts)) {
+  resolvedSemanticFonts[key] = resolveGlobals(semanticFonts[key]);
+}
+
+// Pass 2: Resolve $semantic.* and $globals.* in explore mode tokens
+function resolveExplore(val) {
+  if (typeof val === "string" && val.startsWith("$semantic.")) {
+    const parts = val.slice("$semantic.".length).split(".");
+    let resolved = resolvedSemantics;
+    for (const part of parts) {
+      resolved = resolved?.[part];
+      if (resolved === undefined) return val;
+    }
+    return resolved;
+  }
+  if (typeof val === "string" && val.startsWith("$globals.")) {
+    const parts = val.slice("$globals.".length).split(".");
+    let resolved = primitives;
+    for (const part of parts) {
+      resolved = resolved?.[part];
+      if (resolved === undefined) return val;
+    }
+    return resolved;
+  }
+  if (val && typeof val === "object" && !Array.isArray(val)) {
+    const result = {};
+    for (const [k, v] of Object.entries(val)) {
+      result[k] = resolveExplore(v);
+    }
+    return result;
+  }
+  if (Array.isArray(val)) {
+    return val.map(resolveExplore);
+  }
+  return val;
+}
+
+const resolvedExplore = {};
+for (const key of Object.keys(exploreMode)) {
+  resolvedExplore[key] = resolveExplore(exploreMode[key]);
+}
+
+// Merge resolved explore renditions with resolved semantic fonts
+const themeTokens = merge(resolvedExplore, resolvedSemanticFonts);
+
+// Resolve overture inspect tokens
+for (const key of Object.keys(overtureInspect)) {
+  overtureInspect[key] = resolveGlobals(overtureInspect[key]);
+}
+
+// ---------------------------------------------------------------------------
+// Groups for LayerTree
+// ---------------------------------------------------------------------------
+
+export const themes = overture["overture:themes"];
+export const groups = overture["overture:groups"];
+export const globals = primitives;
+
+// ---------------------------------------------------------------------------
+// Token access
+// ---------------------------------------------------------------------------
+
 /**
- * Get inspect tokens — merge overture base + inspect overrides.
+ * Get the token data for a specific theme/type from theme tokens.
+ * Returns color/font/selection values.
+ */
+export function getLayerTokens(theme, type) {
+  return themeTokens[theme]?.[type];
+}
+
+/**
+ * Get inspect tokens — merge semantic base + inspect overrides.
  */
 export function getInspectTokens(theme, type) {
-  const base = overture[theme]?.[type] || {};
+  const base = themeTokens[theme]?.[type] || {};
   const inspect = overtureInspect[theme]?.[type] || {};
-  return deepMerge(base, inspect);
+  return merge(base, inspect);
 }
 
 // ---------------------------------------------------------------------------
@@ -120,8 +177,8 @@ function buildExtractExpression(column, key) {
 }
 
 /**
- * Resolve $theme.type.property references in a layer spec against overture tokens.
- * Supports $globals.key.subkey for shared variables.
+ * Resolve $theme.type.property references in a layer spec against tokens.
+ * Supports $globals.key.subkey for primitives.
  * Supports $extract:column.key for stringified JSON column access.
  */
 function resolveLayerSpec(spec) {
@@ -136,7 +193,7 @@ function resolveLayerSpec(spec) {
       return JSON.stringify(buildExtractExpression(column, key));
     }
 
-    // $globals.color.selection → overture["overture:globals"].color.selection
+    // $globals.color.transparent → primitives.color.transparent
     if (parts[0] === "globals") {
       let val = globals;
       for (let i = 1; i < parts.length; i++) {
@@ -146,10 +203,10 @@ function resolveLayerSpec(spec) {
       return JSON.stringify(val);
     }
 
-    // $theme.type.property → overture[theme][type].property
+    // $theme.type.property → themeTokens[theme][type].property
     const theme = parts[0];
     const type = parts[1];
-    let val = overture[theme]?.[type];
+    let val = themeTokens[theme]?.[type];
     if (!val) return match;
     for (let i = 2; i < parts.length; i++) {
       val = val?.[parts[i]];

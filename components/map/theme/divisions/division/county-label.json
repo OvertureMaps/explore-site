@@ -1,0 +1,103 @@
+{
+  "id": "county-label",
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division",
+  "maxzoom": 13,
+  "filter": [
+    "in",
+    [
+      "get",
+      "subtype"
+    ],
+    [
+      "literal",
+      [
+        "macrocounty",
+        "county"
+      ]
+    ]
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-font": [
+      "match",
+      [
+        "get",
+        "subtype"
+      ],
+      [
+        "county"
+      ],
+      [
+        "literal",
+        "$divisions.division.county.font.prominent"
+      ],
+      [
+        "literal",
+        "$divisions.division.county.font.regular"
+      ]
+    ],
+    "text-size": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      8,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "county",
+        9,
+        6
+      ],
+      10,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "county",
+        12,
+        9
+      ],
+      12,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "county",
+        18,
+        15
+      ]
+    ],
+    "text-transform": "uppercase",
+    "text-letter-spacing": 0.125,
+    "text-max-width": 8,
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$divisions.division.county.color.text",
+    "text-halo-color": "$divisions.division.county.color.textHalo",
+    "text-halo-width": 2
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:group": "divisions-division",
+    "overture:selectable": true,
+    "overture:item": "county-label"
+  }
+}

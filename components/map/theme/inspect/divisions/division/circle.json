@@ -1,0 +1,25 @@
+{
+  "id": "inspect-division-circle",
+  "type": "circle",
+  "source": "divisions",
+  "source-layer": "division",
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:group": "divisions-division",
+    "overture:selectable": true
+  },
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "paint": {
+    "circle-color": "$inspect.division.color.circle",
+    "circle-radius": 3,
+    "circle-stroke-width": 1,
+    "circle-stroke-color": "$inspect.division.color.circleStroke"
+  }
+}

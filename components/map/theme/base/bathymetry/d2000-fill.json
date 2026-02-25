@@ -1,0 +1,36 @@
+{
+  "id": "bathymetry-d2000-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "bathymetry",
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "==",
+      [
+        "get",
+        "depth"
+      ],
+      2000
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.bathymetry.color.fill.d2000",
+    "fill-outline-color": "$base.bathymetry.color.fillOutline",
+    "fill-opacity": 1
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "bathymetry",
+    "overture:group": "base-bathymetry",
+    "overture:selectable": true,
+    "overture:item": "bathymetry-d2000-fill"
+  }
+}

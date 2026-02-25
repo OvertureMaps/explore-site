@@ -1,0 +1,37 @@
+{
+  "id": "land-use-park-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_use",
+  "minzoom": 12,
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:selectable": true,
+    "overture:item": "park"
+  },
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "in",
+      [
+        "get",
+        "class"
+      ],
+      ["literal", ["village_green", "state_park", "park",
+        "national_park", "golf_course", "dog_park"]]
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.land_use.park.color.fill",
+    "fill-outline-color": "$base.land_use.park.color.fillOutline"
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "background": {
+    "background": {
+      "fill": "$semantic.background.background.primary"
+    }
+  },
+  "base": {
+    "land": {
+      "fill": "$semantic.base.land.primary",
+      "fillOutline": "$globals.color.transparent"
+    },
+    "water": {
+      "ocean": {
+        "fill": "$semantic.base.water.ocean.primary",
+        "fillOutline": "$globals.color.transparent"
+      },
+      "lakes": {
+        "fill": "$semantic.base.water.lakes.primary",
+        "fillOutline": "$globals.color.transparent",
+        "line": "$semantic.base.water.lakes.primary",
+        "text": "$semantic.base.water.lakes.label"
+      },
+      "intermittent": {
+        "fill": "$semantic.base.water.intermittent.primary",
+        "fillOutline": "$globals.color.transparent",
+        "line": "$semantic.base.water.intermittent.primary"
+      }
+    },
+    "bathymetry": {
+      "fill": {
+        "d0": "$semantic.base.bathymetry.d0",
+        "d100": "$semantic.base.bathymetry.d100",
+        "d500": "$semantic.base.bathymetry.d500",
+        "d1000": "$semantic.base.bathymetry.d1000",
+        "d1500": "$semantic.base.bathymetry.d1500",
+        "d2000": "$semantic.base.bathymetry.d2000",
+        "d2500": "$semantic.base.bathymetry.d2500",
+        "d3000": "$semantic.base.bathymetry.d3000"
+      },
+      "fillOutline": "$globals.color.transparent"
+    },
+    "land_cover": {
+      "opacity": ["interpolate", ["linear"], ["zoom"],
+        0, 1,
+        6, 1,
+        11, 0.2,
+        13, 0
+      ],
+      "fill": {
+        "barren": "$semantic.base.land_cover.barren",
+        "forest": "$semantic.base.land_cover.forest",
+        "grass": "$semantic.base.land_cover.grass",
+        "moss": "$semantic.base.land_cover.moss",
+        "shrub": "$semantic.base.land_cover.shrub",
+        "crop": "$semantic.base.land_cover.crop",
+        "wetland": "$semantic.base.land_cover.wetland",
+        "mangrove": "$semantic.base.land_cover.mangrove",
+        "snow": "$semantic.base.land_cover.snow"
+      },
+      "fillOutline": "$globals.color.transparent"
+    },
+    "land_use": {
+      "park": {
+        "fill": "$semantic.base.land_use.park.primary",
+        "fillOutline": "$semantic.base.land_use.park.secondary"
+      },
+      "recreation": {
+        "fill": "$semantic.base.land_use.recreation.primary",
+        "fillOutline": "$semantic.base.land_use.recreation.secondary"
+      },
+      "medical": {
+        "fill": "$semantic.base.land_use.medical.primary",
+        "fillOutline": "$semantic.base.land_use.medical.secondary"
+      },
+      "college_university": {
+        "fill": "$semantic.base.land_use.college_university.primary",
+        "fillOutline": "$semantic.base.land_use.college_university.secondary"
+      },
+      "military": {
+        "fill": "$semantic.base.land_use.military.primary",
+        "fillOutline": "$semantic.base.land_use.military.secondary"
+      },
+      "cemetery": {
+        "fill": "$semantic.base.land_use.cemetery.primary",
+        "fillOutline": "$semantic.base.land_use.cemetery.secondary"
+      }
+    },
+    "infrastructure": {
+      "airport": {
+        "fill": "$semantic.base.infrastructure.airport.primary",
+        "fillOutline": "$semantic.base.infrastructure.airport.secondary"
+      },
+      "aerialway": {
+        "fill": "$semantic.base.infrastructure.aerialway.primary",
+        "fillOutline": "$semantic.base.infrastructure.aerialway.secondary",
+        "line": "$semantic.base.infrastructure.aerialway.secondary"
+      },
+      "pier": {
+        "fill": "$semantic.base.infrastructure.pier.primary",
+        "fillOutline": "$semantic.base.infrastructure.pier.secondary",
+        "line": "$semantic.base.infrastructure.pier.primary"
+      }
+    }
+  },
+  "buildings": {
+    "building": {
+      "fill": "$semantic.buildings.building.primary",
+      "fillExtrusion": "$semantic.buildings.building.tertiary",
+      "fillOutline": "$semantic.buildings.building.secondary"
+    },
+    "building_part": {
+      "fill": "$semantic.buildings.building_part.primary",
+      "fillExtrusion": "$semantic.buildings.building_part.tertiary",
+      "fillOutline": "$semantic.buildings.building_part.secondary"
+    }
+  },
+  "transportation": {
+    "segment": {
+      "line": "$semantic.transportation.segment.primary"
+    },
+    "motorway": {
+      "roadFill": "$semantic.transportation.motorway.primary",
+      "casing": "$semantic.transportation.motorway.secondary",
+      "text": "$semantic.transportation.motorway.label",
+      "textHalo": "$semantic.transportation.motorway.labelHalo"
+    },
+    "road": {
+      "roadFill": "$semantic.transportation.road.primary",
+      "casing": "$semantic.transportation.road.secondary",
+      "text": "$semantic.transportation.road.label",
+      "textHalo": "$semantic.transportation.road.labelHalo"
+    },
+    "pedestrian": {
+      "roadFill": "$semantic.transportation.pedestrian.primary",
+      "casing": "$globals.color.transparent"
+    },
+    "rail": {
+      "line": "$semantic.transportation.rail.primary",
+      "text": "$semantic.transportation.rail.label",
+      "textHalo": "$semantic.transportation.rail.labelHalo"
+    },
+    "water": {
+      "line": "$semantic.transportation.water.primary",
+      "text": "$semantic.transportation.water.label",
+      "textHalo": "$semantic.transportation.water.labelHalo"
+    }
+  },
+  "addresses": {
+    "address": {
+      "text": "$semantic.addresses.address.label",
+      "textHalo": "$semantic.addresses.address.labelHalo"
+    }
+  },
+  "places": {
+    "place": {
+      "text": "$semantic.places.place.label",
+      "textHalo": "$semantic.places.place.labelHalo"
+    }
+  },
+  "divisions": {
+    "division": {
+      "country": {
+        "text": "$semantic.divisions.division.country.label",
+        "textHalo": "$semantic.divisions.division.country.labelHalo"
+      },
+      "region": {
+        "text": "$semantic.divisions.division.region.label",
+        "textHalo": "$semantic.divisions.division.region.labelHalo"
+      },
+      "county": {
+        "text": "$semantic.divisions.division.county.label",
+        "textHalo": "$semantic.divisions.division.county.labelHalo"
+      },
+      "locality": {
+        "text": "$semantic.divisions.division.locality.label",
+        "textHalo": "$semantic.divisions.division.locality.labelHalo"
+      },
+      "localadmin_local": {
+        "text": "$semantic.divisions.division.localadmin_local.label",
+        "textHalo": "$semantic.divisions.division.localadmin_local.labelHalo"
+      }
+    },
+    "division_boundary": {
+      "line": "$semantic.divisions.division_boundary.primary",
+      "maritime": "$semantic.divisions.division_boundary.secondary"
+    }
+  },
+  "inspect": {
+    "water": {
+      "fill": "$semantic.inspect.water.primary",
+      "line": "$semantic.inspect.water.primary",
+      "text": "$semantic.inspect.water.label",
+      "textHalo": "$semantic.inspect.water.labelHalo"
+    },
+    "land": {
+      "fill": "$semantic.inspect.land.primary",
+      "line": "$semantic.inspect.land.primary",
+      "text": "$semantic.inspect.land.label",
+      "textHalo": "$semantic.inspect.land.labelHalo"
+    },
+    "land_cover": {
+      "fill": "$semantic.inspect.land_cover.primary"
+    },
+    "land_use": {
+      "fill": "$semantic.inspect.land_use.primary",
+      "line": "$semantic.inspect.land_use.primary",
+      "text": "$semantic.inspect.land_use.label",
+      "textHalo": "$semantic.inspect.land_use.labelHalo"
+    },
+    "bathymetry": {
+      "fill": "$semantic.inspect.bathymetry.primary"
+    },
+    "segment": {
+      "line": "$semantic.inspect.segment.primary",
+      "text": "$semantic.inspect.segment.label",
+      "textHalo": "$semantic.inspect.segment.labelHalo"
+    },
+    "division": {
+      "fill": "$semantic.inspect.division.primary",
+      "line": "$semantic.inspect.division.secondary",
+      "circle": "$semantic.inspect.division.marker",
+      "circleStroke": "$semantic.inspect.division.markerOutline",
+      "text": "$semantic.inspect.division.label",
+      "textHalo": "$semantic.inspect.division.labelHalo"
+    },
+    "building": {
+      "fill": "$semantic.inspect.building.primary"
+    },
+    "building_part": {
+      "fill": "$semantic.inspect.building_part.primary"
+    },
+    "place": {
+      "circle": "$semantic.inspect.place.marker",
+      "circleStroke": "$semantic.inspect.place.markerOutline",
+      "text": "$semantic.inspect.place.label",
+      "textHalo": "$semantic.inspect.place.labelHalo"
+    },
+    "address": {
+      "circle": "$semantic.inspect.address.marker",
+      "circleStroke": "$semantic.inspect.address.markerOutline",
+      "text": "$semantic.inspect.address.label",
+      "textHalo": "$semantic.inspect.address.labelHalo"
+    }
+  }
+}

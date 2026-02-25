@@ -1,27 +1,27 @@
 {
   "base": {
-    "land": { "color": { "fill": "hsla(31, 100%, 50%, 1)" } },
-    "water": { "color": { "fill": "hsla(209, 100%, 50%, 1)" } },
-    "bathymetry": { "color": { "fill": "hsla(195, 80%, 50%, 1)" } },
-    "land_cover": { "color": { "fill": "hsla(98, 60%, 45%, 1)" } },
-    "land_use": { "color": { "fill": "hsla(254, 80%, 55%, 1)" } }
+    "land": { "color": { "fill": "$globals.color.inspect.land" } },
+    "water": { "color": { "fill": "$globals.color.inspect.water" } },
+    "bathymetry": { "color": { "fill": "$globals.color.inspect.bathymetry" } },
+    "land_cover": { "color": { "fill": "$globals.color.inspect.landCover" } },
+    "land_use": { "color": { "fill": "$globals.color.inspect.landUse" } }
   },
   "buildings": {
-    "building": { "color": { "fill": "hsla(344, 100%, 50%, 1)" } },
-    "building_part": { "color": { "fillExtrusion": "hsla(344, 80%, 60%, 1)" } }
+    "building": { "color": { "fill": "$globals.color.inspect.building" } },
+    "building_part": { "color": { "fillExtrusion": "$globals.color.inspect.buildingPart" } }
   },
   "transportation": {
-    "segment": { "color": { "line": "hsla(214, 80%, 60%, 1)" } }
+    "segment": { "color": { "line": "$globals.color.inspect.segment" } }
   },
   "addresses": {
-    "address": { "color": { "circle": "hsla(43, 100%, 50%, 1)" } }
+    "address": { "color": { "circle": "$globals.color.inspect.address" } }
   },
   "places": {
-    "place": { "color": { "circle": "hsla(249, 100%, 55%, 1)" } }
+    "place": { "color": { "circle": "$globals.color.inspect.place" } }
   },
   "divisions": {
-    "division": { "color": { "text": "hsla(210, 50%, 50%, 1)" } },
-    "division_area": { "color": { "fill": "hsla(17, 70%, 55%, 1)" } },
-    "division_boundary": { "color": { "line": "hsla(201, 70%, 40%, 1)" } }
+    "division": { "color": { "text": "$globals.color.inspect.divisionPoint" } },
+    "division_area": { "color": { "fill": "$globals.color.inspect.divisionFill" } },
+    "division_boundary": { "color": { "line": "$globals.color.inspect.divisionLine" } }
   }
 }

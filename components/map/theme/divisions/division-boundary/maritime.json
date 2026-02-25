@@ -1,0 +1,128 @@
+{
+  "id": "division-boundary-maritime",
+  "type": "line",
+  "source": "divisions",
+  "source-layer": "division_boundary",
+  "minzoom": 8,
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "get",
+        "class"
+      ],
+      "maritime"
+    ]
+  ],
+  "paint": {
+    "line-color": "$divisions.division_boundary.color.maritime",
+    "line-width": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      8,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "country",
+        1.5,
+        "dependency",
+        1.5,
+        "region",
+        1.0,
+        "macroregion",
+        1.0,
+        "county",
+        0.8,
+        "macrocounty",
+        0.8,
+        0.1
+      ],
+      12,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "country",
+        1.75,
+        "dependency",
+        1.75,
+        "region",
+        1.25,
+        "macroregion",
+        1.25,
+        "county",
+        0.9,
+        "macrocounty",
+        0.9,
+        0.15
+      ],
+      16,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        "country",
+        2,
+        "dependency",
+        2,
+        "region",
+        1.5,
+        "macroregion",
+        1.5,
+        "county",
+        1,
+        "macrocounty",
+        1,
+        0.2
+      ]
+    ],
+    "line-opacity": [
+      "match",
+      [
+        "get",
+        "subtype"
+      ],
+      "country",
+      0.35,
+      "dependency",
+      0.35,
+      "region",
+      0.45,
+      "macroregion",
+      0.45,
+      "county",
+      0.55,
+      "macrocounty",
+      0.55,
+      0.5
+    ],
+    "line-dasharray": [
+      2,
+      2
+    ]
+  },
+  "layout": {
+    "line-cap": "butt",
+    "line-join": "round"
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_boundary",
+    "overture:group": "divisions-boundary",
+    "overture:selectable": true,
+    "overture:item": "division-boundary-maritime"
+  }
+}

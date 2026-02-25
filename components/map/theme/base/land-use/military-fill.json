@@ -1,0 +1,36 @@
+{
+  "id": "land-use-military-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_use",
+  "minzoom": 12,
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:selectable": true,
+    "overture:item": "military"
+  },
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "in",
+      [
+        "get",
+        "class"
+      ],
+      ["literal", ["base", "military", "naval_base"]]
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.land_use.military.color.fill",
+    "fill-outline-color": "$base.land_use.military.color.fillOutline"
+  }
+}

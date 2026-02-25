@@ -1,0 +1,36 @@
+{
+  "id": "land-use-recreation-fill",
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_use",
+  "minzoom": 12,
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:selectable": true,
+    "overture:item": "recreation"
+  },
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "in",
+      [
+        "get",
+        "class"
+      ],
+      ["literal", ["camp_site", "fairway", "garden", "pitch", "playground", "recreation_ground", "rough"]]
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.land_use.recreation.color.fill",
+    "fill-outline-color": "$base.land_use.recreation.color.fillOutline"
+  }
+}
