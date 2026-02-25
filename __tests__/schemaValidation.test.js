@@ -93,6 +93,12 @@ describe('Zoom range', () => {
 
 // ── Field references ─────────────────────────────────
 
+// Fields that exist in tiles but aren't listed in PMTiles metadata for a
+// specific source-layer. These are known data quirks, not style bugs.
+const FIELD_ALLOWLIST = {
+  'buildings:building_part': new Set(['has_parts']),
+};
+
 describe('Field references', () => {
   it.each(
     layersWithSource.map((s) => [s.id, s])
@@ -100,6 +106,7 @@ describe('Field references', () => {
     const tileLayer = tileLayerMap.get(`${spec.source}:${spec['source-layer']}`);
     if (!tileLayer) return; // source-layer existence tested separately
 
+    const allowed = FIELD_ALLOWLIST[`${spec.source}:${spec['source-layer']}`] || new Set();
     const fields = new Set();
     collectFieldRefs(spec.filter, fields);
     collectFieldRefs(spec.paint, fields);
@@ -108,7 +115,7 @@ describe('Field references', () => {
     const missing = [];
     for (const field of fields) {
       if (field.startsWith('$') || field.startsWith('@') || field === 'geometry-type') continue;
-      if (!tileLayer.fields[field]) {
+      if (!tileLayer.fields[field] && !allowed.has(field)) {
         missing.push(field);
       }
     }
