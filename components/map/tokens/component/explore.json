@@ -1,0 +1,369 @@
+{
+  "background": {
+    "background": {
+      "color": "$semantic.background"
+    }
+  },
+  "base": {
+    "land": {
+      "color": {
+        "fill": "$semantic.land",
+        "fillOutline": "$globals.color.transparent"
+      }
+    },
+    "water": {
+      "ocean": {
+        "color": {
+          "fill": "$semantic.ocean",
+          "fillOutline": "$globals.color.transparent"
+        }
+      },
+      "lake-river": {
+        "color": {
+          "fill": "$semantic.lake-river",
+          "fillOutline": "$globals.color.transparent",
+          "line": "$semantic.lake-river",
+          "text": "$semantic.water-label"
+        }
+      }
+    },
+    "bathymetry": {
+      "color": {
+        "fill": {
+          "depth": {
+            "0": "$semantic.bathymetry-0",
+            "100": "$semantic.bathymetry-100",
+            "500": "$semantic.bathymetry-500",
+            "1000": "$semantic.bathymetry-1000",
+            "1500": "$semantic.bathymetry-1500",
+            "2000": "$semantic.bathymetry-2000",
+            "2500": "$semantic.bathymetry-2500",
+            "3000": "$semantic.bathymetry-3000"
+          }
+        },
+        "fillOutline": "$globals.color.transparent"
+      }
+    },
+    "land_cover": {
+      "opacity": ["interpolate", ["linear"], ["zoom"],
+        0, 1,
+        6, 1,
+        11, 0.2,
+        13, 0
+      ],
+      "color": {
+        "fill": {
+          "barren": "$semantic.barren",
+          "forest": "$semantic.forest",
+          "grass": "$semantic.grass",
+          "moss": "$semantic.moss",
+          "shrub": "$semantic.shrub",
+          "crop": "$semantic.crop",
+          "wetland": "$semantic.wetland",
+          "mangrove": "$semantic.mangrove",
+          "snow": "$semantic.snow"
+        },
+        "fillOutline": "$globals.color.transparent"
+      }
+    },
+    "land_use": {
+      "park": {
+        "color": {
+          "fill": "$semantic.park.primary",
+          "fillOutline": "$semantic.park.highlight"
+        }
+      },
+      "recreation": {
+        "color": {
+          "fill": "$semantic.recreation.primary",
+          "fillOutline": "$semantic.recreation.highlight"
+        }
+      },
+      "medical": {
+        "color": {
+          "fill": "$semantic.medical.primary",
+          "fillOutline": "$semantic.medical.highlight"
+        }
+      },
+      "college_university": {
+        "color": {
+          "fill": "$semantic.college-university.primary",
+          "fillOutline": "$semantic.college-university.highlight"
+        }
+      },
+      "military": {
+        "color": {
+          "fill": "$semantic.military.primary",
+          "fillOutline": "$semantic.military.highlight"
+        }
+      },
+      "cemetery": {
+        "color": {
+          "fill": "$semantic.cemetery.primary",
+          "fillOutline": "$semantic.cemetery.highlight"
+        }
+      }
+    },
+    "infrastructure": {
+      "airport": {
+        "color": {
+          "fill": "$semantic.airport.primary",
+          "fillOutline": "$semantic.airport.highlight"
+        }
+      },
+      "aerialway": {
+        "color": {
+          "fill": "$semantic.aerialway.primary",
+          "fillOutline": "$semantic.aerialway.highlight",
+          "line": "$semantic.aerialway.highlight"
+        }
+      },
+      "pier": {
+        "color": {
+          "fill": "$semantic.pier.primary",
+          "fillOutline": "$semantic.pier.highlight",
+          "line": "$semantic.pier.primary"
+        }
+      }
+    }
+  },
+  "buildings": {
+    "building": {
+      "color": {
+        "fill": "$semantic.building.primary",
+        "fillExtrusion": "$semantic.building.tertiary",
+        "fillOutline": "$semantic.building.highlight"
+      }
+    },
+    "building_part": {
+      "color": {
+        "fill": "$semantic.building-part.primary",
+        "fillExtrusion": "$semantic.building-part.tertiary",
+        "fillOutline": "$semantic.building-part.highlight"
+      }
+    }
+  },
+  "transportation": {
+    "segment": {
+      "color": {
+        "roadFill": "$semantic.segment.primary",
+        "casing": "$semantic.segment.highlight"
+      }
+    },
+    "motorway": {
+      "color": {
+        "roadFill": "$semantic.motorway.primary",
+        "casing": "$semantic.motorway.highlight",
+        "text": "$semantic.motorway.label",
+        "textHalo": "$semantic.motorway.labelHalo"
+      }
+    },
+    "road": {
+      "color": {
+        "roadFill": "$semantic.road.primary",
+        "casing": "$semantic.road.highlight",
+        "text": "$semantic.road.label",
+        "textHalo": "$semantic.road.labelHalo"
+      }
+    },
+    "pedestrian": {
+      "color": {
+        "roadFill": "$semantic.pedestrian",
+        "casing": "$globals.color.transparent"
+      }
+    },
+    "rail": {
+      "color": {
+        "line": "$semantic.rail.primary",
+        "text": "$semantic.rail.label",
+        "textHalo": "$semantic.rail.labelHalo"
+      }
+    },
+    "water": {
+      "color": {
+        "line": "$semantic.waterway.primary",
+        "text": "$semantic.waterway.label",
+        "textHalo": "$semantic.waterway.labelHalo"
+      }
+    }
+  },
+  "addresses": {
+    "address": {
+      "color": {
+        "text": "$semantic.address.label",
+        "textHalo": "$semantic.address.labelHalo"
+      }
+    }
+  },
+  "places": {
+    "place": {
+      "color": {
+        "text": "$semantic.place.label",
+        "textHalo": "$semantic.place.labelHalo"
+      }
+    }
+  },
+  "divisions": {
+    "division": {
+      "country": {
+        "color": {
+          "text": ["interpolate", ["linear"], ["zoom"], 11, "$semantic.division.label", 14, "$globals.color.gray.600"],
+          "textHalo": "$semantic.division.halo"
+        }
+      },
+      "region": {
+        "color": {
+          "text": ["interpolate", ["linear"], ["zoom"], 11, "$semantic.division.label", 14, "$globals.color.gray.600"],
+          "textHalo": "$semantic.division.halo"
+        }
+      },
+      "county": {
+        "color": {
+          "text": ["interpolate", ["linear"], ["zoom"], 11, "$semantic.division.label", 14, "$globals.color.gray.600"],
+          "textHalo": "$semantic.division.halo"
+        }
+      },
+      "locality": {
+        "color": {
+          "text": ["interpolate", ["linear"], ["zoom"], 11, "$semantic.division.label", 14, "$globals.color.gray.600"],
+          "textHalo": "$semantic.division.halo"
+        }
+      },
+      "localadmin_local": {
+        "color": {
+          "text": ["interpolate", ["linear"], ["zoom"], 11, "$semantic.division.label", 14, "$globals.color.gray.600"],
+          "textHalo": "$semantic.division.halo"
+        }
+      }
+    },
+    "division_boundary": {
+      "color": {
+        "line": "$semantic.division.boundary.primary",
+        "maritime": "$semantic.division.boundary.highlight"
+      }
+    }
+  },
+  "inspect": {
+    "water": {
+      "color": {
+        "fill": "$semantic.inspect.water.primary",
+        "line": "$semantic.inspect.water.secondary",
+        "text": "$semantic.inspect.water.label",
+        "textHalo": "$semantic.inspect.water.secondary"
+      },
+      "opacity": "$semantic.inspect.water.opacity"
+    },
+    "land": {
+      "color": {
+        "fill": "$semantic.inspect.land.primary",
+        "line": "$semantic.inspect.land.secondary",
+        "text": "$semantic.inspect.land.label",
+        "textHalo": "$semantic.inspect.land.secondary"
+      },
+      "opacity": "$semantic.inspect.land.opacity"
+    },
+    "land_cover": {
+      "color": {
+        "fill": "$semantic.inspect.land_cover.primary"
+      },
+      "opacity": "$semantic.inspect.land_cover.opacity"
+    },
+    "land_use": {
+      "color": {
+        "fill": "$semantic.inspect.land_use.primary",
+        "line": "$semantic.inspect.land_use.secondary",
+        "text": "$semantic.inspect.land_use.label",
+        "textHalo": "$semantic.inspect.land_use.secondary"
+      },
+      "opacity": "$semantic.inspect.land_use.opacity"
+    },
+    "bathymetry": {
+      "color": {
+        "fill": "$semantic.inspect.bathymetry.primary"
+      },
+      "opacity": "$semantic.inspect.bathymetry.opacity"
+    },
+    "segment": {
+      "color": {
+        "line": "$semantic.inspect.segment.primary",
+        "text": "$semantic.inspect.segment.label",
+        "textHalo": "$semantic.inspect.segment.secondary"
+      },
+      "opacity": "$semantic.inspect.segment.opacity"
+    },
+    "division": {
+      "color": {
+        "fill": "$semantic.inspect.division.primary",
+        "line": "$semantic.inspect.division.secondary",
+        "circle": "$semantic.inspect.division.label",
+        "circleStroke": "$semantic.inspect.division.secondary",
+        "text": "$semantic.inspect.division.label",
+        "textHalo": "$semantic.inspect.division.secondary"
+      },
+      "opacity": "$semantic.inspect.division.opacity"
+    },
+    "building": {
+      "color": {
+        "fill": "$semantic.inspect.building.primary"
+      },
+      "opacity": "$semantic.inspect.building.opacity"
+    },
+    "building_part": {
+      "color": {
+        "fill": "$semantic.inspect.building_part.primary"
+      },
+      "opacity": "$semantic.inspect.building_part.opacity"
+    },
+    "place": {
+      "color": {
+        "circle": "$semantic.inspect.place.primary",
+        "circleStroke": "$semantic.inspect.place.secondary",
+        "text": "$semantic.inspect.place.label",
+        "textHalo": "$semantic.inspect.place.secondary"
+      },
+      "opacity": "$semantic.inspect.place.opacity"
+    },
+    "address": {
+      "color": {
+        "circle": "$semantic.inspect.address.primary",
+        "circleStroke": "$semantic.inspect.address.secondary",
+        "text": "$semantic.inspect.address.label",
+        "textHalo": "$semantic.inspect.address.secondary"
+      },
+      "opacity": "$semantic.inspect.address.opacity"
+    },
+    "road": {
+      "color": {
+        "line": "$semantic.inspect.road.primary",
+        "text": "$semantic.inspect.road.label",
+        "textHalo": "$semantic.inspect.road.secondary"
+      },
+      "opacity": "$semantic.inspect.road.opacity"
+    },
+    "rail": {
+      "color": {
+        "line": "$semantic.inspect.rail.primary",
+        "text": "$semantic.inspect.rail.label",
+        "textHalo": "$semantic.inspect.rail.secondary"
+      },
+      "opacity": "$semantic.inspect.rail.opacity"
+    },
+    "waterway": {
+      "color": {
+        "line": "$semantic.inspect.waterway.primary",
+        "text": "$semantic.inspect.waterway.label",
+        "textHalo": "$semantic.inspect.waterway.secondary"
+      },
+      "opacity": "$semantic.inspect.waterway.opacity"
+    },
+    "connector": {
+      "color": {
+        "circle": "$semantic.inspect.connector.primary",
+        "circleStroke": "$semantic.inspect.connector.secondary",
+        "text": "$semantic.inspect.connector.label",
+        "textHalo": "$semantic.inspect.connector.secondary"
+      },
+      "opacity": "$semantic.inspect.connector.opacity"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_cover",
+  "maxzoom": 13,
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_cover",
+    "overture:group": "base-land-cover",
+    "overture:selectable": true,
+    "overture:item": "forest"
+  },
+  "filter": [
+    "==",
+    [
+      "get",
+      "subtype"
+    ],
+    "forest"
+  ],
+  "paint": {
+    "fill-color": "$base.land_cover.color.fill.forest",
+    "fill-opacity": "$base.land_cover.opacity",
+    "fill-outline-color": "$globals.color.transparent"
+  }
+}

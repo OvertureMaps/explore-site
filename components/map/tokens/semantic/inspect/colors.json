@@ -1,0 +1,89 @@
+{
+  "bathymetry": {
+    "primary": "$globals.color.blue.200",
+    "opacity": 0.05
+  },
+  "water": {
+    "primary": "$globals.color.blue.600",
+    "secondary": "$globals.color.blue.600",
+    "label": "$globals.color.ocean.900",
+    "opacity": 0.05
+  },
+  "land": {
+    "primary": "$globals.color.sand.950",
+    "secondary": "$globals.color.sand.950",
+    "label": "$globals.color.sand.950",
+    "opacity": 0.1
+  },
+  "land_cover": {
+    "primary": "$globals.color.green.500",
+    "secondary": "$globals.color.green.500",
+    "opacity": 0.05
+  },
+  "land_use": {
+    "primary": "$globals.color.yellow.400",
+    "secondary": "$globals.color.yellow.400",
+    "label": "$globals.color.yellow.400",
+    "opacity": 0.05
+  },
+  "segment": {
+    "primary": "$globals.color.steel.950",
+    "secondary": "$globals.color.steel.950",
+    "label": "$globals.color.steel.950",
+    "opacity": 1
+  },
+  "division": {
+    "primary": "$globals.color.purple",
+    "secondary": "$globals.color.gray.500",
+    "label": "$globals.color.purple",
+    "opacity": 0.05
+  },
+  "building": {
+    "primary": "$globals.color.red.500",
+    "secondary": "$globals.color.red.500",
+    "label": "$globals.color.red.500",
+    "opacity": 0.25
+  },
+  "building_part": {
+    "primary": "$globals.color.rose.200",
+    "secondary": "$globals.color.rose.200",
+    "label": "$globals.color.rose.200",
+    "opacity": 0.25
+  },
+  "place": {
+    "primary": "$globals.color.indigo.500",
+    "secondary": "$globals.color.sky.300",
+    "label": "$globals.color.indigo.500",
+    "opacity": 0.25
+  },
+  "address": {
+    "primary": "$globals.color.yellow.400",
+    "secondary": "$globals.color.yellow.400",
+    "label": "$globals.color.yellow.400",
+    "opacity": 0.25
+  },
+  "road": {
+    "primary": "$globals.color.gray.850",
+    "secondary": "$globals.color.gray.850",
+    "label": "$globals.color.gray.850",
+    "opacity": 0.1
+  },
+  "rail": {
+    "primary": "$globals.color.crimson",
+    "secondary": "$globals.color.crimson",
+    "label": "$globals.color.crimson",
+    "opacity": 0.01
+  },
+  "waterway": {
+    "primary": "$globals.color.blue.600",
+    "secondary": "$globals.color.blue.600",
+    "label": "$globals.color.blue.600",
+    "opacity": 0.01
+  },
+  "connector": {
+    "primary": "$globals.color.teal.100",
+    "secondary": "$globals.color.teal.100",
+    "label": "$globals.color.teal.100",
+    "opacity": 0.25
+  }
+}

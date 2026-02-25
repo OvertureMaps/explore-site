@@ -1,0 +1,135 @@
+{
+  "themes": {
+    "base": { "name": "Base", "order": 1, "collapsed": false },
+    "buildings": { "name": "Buildings", "order": 2, "collapsed": true },
+    "transportation": { "name": "Transportation", "order": 3, "collapsed": true },
+    "divisions": { "name": "Divisions", "order": 4, "collapsed": true },
+    "places": { "name": "Places", "order": 5, "collapsed": true },
+    "addresses": { "name": "Addresses", "order": 6, "collapsed": true }
+  },
+  "groups": {
+    "base": {
+      "base-land": {
+        "name": "Land", "order": 1, "collapsed": true,
+        "items": {
+          "land-fill": { "name": "Fill", "order": 1 },
+          "land-line": { "name": "Line", "order": 2 },
+          "land-label": { "name": "Label", "order": 3 }
+        }
+      },
+      "base-water": {
+        "name": "Water", "order": 2, "collapsed": true,
+        "items": {
+          "water-fill": { "name": "Fill", "order": 1 },
+          "water-line": { "name": "Line", "order": 2 },
+          "water-label": { "name": "Label", "order": 3 }
+        }
+      },
+      "base-bathymetry": {
+        "name": "Bathymetry", "order": 3, "collapsed": true,
+        "items": {
+          "bathymetry-fill": { "name": "Fill", "order": 1 }
+        }
+      },
+      "base-land-cover": {
+        "name": "Land Cover", "order": 4, "collapsed": true,
+        "items": {
+          "land-cover-fill": { "name": "Fill", "order": 1 }
+        }
+      },
+      "base-land-use": {
+        "name": "Land Use", "order": 5, "collapsed": true,
+        "items": {
+          "land-use-fill": { "name": "Fill", "order": 1 },
+          "land-use-line": { "name": "Line", "order": 2 },
+          "land-use-label": { "name": "Label", "order": 3 }
+        }
+      }
+    },
+    "buildings": {
+      "buildings-building": {
+        "name": "Buildings", "order": 1, "collapsed": true,
+        "items": {
+          "building-fill": { "name": "Fill", "order": 1 }
+        }
+      },
+      "buildings-building-part": {
+        "name": "Building Parts", "order": 2, "collapsed": true,
+        "items": {
+          "building-part-fill": { "name": "Fill", "order": 1 }
+        }
+      }
+    },
+    "transportation": {
+      "transportation-segment": {
+        "name": "Segment (All)", "order": 1, "collapsed": true,
+        "items": {
+          "segment-line": { "name": "Line", "order": 1 },
+          "segment-label": { "name": "Label", "order": 2 }
+        }
+      },
+      "transportation-road": {
+        "name": "Road", "order": 2, "collapsed": true,
+        "items": {
+          "road-line": { "name": "Line", "order": 1 },
+          "road-label": { "name": "Label", "order": 2 }
+        }
+      },
+      "transportation-rail": {
+        "name": "Rail", "order": 3, "collapsed": true,
+        "items": {
+          "rail-line": { "name": "Line", "order": 1 },
+          "rail-label": { "name": "Label", "order": 2 }
+        }
+      },
+      "transportation-water": {
+        "name": "Waterway", "order": 4, "collapsed": true,
+        "items": {
+          "waterway-line": { "name": "Line", "order": 1 },
+          "waterway-label": { "name": "Label", "order": 2 }
+        }
+      },
+      "transportation-connector": {
+        "name": "Connector", "order": 5, "collapsed": true,
+        "items": {
+          "connector-circle": { "name": "Point", "order": 1 },
+          "connector-label": { "name": "Label", "order": 2 }
+        }
+      }
+    },
+    "divisions": {
+      "divisions-division": {
+        "name": "Division", "order": 1, "collapsed": true,
+        "items": {
+          "division-area-fill": { "name": "Area Fill", "order": 1 },
+          "division-circle": { "name": "Point", "order": 2 },
+          "division-label": { "name": "Label", "order": 3 }
+        }
+      },
+      "divisions-boundary": {
+        "name": "Division Boundary", "order": 2, "collapsed": true,
+        "items": {
+          "division-boundary-line": { "name": "Line", "order": 1 }
+        }
+      }
+    },
+    "places": {
+      "places-place": {
+        "name": "Places", "order": 1, "collapsed": true,
+        "items": {
+          "place-circle": { "name": "Point", "order": 1 },
+          "place-label": { "name": "Label", "order": 2 }
+        }
+      }
+    },
+    "addresses": {
+      "addresses-address": {
+        "name": "Addresses", "order": 1, "collapsed": true,
+        "items": {
+          "address-circle": { "name": "Point", "order": 1 },
+          "address-label": { "name": "Label", "order": 2 }
+        }
+      }
+    }
+  }
+}

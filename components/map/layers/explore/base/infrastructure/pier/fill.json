@@ -1,0 +1,35 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "infrastructure",
+  "minzoom": 13,
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "==",
+      [
+        "get",
+        "subtype"
+      ],
+      "pier"
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.infrastructure.pier.color.fill",
+    "fill-outline-color": "$base.infrastructure.pier.color.fillOutline"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "infrastructure",
+    "overture:group": "base-infrastructure",
+    "overture:selectable": true,
+    "overture:item": "pier"
+  }
+}

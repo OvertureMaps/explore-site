@@ -1,0 +1,55 @@
+{
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "minzoom": 15,
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "get",
+        "subtype"
+      ],
+      "road"
+    ],
+    [
+      "==",
+      [
+        "get",
+        "class"
+      ],
+      "steps"
+    ]
+  ],
+  "paint": {
+    "line-color": "$transportation.pedestrian.color.roadFill",
+    "line-dasharray": [
+      0.5,
+      0.25
+    ],
+    "line-width": [
+      "interpolate",
+      [
+        "exponential",
+        1.5
+      ],
+      [
+        "zoom"
+      ],
+      12,
+      0,
+      18,
+      6,
+      22,
+      80
+    ]
+  },
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-pedestrian",
+    "overture:selectable": true,
+    "overture:item": "road-pedestrian"
+  }
+}

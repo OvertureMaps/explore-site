@@ -1,0 +1,27 @@
+{
+  "type": "symbol",
+  "source": "base",
+  "source-layer": "land_use",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:item": "land-use-label",
+    "overture:selectable": true
+  },
+  "minzoom": 12,
+  "layout": {
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-font": "$inspect.font",
+    "text-size": 11,
+    "text-max-width": 8,
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.land_use.color.text",
+    "text-opacity": "$inspect.land_use.opacity"
+  }
+}

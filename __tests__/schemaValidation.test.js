@@ -1,7 +1,7 @@
 import { defaultLayerSpecs } from '@/components/map';
 import { collectFieldRefs, collectFilterValues } from '@/lib/styleValidation';
-import schema from '@/components/map/theme/schema.json';
-import tiles from '@/components/map/theme/tiles.json';
+import schema from '@/components/map/schema.json';
+import tiles from '@/components/map/tiles.json';
 
 // ── Build lookup maps ────────────────────────────────
 

@@ -1,0 +1,23 @@
+{
+  "type": "symbol",
+  "source": "transportation",
+  "source-layer": "connector",
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "connector",
+    "overture:group": "transportation-connector",
+    "overture:item": "connector-label",
+    "overture:selectable": true
+  },
+  "minzoom": 14,
+  "layout": {
+    "text-field": ["get", "id"],
+    "text-font": "$inspect.font",
+    "text-size": 10,
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.connector.color.text",
+    "text-opacity": "$inspect.connector.opacity"
+  }
+}

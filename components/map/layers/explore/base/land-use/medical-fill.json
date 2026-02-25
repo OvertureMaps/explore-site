@@ -1,0 +1,40 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_use",
+  "minzoom": 12,
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:selectable": true,
+    "overture:item": "medical"
+  },
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "in",
+      [
+        "get",
+        "class"
+      ],
+      [
+        "literal",
+        [
+          "hospital"
+        ]
+      ]
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.land_use.medical.color.fill",
+    "fill-outline-color": "$base.land_use.medical.color.fillOutline"
+  }
+}

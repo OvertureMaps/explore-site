@@ -1,0 +1,21 @@
+{
+  "type": "circle",
+  "source": "transportation",
+  "source-layer": "connector",
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "connector",
+    "overture:group": "transportation-connector",
+    "overture:item": "connector-circle",
+    "overture:selectable": true
+  },
+  "minzoom": 13,
+  "filter": ["==", ["geometry-type"], "Point"],
+  "paint": {
+    "circle-color": "$inspect.connector.color.circle",
+    "circle-radius": 3,
+    "circle-stroke-width": 1,
+    "circle-stroke-color": "$inspect.connector.color.circleStroke",
+    "circle-opacity": "$inspect.connector.opacity"
+  }
+}

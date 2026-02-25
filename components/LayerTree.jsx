@@ -11,7 +11,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import { themes, groups, defaultLayerSpecs } from "@/components/map";
+import { themes, groups, defaultLayerSpecs, inspectThemes, inspectGroups, inspectLayerSpecs } from "@/components/map";
 
 const COLOR_PROPERTY = {
   circle: "circle-color",
@@ -140,11 +140,11 @@ function hasConfidence(filter) {
 }
 
 // Build hierarchical data: theme → group → items
-// Items come from overture:groups config, enriched with layer spec metadata
-function buildHierarchy() {
+// Items come from tree config, enriched with layer spec metadata
+function buildHierarchy(layerSpecs, treeGroups, treeThemes) {
   // Scan layer specs to find which items actually have layers and their geometry types
   const itemMeta = {};
-  for (const spec of defaultLayerSpecs) {
+  for (const spec of layerSpecs) {
     const meta = spec.metadata || {};
     const itemId = meta["overture:item"];
     const theme = meta["overture:theme"];
@@ -181,7 +181,7 @@ function buildHierarchy() {
   // Build theme → groups → items structure
   const themeMap = {};
 
-  for (const [themeKey, themeGroups] of Object.entries(groups)) {
+  for (const [themeKey, themeGroups] of Object.entries(treeGroups)) {
     for (const [groupKey, groupInfo] of Object.entries(themeGroups)) {
       if (!groupInfo.items) continue;
 
@@ -217,7 +217,7 @@ function buildHierarchy() {
   }
 
   // Build sorted theme list
-  return Object.entries(themes)
+  return Object.entries(treeThemes)
     .sort((a, b) => (a[1].order ?? 99) - (b[1].order ?? 99))
     .filter(([themeKey]) => themeMap[themeKey]?.groups.length > 0)
     .map(([themeKey, themeInfo]) => ({
@@ -227,13 +227,19 @@ function buildHierarchy() {
     }));
 }
 
-const hierarchy = buildHierarchy();
+const exploreHierarchy = buildHierarchy(defaultLayerSpecs, groups, themes);
+const inspectHierarchy = buildHierarchy(inspectLayerSpecs, inspectGroups, inspectThemes);
 
 // All expandable node IDs (themes + multi-item groups)
-const allExpandableIds = hierarchy.flatMap((t) => [
-  `theme:${t.key}`,
-  ...t.groups.filter((g) => g.items.length > 1).map((g) => g.key),
-]);
+function getExpandableIds(h) {
+  return h.flatMap((t) => [
+    `theme:${t.key}`,
+    ...t.groups.filter((g) => g.items.length > 1).map((g) => g.key),
+  ]);
+}
+
+const exploreExpandableIds = getExpandableIds(exploreHierarchy);
+const inspectExpandableIds = getExpandableIds(inspectHierarchy);
 
 // Extract a representative color string from a paint value (string or expression).
 // Returns the last color found, which is typically the fallback/default in
@@ -256,7 +262,7 @@ function extractColorFromPaint(val) {
 
 // Pre-compute item colors from resolved layer specs
 const itemColorMap = {};
-for (const spec of defaultLayerSpecs) {
+for (const spec of [...defaultLayerSpecs, ...inspectLayerSpecs]) {
   const meta = spec.metadata || {};
   const itemId = meta["overture:item"];
   if (!itemId || itemColorMap[itemId]) continue;
@@ -279,6 +285,8 @@ export default function LayerTree({
   inspectMode,
   zoom,
 }) {
+  const hierarchy = inspectMode ? inspectHierarchy : exploreHierarchy;
+  const allExpandableIds = inspectMode ? inspectExpandableIds : exploreExpandableIds;
   const [expandedItems, setExpandedItems] = useState([]);
 
   const isItemVisible = (itemId) => visibleTypes.includes(itemId);

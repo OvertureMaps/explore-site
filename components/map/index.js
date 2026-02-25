@@ -1,16 +1,16 @@
-import overture from "./overture.json";
+import exploreTree from "./explore-tree.json";
 import colors from "./tokens/primitive/colors.json";
 import fonts from "./tokens/primitive/fonts.json";
-import semanticColors from "./tokens/semantic/colors.json";
+import semanticExploreColors from "./tokens/semantic/explore/colors.json";
+import semanticInspectColors from "./tokens/semantic/inspect/colors.json";
 import semanticFonts from "./tokens/semantic/fonts.json";
-import overtureInspect from "./overture-inspect.json";
-import inspectMode from "./modes/inspect/inspect.json";
-import exploreMode from "./modes/explore/explore.json";
-import defaultLayers from "./modes/explore/layers.json";
-import inspectLayers from "./modes/inspect/layers.json";
+import exploreMode from "./tokens/component/explore.json";
+import inspectTree from "./inspect-tree.json";
+import defaultLayers from "./layers/explore/manifest.json";
+import inspectLayers from "./layers/inspect/manifest.json";
 
 // Assemble primitives from split files
-const primitives = { color: { ...colors, inspect: inspectMode.color }, font: fonts };
+const primitives = { color: colors, font: fonts };
 
 // ---------------------------------------------------------------------------
 // Resolve $globals references within semantic theme token definitions
@@ -61,8 +61,12 @@ function resolveGlobals(val) {
 }
 
 const resolvedSemantics = {};
-for (const key of Object.keys(semanticColors)) {
-  resolvedSemantics[key] = resolveGlobals(semanticColors[key]);
+for (const key of Object.keys(semanticExploreColors)) {
+  resolvedSemantics[key] = resolveGlobals(semanticExploreColors[key]);
+}
+resolvedSemantics.inspect = {};
+for (const key of Object.keys(semanticInspectColors)) {
+  resolvedSemantics.inspect[key] = resolveGlobals(semanticInspectColors[key]);
 }
 
 const resolvedSemanticFonts = {};
@@ -108,20 +112,20 @@ for (const key of Object.keys(exploreMode)) {
   resolvedExplore[key] = resolveExplore(exploreMode[key]);
 }
 
-// Merge resolved explore renditions with resolved semantic fonts
+// Merge resolved explore renditions with resolved semantic fonts.
+// Semantic fonts are structured to match the component hierarchy
+// (e.g. divisions.division, transportation.segment) so they merge
+// directly into the correct themeTokens paths.
 const themeTokens = merge(resolvedExplore, resolvedSemanticFonts);
-
-// Resolve overture inspect tokens
-for (const key of Object.keys(overtureInspect)) {
-  overtureInspect[key] = resolveGlobals(overtureInspect[key]);
-}
 
 // ---------------------------------------------------------------------------
 // Groups for LayerTree
 // ---------------------------------------------------------------------------
 
-export const themes = overture["overture:themes"];
-export const groups = overture["overture:groups"];
+export const themes = exploreTree.themes;
+export const groups = exploreTree.groups;
+export const inspectThemes = inspectTree.themes;
+export const inspectGroups = inspectTree.groups;
 export const globals = primitives;
 
 // ---------------------------------------------------------------------------
@@ -137,12 +141,10 @@ export function getLayerTokens(theme, type) {
 }
 
 /**
- * Get inspect tokens — merge semantic base + inspect overrides.
+ * Get inspect tokens for a specific theme/type.
  */
 export function getInspectTokens(theme, type) {
-  const base = themeTokens[theme]?.[type] || {};
-  const inspect = overtureInspect[theme]?.[type] || {};
-  return merge(base, inspect);
+  return themeTokens["inspect"]?.[type];
 }
 
 // ---------------------------------------------------------------------------
@@ -222,9 +224,14 @@ function resolveLayerSpec(spec) {
 // ---------------------------------------------------------------------------
 
 function resolveLayers(paths) {
-  return paths.map((path) => {
-    const spec = require(`./${path}`);
-    return resolveLayerSpec(spec);
+  return paths.map((p) => {
+    const spec = require(`./${p}`);
+    // "layers/explore/base/water/ocean/fill.json" → "base-water-ocean-fill"
+    const id = p
+      .replace(/^layers\/(?:explore|inspect)\//, "")
+      .replace(/\.json$/, "")
+      .replace(/\//g, "-");
+    return resolveLayerSpec({ ...spec, id });
   });
 }
 

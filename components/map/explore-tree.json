@@ -1,0 +1,166 @@
+{
+  "themes": {
+    "addresses": { "name": "Addresses", "order": 1, "collapsed": true },
+    "base": { "name": "Base", "order": 2, "collapsed": false },
+    "buildings": { "name": "Buildings", "order": 3, "collapsed": true },
+    "divisions": { "name": "Divisions", "order": 4, "collapsed": false },
+    "places": { "name": "Places", "order": 5, "collapsed": true },
+    "transportation": { "name": "Transportation", "order": 6, "collapsed": true }
+  },
+  "groups": {
+    "base": {
+      "base-land": {
+        "name": "Land + Water", "order": 1, "collapsed": true,
+        "items": {
+          "land": { "name": "Land (OSM Coastlines)", "order": 1 },
+          "oceans": { "name": "Oceans", "order": 2 },
+          "lakes-rivers": { "name": "Lakes & Rivers", "order": 3 }
+        }
+      },
+      "base-bathymetry": {
+        "name": "Bathymetry", "order": 2, "collapsed": true,
+        "items": {
+          "bathymetry-depth-0": { "name": "0–90m", "order": 1 },
+          "bathymetry-depth-100": { "name": "100m", "order": 2 },
+          "bathymetry-depth-500": { "name": "500m", "order": 3 },
+          "bathymetry-depth-1000": { "name": "1000m", "order": 4 },
+          "bathymetry-depth-1500": { "name": "1500m", "order": 5 },
+          "bathymetry-depth-2000": { "name": "2000m", "order": 6 },
+          "bathymetry-depth-2500": { "name": "2500m", "order": 7 },
+          "bathymetry-depth-3000": { "name": "3000m", "order": 8 }
+        }
+      },
+      "base-land-cover": {
+        "name": "Land Cover", "order": 3, "collapsed": true,
+        "items": {
+          "wetland": { "name": "Wetland", "order": 1 },
+          "mangrove": { "name": "Mangrove", "order": 2 },
+          "moss": { "name": "Moss", "order": 3 },
+          "forest": { "name": "Forest", "order": 4 },
+          "grass": { "name": "Grass", "order": 5 },
+          "shrub": { "name": "Shrub", "order": 6 },
+          "crop": { "name": "Crop", "order": 7 },
+          "barren": { "name": "Barren", "order": 8},
+          "snow": { "name": "Snow", "order": 9 }
+        }
+      },
+      "base-land-use": {
+        "name": "Land Use", "order": 5, "collapsed": true,
+        "items": {
+          "park": { "name": "Park", "order": 1 },
+          "recreation": { "name": "Recreation", "order": 2 },
+          "cemetery": { "name": "Cemetery", "order": 3 },
+          "college-university": { "name": "College Campus", "order": 4 },
+          "military": { "name": "Military Installation", "order": 5 },
+          "medical": { "name": "Medical Campus", "order": 6 }
+        }
+      },
+      "base-infrastructure": {
+        "name": "Infrastructure", "order": 6, "collapsed": true,
+        "items": {
+          "airport-area": { "name": "Airport", "order": 1 },
+          "aerialway": { "name": "Runway + Taxiway", "order": 2 },
+          "pier": { "name": "Pier", "order": 3 }
+        }
+      }
+    },
+    "divisions": {
+      "divisions-division": {
+        "name": "Division", "order": 1, "collapsed": true,
+        "items": {
+          "country-label": { "name": "Country", "order": 1 },
+          "region-label": { "name": "Region", "order": 2 },
+          "county-label": { "name": "County", "order": 3 },
+          "locality-label": { "name": "Locality", "order": 4 },
+          "localadmin-local-label": { "name": "Localadmin + Local", "order": 5 },
+          "division-area": { "name": "Division Areas", "order": 6 }
+        }
+      },
+      "divisions-boundary": {
+        "name": "Division Boundary", "order": 2, "collapsed": true,
+        "items": {
+          "division-boundary": { "name": "Boundary", "order": 1 },
+          "division-boundary-maritime": { "name": "Maritime Boundary", "order": 2 }
+        }
+      }
+    },
+    "buildings": {
+      "buildings-3d": {
+        "name": "3D Buildings", "order": 1, "collapsed": true,
+        "items": {
+          "building-3d": { "name": "Buildings", "order": 1 },
+          "building-part-3d": { "name": "Building Parts", "order": 2 }
+        }
+      },
+      "buildings-footprints": {
+        "name": "Footprints", "order": 2, "collapsed": true,
+        "items": {
+          "building-footprint": { "name": "Buildings", "order": 1 },
+          "building-part-footprint": { "name": "Building Parts", "order": 2 }
+        }
+      }
+    },
+    "transportation": {
+      "transportation-roads": {
+        "name": "Roads", "order": 1, "collapsed": true,
+        "items": {
+          "road-motorway": { "name": "Motorway", "order": 1 },
+          "road-trunk": { "name": "Trunk", "order": 2 },
+          "road-primary": { "name": "Primary", "order": 3 },
+          "road-secondary": { "name": "Secondary", "order": 4 },
+          "road-tertiary": { "name": "Tertiary", "order": 5 },
+          "road-residential": { "name": "Residential", "order": 6 },
+          "road-living-street": { "name": "Living Street", "order": 7 },
+          "road-other": { "name": "Other", "order": 8 }
+        }
+      },
+      "transportation-rail": {
+        "name": "Rail", "order": 2, "collapsed": true,
+        "items": { "rail": { "name": "Rail", "order": 1 } }
+      },
+      "transportation-pedestrian": {
+        "name": "Pedestrian", "order": 3, "collapsed": true,
+        "items": { "road-pedestrian": { "name": "Pedestrian", "order": 1 } }
+      },
+      "transportation-water": {
+        "name": "Waterways", "order": 4, "collapsed": true,
+        "items": { "waterway": { "name": "Waterways", "order": 1 } }
+      }
+    },
+    "places": {
+      "places-categories": {
+        "name": "Places (Filtered)", "order": 1, "collapsed": true,
+        "items": {
+          "airport": { "name": "Airports", "order": 1 },
+          "bar": { "name": "Bars", "order": 2 },
+          "college": { "name": "Colleges & Universities", "order": 3 },
+          "convenience": { "name": "Convenience Stores", "order": 4 },
+          "fuel": { "name": "Gas Stations", "order": 5 },
+          "place-golf": { "name": "Golf", "order": 6 },
+          "grocery": { "name": "Grocery Stores", "order": 7 },
+          "hospital": { "name": "Hospitals", "order": 8 },
+          "lodging": { "name": "Lodging", "order": 9 },
+          "parking": { "name": "Parking", "order": 10 },
+          "place-park": { "name": "Parks", "order": 11 },
+          "rail-station": { "name": "Rail Stations", "order": 12 },
+          "restaurant": { "name": "Restaurants", "order": 13 },
+          "shop": { "name": "Shops", "order": 14 },
+          "stadium": { "name": "Stadiums & Arenas", "order": 15 }
+        }
+      },
+      "places-all": {
+        "name": "All Places", "order": 2, "collapsed": true,
+        "items": {
+          "place-all-density-circle": { "name": "All", "order": 1 },
+          "place-all-circle": { "name": "All", "order": 2 }
+        }
+      }
+    },
+    "addresses": {
+      "addresses": {
+        "name": "Addresses", "order": 1, "collapsed": true,
+        "items": { "address": { "name": "Addresses", "order": 1 } }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "type": "symbol",
+  "source": "addresses",
+  "source-layer": "address",
+  "minzoom": 16,
+  "layout": {
+    "text-field": [
+      "get",
+      "number"
+    ],
+    "text-justify": "auto",
+    "text-line-height": 1,
+    "text-max-width": 6,
+    "text-radial-offset": 0.5,
+    "text-size": 9,
+    "text-variable-anchor": [
+      "literal",
+      [
+        "right",
+        "left",
+        "top",
+        "bottom"
+      ]
+    ],
+    "text-font": [
+      "$globals.font.noto-sans-semicondensed.regular"
+    ],
+    "icon-image": "circle-opt",
+    "icon-size": 0.35
+  },
+  "paint": {
+    "text-color": "$addresses.address.color.text",
+    "text-halo-color": "$addresses.address.color.textHalo",
+    "text-halo-width": 1
+  },
+  "metadata": {
+    "overture:theme": "addresses",
+    "overture:type": "address",
+    "overture:group": "addresses",
+    "overture:selectable": true,
+    "overture:item": "address"
+  }
+}

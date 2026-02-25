@@ -20,14 +20,14 @@
       "base-bathymetry": {
         "name": "Bathymetry", "order": 2, "collapsed": true,
         "items": {
-          "bathymetry-d0-fill": { "name": "0–90m", "order": 1 },
-          "bathymetry-d100-fill": { "name": "100m", "order": 2 },
-          "bathymetry-d500-fill": { "name": "500m", "order": 3 },
-          "bathymetry-d1000-fill": { "name": "1000m", "order": 4 },
-          "bathymetry-d1500-fill": { "name": "1500m", "order": 5 },
-          "bathymetry-d2000-fill": { "name": "2000m", "order": 6 },
-          "bathymetry-d2500-fill": { "name": "2500m", "order": 7 },
-          "bathymetry-d3000-fill": { "name": "3000m", "order": 8 }
+          "bathymetry-depth-0": { "name": "0–90m", "order": 1 },
+          "bathymetry-depth-100": { "name": "100m", "order": 2 },
+          "bathymetry-depth-500": { "name": "500m", "order": 3 },
+          "bathymetry-depth-1000": { "name": "1000m", "order": 4 },
+          "bathymetry-depth-1500": { "name": "1500m", "order": 5 },
+          "bathymetry-depth-2000": { "name": "2000m", "order": 6 },
+          "bathymetry-depth-2500": { "name": "2500m", "order": 7 },
+          "bathymetry-depth-3000": { "name": "3000m", "order": 8 }
         }
       },
       "base-land-cover": {

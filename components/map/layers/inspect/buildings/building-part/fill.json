@@ -1,0 +1,17 @@
+{
+  "type": "fill",
+  "source": "buildings",
+  "source-layer": "building_part",
+  "metadata": {
+    "overture:theme": "buildings",
+    "overture:type": "building_part",
+    "overture:group": "buildings-building-part",
+    "overture:item": "building-part-fill",
+    "overture:selectable": true
+  },
+  "minzoom": 13,
+  "paint": {
+    "fill-color": "$inspect.building_part.color.fill",
+    "fill-opacity": "$inspect.building_part.opacity"
+  }
+}

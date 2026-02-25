@@ -49,7 +49,9 @@ describe('MapLibre style spec validation', () => {
   });
 
   it('every layer has overture:theme metadata', () => {
-    allSpecs.forEach((spec) => {
+    allSpecs
+      .filter((spec) => spec.type !== 'background')
+      .forEach((spec) => {
       expect(spec.metadata).toBeDefined();
       expect(spec.metadata['overture:theme']).toBeDefined();
       expect(spec.metadata['overture:type']).toBeDefined();
@@ -57,12 +59,15 @@ describe('MapLibre style spec validation', () => {
   });
 
   it('each layer spec has required MapLibre fields', () => {
-    allSpecs.forEach((spec) => {
+    allSpecs
+      .filter((spec) => spec.type !== 'background')
+      .forEach((spec) => {
       expect(spec).toHaveProperty('id');
       expect(spec).toHaveProperty('type');
       expect(spec).toHaveProperty('source');
       expect(spec).toHaveProperty('source-layer');
-      expect(spec).toHaveProperty('paint');
+      const hasPaintOrLayout = spec.paint || spec.layout;
+      expect(hasPaintOrLayout).toBeTruthy();
     });
   });
 

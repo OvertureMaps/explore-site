@@ -1,0 +1,25 @@
+{
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-rail",
+    "overture:item": "rail-line",
+    "overture:selectable": true
+  },
+  "minzoom": 4,
+  "filter": ["==", ["get", "subtype"], "rail"],
+  "paint": {
+    "line-color": "$inspect.rail.color.line",
+    "line-opacity": "$inspect.rail.opacity",
+    "line-width": [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      4, 0.5,
+      14, 2
+    ]
+  }
+}

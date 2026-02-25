@@ -1,0 +1,35 @@
+{
+  "type": "fill",
+  "source": "buildings",
+  "source-layer": "building",
+  "minzoom": 14,
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "!=",
+      [
+        "get",
+        "has_parts"
+      ],
+      true
+    ]
+  ],
+  "paint": {
+    "fill-color": "$buildings.building.color.fill",
+    "fill-outline-color": "$buildings.building.color.fillOutline"
+  },
+  "metadata": {
+    "overture:theme": "buildings",
+    "overture:type": "building",
+    "overture:group": "buildings-footprints",
+    "overture:selectable": true,
+    "overture:item": "building-footprint"
+  }
+}

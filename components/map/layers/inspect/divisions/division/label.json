@@ -1,0 +1,45 @@
+{
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division",
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:group": "divisions-division",
+    "overture:item": "division-label",
+    "overture:selectable": true
+  },
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-font": "$inspect.font",
+    "text-size": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      3,
+      10,
+      10,
+      16
+    ],
+    "text-max-width": 8,
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.division.color.text",
+    "text-opacity": 0.75
+  }
+}

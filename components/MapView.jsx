@@ -36,8 +36,8 @@ try {
 // Load PMTiles URLs from STAC catalog at module load time
 const pmtilesPromise = loadPmtilesFromStac();
 
-const INITIAL_CENTER = [-77.04, 38.90];
-const INITIAL_ZOOM = 14;
+const INITIAL_CENTER = [-98.58, 39.83];
+const INITIAL_ZOOM = 2;
 
 // Build a flat lookup from source-layer name to inspectColor
 const INSPECT_COLORS = {};

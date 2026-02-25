@@ -7,7 +7,7 @@ import MapContext from "@/lib/MapContext";
 import { keepTheme, setTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material";
-import { defaultLayerSpecs } from "@/components/map";
+import { defaultLayerSpecs, inspectLayerSpecs } from "@/components/map";
 
 // All unique overture:item values from layer specs
 const ALL_ITEMS = [...new Set(
@@ -16,10 +16,17 @@ const ALL_ITEMS = [...new Set(
     .filter(Boolean)
 )];
 
+const ALL_INSPECT_ITEMS = [...new Set(
+  inspectLayerSpecs
+    .map((spec) => spec.metadata?.["overture:item"])
+    .filter(Boolean)
+)];
+
 // Items disabled by default
-const DEFAULT_OFF = new Set(["place_poi", "place_heat", "building_footprint", "building_part_footprint"]);
+const DEFAULT_OFF = new Set(["place-all-circle", "place-all-density-circle", "building_footprint", "building_part_footprint"]);
 
 const DEFAULT_VISIBLE = ALL_ITEMS.filter((id) => !DEFAULT_OFF.has(id));
+const DEFAULT_INSPECT_VISIBLE = ALL_INSPECT_ITEMS;
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -34,6 +41,20 @@ export default function Home() {
   const [language, setLanguage] = useState("mul");
 
   const [visibleTypes, setVisibleTypes] = useState(DEFAULT_VISIBLE);
+  const [savedExploreTypes, setSavedExploreTypes] = useState(null);
+  const [savedInspectTypes, setSavedInspectTypes] = useState(null);
+
+  // Swap visibleTypes when toggling inspect mode
+  useEffect(() => {
+    if (inspectMode) {
+      setSavedExploreTypes(visibleTypes);
+      setVisibleTypes(savedInspectTypes || DEFAULT_INSPECT_VISIBLE);
+    } else if (savedExploreTypes) {
+      setSavedInspectTypes(visibleTypes);
+      setVisibleTypes(savedExploreTypes);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inspectMode]);
 
   useEffect(() => {
     keepTheme(setModeName);
@@ -85,7 +106,7 @@ export default function Home() {
             activeFeature={activeFeature}
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
-            defaultVisibleTypes={DEFAULT_VISIBLE}
+            defaultVisibleTypes={inspectMode ? DEFAULT_INSPECT_VISIBLE : DEFAULT_VISIBLE}
             onMapReady={setMapInstance}
             inspectMode={inspectMode}
             globeMode={globeMode}

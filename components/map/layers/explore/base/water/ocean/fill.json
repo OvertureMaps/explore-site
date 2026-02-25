@@ -1,0 +1,54 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "step",
+      [
+        "zoom"
+      ],
+      [
+        "!",
+        [
+          "has",
+          "subtype"
+        ]
+      ],
+      5,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "ocean"
+        ],
+        true,
+        false
+      ]
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.water.ocean.color.fill",
+    "fill-opacity": 1,
+    "fill-outline-color": "$base.water.ocean.color.fillOutline"
+  },
+  "layout": {},
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:group": "base-land",
+    "overture:selectable": true,
+    "overture:item": "oceans"
+  }
+}

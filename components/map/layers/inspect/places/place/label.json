@@ -1,0 +1,38 @@
+{
+  "type": "symbol",
+  "source": "places",
+  "source-layer": "place",
+  "metadata": {
+    "overture:theme": "places",
+    "overture:type": "place",
+    "overture:group": "places-place",
+    "overture:item": "place-label",
+    "overture:selectable": true
+  },
+  "minzoom": 14,
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-font": "$inspect.font",
+    "text-size": 11,
+    "text-offset": [
+      0,
+      1.2
+    ],
+    "text-anchor": "top",
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.place.color.text",
+    "text-opacity": "$inspect.place.opacity"
+  }
+}

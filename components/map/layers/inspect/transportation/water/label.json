@@ -1,0 +1,27 @@
+{
+  "type": "symbol",
+  "source": "transportation",
+  "source-layer": "segment",
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-water",
+    "overture:item": "waterway-label",
+    "overture:selectable": true
+  },
+  "minzoom": 13,
+  "filter": ["==", ["get", "subtype"], "water"],
+  "layout": {
+    "text-field": ["get", "@name"],
+    "text-font": "$inspect.font",
+    "text-size": 11,
+    "symbol-placement": "line",
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.waterway.color.text",
+    "text-halo-color": "$inspect.waterway.color.textHalo",
+    "text-halo-width": 1,
+    "text-opacity": "$inspect.waterway.opacity"
+  }
+}

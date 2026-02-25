@@ -1,0 +1,16 @@
+{
+  "type": "fill",
+  "source": "divisions",
+  "source-layer": "division_area",
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_area",
+    "overture:group": "divisions-division",
+    "overture:item": "division-area-fill",
+    "overture:selectable": true
+  },
+  "paint": {
+    "fill-color": "$inspect.division.color.fill",
+    "fill-opacity": "$inspect.division.opacity"
+  }
+}
