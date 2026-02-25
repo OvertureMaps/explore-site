@@ -1,0 +1,122 @@
+[
+  "layers/explore/background.json",
+
+  "layers/explore/base/water/ocean/fill.json",
+
+  "layers/explore/base/bathymetry/depth/3000-fill.json",
+  "layers/explore/base/bathymetry/depth/2500-fill.json",
+  "layers/explore/base/bathymetry/depth/2000-fill.json",
+  "layers/explore/base/bathymetry/depth/1500-fill.json",
+  "layers/explore/base/bathymetry/depth/1000-fill.json",
+  "layers/explore/base/bathymetry/depth/500-fill.json",
+  "layers/explore/base/bathymetry/depth/100-fill.json",
+  "layers/explore/base/bathymetry/depth/0-fill.json",
+
+  "layers/explore/base/land/fill.json",
+
+  "layers/explore/base/land-use/park-fill.json",
+  "layers/explore/base/land-use/recreation-fill.json",
+  "layers/explore/base/land-use/college-university-fill.json",
+  "layers/explore/base/land-use/medical-fill.json",
+  "layers/explore/base/land-use/military-fill.json",
+  "layers/explore/base/land-use/cemetery-fill.json",
+
+  "layers/explore/base/infrastructure/airport/fill.json",
+  "layers/explore/base/infrastructure/pier/fill.json",
+  "layers/explore/base/infrastructure/pier/line.json",
+  "layers/explore/base/infrastructure/aerialway/fill.json",
+  "layers/explore/base/infrastructure/aerialway/line.json",
+
+  "layers/explore/base/water/lake-river/fill.json",
+  "layers/explore/base/water/lake-river/intermittent-fill.json",
+  "layers/explore/base/water/lake-river/line.json",
+  "layers/explore/base/water/lake-river/intermittent-line.json",
+  "layers/explore/base/water/lake-river/label.json",
+
+  "layers/explore/base/land-cover/forest-fill.json",
+  "layers/explore/base/land-cover/barren-fill.json",
+  "layers/explore/base/land-cover/shrub-fill.json",
+  "layers/explore/base/land-cover/grass-fill.json",
+  "layers/explore/base/land-cover/crop-fill.json",
+  "layers/explore/base/land-cover/wetland-fill.json",
+  "layers/explore/base/land-cover/mangrove-fill.json",
+  "layers/explore/base/land-cover/moss-fill.json",
+  "layers/explore/base/land-cover/snow-fill.json",
+
+  "layers/explore/transportation/segment/overview-casing.json",
+  "layers/explore/transportation/segment/overview.json",
+
+  "layers/explore/transportation/segment/road/pedestrian-casing.json",
+  "layers/explore/transportation/segment/road/other-casing.json",
+  "layers/explore/transportation/segment/road/living-street-casing.json",
+  "layers/explore/transportation/segment/road/residential-casing.json",
+  "layers/explore/transportation/segment/road/tertiary-casing.json",
+  "layers/explore/transportation/segment/road/secondary-casing.json",
+  "layers/explore/transportation/segment/road/primary-casing.json",
+
+  "layers/explore/transportation/segment/road/steps-line.json",
+  "layers/explore/transportation/segment/road/pedestrian-line.json",
+  "layers/explore/transportation/segment/road/other-line.json",
+  "layers/explore/transportation/segment/road/living-street-line.json",
+  "layers/explore/transportation/segment/road/residential-line.json",
+  "layers/explore/transportation/segment/road/tertiary-line.json",
+  "layers/explore/transportation/segment/road/secondary-line.json",
+  "layers/explore/transportation/segment/road/primary-line.json",
+
+  "layers/explore/transportation/segment/road/trunk-casing.json",
+  "layers/explore/transportation/segment/road/motorway-casing.json",
+  "layers/explore/transportation/segment/road/trunk-line.json",
+  "layers/explore/transportation/segment/road/motorway-line.json",
+
+  "layers/explore/divisions/division-boundary/boundary.json",
+  "layers/explore/divisions/division-boundary/maritime.json",
+
+  "layers/explore/buildings/building/fill.json",
+  "layers/explore/buildings/building-part/fill.json",
+
+  "layers/explore/buildings/building/extrusion.json",
+  "layers/explore/buildings/building-part/extrusion.json",
+
+  "layers/explore/transportation/segment/rail/line.json",
+  "layers/explore/transportation/segment/rail/ticks.json",
+
+  "layers/explore/transportation/segment/water/line.json",
+
+  "layers/explore/places/place/all-density-circle.json",
+  "layers/explore/places/place/all-circle.json",
+
+  "layers/explore/addresses/address/label.json",
+
+  "layers/explore/places/place/categories/park-symbol.json",
+  "layers/explore/places/place/categories/airport-symbol.json",
+  "layers/explore/places/place/categories/bar-symbol.json",
+  "layers/explore/places/place/categories/grocery-symbol.json",
+  "layers/explore/places/place/categories/hospital-symbol.json",
+  "layers/explore/places/place/categories/fuel-symbol.json",
+  "layers/explore/places/place/categories/golf-symbol.json",
+  "layers/explore/places/place/categories/convenience-symbol.json",
+  "layers/explore/places/place/categories/lodging-symbol.json",
+  "layers/explore/places/place/categories/parking-symbol.json",
+  "layers/explore/places/place/categories/rail-station-symbol.json",
+  "layers/explore/places/place/categories/restaurant-symbol.json",
+  "layers/explore/places/place/categories/shop-symbol.json",
+  "layers/explore/places/place/categories/college-symbol.json",
+  "layers/explore/places/place/categories/stadium-symbol.json",
+
+  "layers/explore/transportation/segment/water/label.json",
+  "layers/explore/transportation/segment/road/other-label.json",
+  "layers/explore/transportation/segment/road/living-street-label.json",
+  "layers/explore/transportation/segment/road/residential-label.json",
+  "layers/explore/transportation/segment/road/tertiary-label.json",
+  "layers/explore/transportation/segment/road/secondary-label.json",
+  "layers/explore/transportation/segment/road/primary-label.json",
+  "layers/explore/transportation/segment/road/trunk-label.json",
+  "layers/explore/transportation/segment/road/motorway-label.json",
+  "layers/explore/transportation/segment/rail/label.json",
+
+  "layers/explore/divisions/division/county-label.json",
+  "layers/explore/divisions/division/localadmin-local-label.json",
+  "layers/explore/divisions/division/region-label.json",
+  "layers/explore/divisions/division/locality-label.json",
+  "layers/explore/divisions/division/country-label.json"
+]

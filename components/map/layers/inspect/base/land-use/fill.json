@@ -1,0 +1,23 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_use",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_use",
+    "overture:group": "base-land-use",
+    "overture:item": "land-use-fill",
+    "overture:selectable": true
+  },
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Polygon"
+  ],
+  "paint": {
+    "fill-color": "$inspect.land_use.color.fill",
+    "fill-opacity": "$inspect.land_use.opacity"
+  }
+}

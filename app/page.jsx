@@ -2,19 +2,31 @@
 
 import "@/components/CustomControls.css";
 import Header from "@/components/nav/Header";
-import Map from "@/components/Map";
+import Map from "@/components/MapView";
 import MapContext from "@/lib/MapContext";
 import { keepTheme, setTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material";
-import variables from "@/lib/map-styles/variables.json";
+import { defaultLayerSpecs, inspectLayerSpecs } from "@/components/map";
 
-// Build initial visible types from variables.json (all types visible on load)
-const INITIAL_VISIBLE_TYPES = Object.entries(variables)
-  .filter(([k]) => k !== "global")
-  .flatMap(([, themeData]) =>
-    Object.keys(themeData).filter((k) => k !== "_meta")
-  );
+// All unique overture:item values from layer specs
+const ALL_ITEMS = [...new Set(
+  defaultLayerSpecs
+    .map((spec) => spec.metadata?.["overture:item"])
+    .filter(Boolean)
+)];
+
+const ALL_INSPECT_ITEMS = [...new Set(
+  inspectLayerSpecs
+    .map((spec) => spec.metadata?.["overture:item"])
+    .filter(Boolean)
+)];
+
+// Items disabled by default
+const DEFAULT_OFF = new Set(["place-all-circle", "place-all-density-circle", "building_footprint", "building_part_footprint"]);
+
+const DEFAULT_VISIBLE = ALL_ITEMS.filter((id) => !DEFAULT_OFF.has(id));
+const DEFAULT_INSPECT_VISIBLE = ALL_INSPECT_ITEMS;
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -28,7 +40,21 @@ export default function Home() {
   const [mapInstance, setMapInstance] = useState(null);
   const [language, setLanguage] = useState("mul");
 
-  const [visibleTypes, setVisibleTypes] = useState(INITIAL_VISIBLE_TYPES);
+  const [visibleTypes, setVisibleTypes] = useState(DEFAULT_VISIBLE);
+  const [savedExploreTypes, setSavedExploreTypes] = useState(null);
+  const [savedInspectTypes, setSavedInspectTypes] = useState(null);
+
+  // Swap visibleTypes when toggling inspect mode
+  useEffect(() => {
+    if (inspectMode) {
+      setSavedExploreTypes(visibleTypes);
+      setVisibleTypes(savedInspectTypes || DEFAULT_INSPECT_VISIBLE);
+    } else if (savedExploreTypes) {
+      setSavedInspectTypes(visibleTypes);
+      setVisibleTypes(savedExploreTypes);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inspectMode]);
 
   useEffect(() => {
     keepTheme(setModeName);
@@ -74,11 +100,13 @@ export default function Home() {
             language={language}
             features={features}
             setFeatures={setFeatures}
+            zoom={zoom}
             setZoom={setZoom}
             setActiveFeature={setActiveFeature}
             activeFeature={activeFeature}
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
+            defaultVisibleTypes={inspectMode ? DEFAULT_INSPECT_VISIBLE : DEFAULT_VISIBLE}
             onMapReady={setMapInstance}
             inspectMode={inspectMode}
             globeMode={globeMode}

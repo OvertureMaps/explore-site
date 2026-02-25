@@ -85,7 +85,7 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, lan
           </span>
         </Tooltip>
         <DarkModeToggle mode={mode} setMode={setMode} />
-        <LanguageSwitcher language={language} setLanguage={setLanguage} />
+        <LanguageSwitcher language={language} setLanguage={setLanguage} zoom={zoom} />
         <DownloadButton zoom={zoom} mode={mode} setZoom={setZoom} visibleTypes={visibleTypes} />
       </Toolbar>
     </AppBar>

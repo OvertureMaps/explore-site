@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
 import PropTypes from "prop-types";
 import "./LanguageSwitcher.css";
 
@@ -28,10 +29,11 @@ const LANGUAGES = [
   { code: "zh-Hant-TW", label: "繁體中文-TW (Chinese Trad. TW)" },
 ];
 
-export default function LanguageSwitcher({ language, setLanguage }) {
+export default function LanguageSwitcher({ language, setLanguage, zoom }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const current = LANGUAGES.find((l) => l.code === language) || LANGUAGES[0];
+  const disabled = Math.floor(zoom) < 9;
 
   const buttonLabel = language === "mul" ? "Change Map Language" : current.label;
   const handleClick = (e) => setAnchorEl(e.currentTarget);
@@ -43,17 +45,22 @@ export default function LanguageSwitcher({ language, setLanguage }) {
 
   return (
     <div className="language-switcher">
-      <Button
-        onClick={handleClick}
-        aria-controls={open ? "language-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        className="language-btn"
-        size="small"
-      >
-        {buttonLabel}
-        <span className="mui-caret" />
-      </Button>
+      <Tooltip title={disabled ? "Zoom in to z9+ to change language" : ""}>
+        <span>
+          <Button
+            onClick={handleClick}
+            aria-controls={open ? "language-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            className="language-btn"
+            size="small"
+            disabled={disabled}
+          >
+            {buttonLabel}
+            <span className="mui-caret" />
+          </Button>
+        </span>
+      </Tooltip>
       <Menu
         id="language-menu"
         anchorEl={anchorEl}
@@ -78,4 +85,5 @@ export default function LanguageSwitcher({ language, setLanguage }) {
 LanguageSwitcher.propTypes = {
   language: PropTypes.string.isRequired,
   setLanguage: PropTypes.func.isRequired,
+  zoom: PropTypes.number.isRequired,
 };

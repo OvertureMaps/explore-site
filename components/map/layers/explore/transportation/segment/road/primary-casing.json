@@ -1,0 +1,97 @@
+{
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "minzoom": 12,
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "get",
+        "subtype"
+      ],
+      "road"
+    ],
+    [
+      "==",
+      [
+        "get",
+        "class"
+      ],
+      "primary"
+    ]
+  ],
+  "paint": {
+    "line-color": [
+      "step",
+      [
+        "zoom"
+      ],
+      "hsla(0, 0%, 0%, 0)",
+      10,
+      "$transportation.road.color.casing"
+    ],
+    "line-width": [
+      "interpolate",
+      [
+        "exponential",
+        1.5
+      ],
+      [
+        "zoom"
+      ],
+      14,
+      1,
+      20,
+      2
+    ],
+    "line-gap-width": [
+      "interpolate",
+      [
+        "exponential",
+        1.5
+      ],
+      [
+        "zoom"
+      ],
+      7,
+      0.3,
+      10,
+      0.7,
+      12,
+      2,
+      16,
+      6,
+      20,
+      12
+    ]
+  },
+  "layout": {
+    "line-cap": [
+      "step",
+      [
+        "zoom"
+      ],
+      "butt",
+      16,
+      "round"
+    ],
+    "line-join": [
+      "step",
+      [
+        "zoom"
+      ],
+      "miter",
+      16,
+      "round"
+    ]
+  },
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-roads",
+    "overture:selectable": false,
+    "overture:item": "road-primary"
+  }
+}

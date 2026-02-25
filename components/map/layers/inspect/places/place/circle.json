@@ -1,0 +1,27 @@
+{
+  "type": "circle",
+  "source": "places",
+  "source-layer": "place",
+  "metadata": {
+    "overture:theme": "places",
+    "overture:type": "place",
+    "overture:group": "places-place",
+    "overture:item": "place-circle",
+    "overture:selectable": true
+  },
+  "minzoom": 13,
+  "filter": [
+    "==",
+    [
+      "geometry-type"
+    ],
+    "Point"
+  ],
+  "paint": {
+    "circle-color": "$inspect.place.color.circle",
+    "circle-radius": 4,
+    "circle-stroke-width": 1,
+    "circle-stroke-color": "$inspect.place.color.circleStroke",
+    "circle-opacity": "$inspect.place.opacity"
+  }
+}

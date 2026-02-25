@@ -1,0 +1,48 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "infrastructure",
+  "minzoom": 13,
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "Polygon"
+    ],
+    [
+      "==",
+      [
+        "get",
+        "subtype"
+      ],
+      "airport"
+    ],
+    [
+      "match",
+      [
+        "get",
+        "class"
+      ],
+      [
+        "runway",
+        "taxiway"
+      ],
+      true,
+      false
+    ]
+  ],
+  "paint": {
+    "fill-color": "$base.infrastructure.aerialway.color.fill",
+    "fill-outline-color": "$base.infrastructure.aerialway.color.fillOutline"
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "infrastructure",
+    "overture:group": "base-infrastructure",
+    "overture:selectable": true,
+    "overture:item": "aerialway"
+  }
+}

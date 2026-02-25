@@ -1,0 +1,113 @@
+{
+  "background": "$globals.color.sand.250",
+  "land": "$globals.color.sand.50",
+  "ocean": "$globals.color.ocean.900",
+  "lake-river": "$globals.color.ocean.50",
+  "water-label": "$globals.color.blue.500",
+  "bathymetry-0": "$globals.color.ocean.100",
+  "bathymetry-100": "$globals.color.ocean.200",
+  "bathymetry-500": "$globals.color.ocean.300",
+  "bathymetry-1000": "$globals.color.ocean.400",
+  "bathymetry-1500": "$globals.color.ocean.500",
+  "bathymetry-2000": "$globals.color.ocean.600",
+  "bathymetry-2500": "$globals.color.ocean.700",
+  "bathymetry-3000": "$globals.color.ocean.800",
+  "barren": "$globals.color.yellow.200",
+  "forest": "$globals.color.green.500",
+  "grass": "$globals.color.green.400",
+  "moss": "$globals.color.green.600",
+  "shrub": "$globals.color.olive.200",
+  "crop": "$globals.color.yellow.300",
+  "wetland": "$globals.color.teal.50",
+  "mangrove": "$globals.color.teal.100",
+  "snow": "$globals.color.sky.50",
+  "park": {
+    "primary": "$globals.color.green.200",
+    "highlight": "$globals.color.green.300"
+  },
+  "recreation": {
+    "primary": "$globals.color.green.50",
+    "highlight": "$globals.color.green.100"
+  },
+  "medical": {
+    "primary": "$globals.color.rose.50",
+    "highlight": "$globals.color.rose.100"
+  },
+  "college-university": {
+    "primary": "$globals.color.yellow.50",
+    "highlight": "$globals.color.yellow.100"
+  },
+  "military": {
+    "primary": "$globals.color.steel.50",
+    "highlight": "$globals.color.steel.100"
+  },
+  "cemetery": {
+    "primary": "$globals.color.olive.50",
+    "highlight": "$globals.color.olive.100"
+  },
+  "airport": {
+    "primary": "$globals.color.sky.100",
+    "highlight": "$globals.color.sky.300"
+  },
+  "aerialway": {
+    "primary": "$globals.color.sky.100",
+    "highlight": "$globals.color.sky.400"
+  },
+  "pier": {
+    "primary": "$globals.color.sand.150",
+    "highlight": "$globals.color.sand.200"
+  },
+  "building": {
+    "primary": "$globals.color.sand.100",
+    "highlight": "$globals.color.sand.300",
+    "tertiary": "$globals.color.sand.400"
+  },
+  "building-part": {
+    "primary": "$globals.color.sand.300",
+    "highlight": "$globals.color.sand.350",
+    "tertiary": "$globals.color.sand.450"
+  },
+  "segment": {
+    "primary": "$globals.color.white.50",
+    "highlight": "$globals.color.steel.200"
+  },
+  "motorway": {
+    "primary": "$globals.color.sand.500",
+    "highlight": "$globals.color.sand.700",
+    "label": "$globals.color.sand.900",
+    "labelHalo": "$globals.color.white.50-70%"
+  },
+  "road": {
+    "primary": "$globals.color.white.50",
+    "highlight": "$globals.color.steel.200",
+    "label": "$globals.color.sand.900",
+    "labelHalo": "$globals.color.white.50-70%"
+  },
+  "pedestrian": "$globals.color.white.50-70%",
+  "rail": {
+    "primary": "$globals.color.sand.600-70%",
+    "label": "$globals.color.sand.900",
+    "labelHalo": "$globals.color.white.50-70%"
+  },
+  "waterway": {
+    "primary": "$globals.color.steel.300-40%",
+    "label": "$globals.color.sand.900",
+    "labelHalo": "$globals.color.white.50-70%"
+  },
+  "address": {
+    "label": "$globals.color.gray.950",
+    "labelHalo": "$globals.color.white.50-30%"
+  },
+  "place": {
+    "label": "$globals.color.gray.950",
+    "labelHalo": "$globals.color.white.50-30%"
+  },
+  "division": {
+    "boundary": {
+      "primary": "$globals.color.gray.700",
+      "highlight": "$globals.color.white.50"
+    },
+    "label": "$globals.color.gray.900",
+    "halo": "$globals.color.white.50-80%"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "background",
+  "paint": {
+    "background-color": "$background.background.color"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "divisions": {
+    "division": {
+      "primary": ["$globals.font.noto-sans-semicondensed.bold"],
+      "secondary": ["$globals.font.noto-sans-semicondensed.medium"],
+      "tertiary": ["$globals.font.noto-sans-semicondensed.regular"]
+    }
+  },
+  "transportation": {
+    "segment": {
+      "road-primary": ["$globals.font.noto-sans.medium"],
+      "road-secondary": ["$globals.font.noto-sans.regular"],
+      "rail": ["$globals.font.noto-sans.regular"],
+      "water": ["$globals.font.noto-sans.italic"]
+    }
+  },
+  "base": {
+    "water-label": ["$globals.font.noto-sans.italic"]
+  },
+  "places": {
+    "filtered": ["$globals.font.noto-sans-semicondensed.regular"],
+    "all": ["$globals.font.noto-sans-semicondensed.light"]
+  },
+  "inspect": {
+    "font": ["$globals.font.pt-mono.regular"]
+  }
+}

@@ -1,7 +1,7 @@
-import { allLayers } from '@/lib/map-styles';
+import { defaultLayerSpecs } from '@/components/map';
 import { collectFieldRefs, collectFilterValues } from '@/lib/styleValidation';
-import schema from '@/lib/map-styles/schema.json';
-import tiles from '@/lib/map-styles/tiles.json';
+import schema from '@/components/map/schema.json';
+import tiles from '@/components/map/tiles.json';
 
 // ── Build lookup maps ────────────────────────────────
 
@@ -29,7 +29,7 @@ function getSchemaValues(typeData) {
 }
 
 // Filter to layers that reference tile sources (skip background, etc.)
-const layersWithSource = allLayers.filter(
+const layersWithSource = defaultLayerSpecs.filter(
   (s) => s.source && s['source-layer']
 );
 

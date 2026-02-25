@@ -1,0 +1,180 @@
+{
+  "type": "symbol",
+  "source": "divisions",
+  "source-layer": "division",
+  "minzoom": 9,
+  "filter": [
+    "all",
+    [
+      "match",
+      [
+        "get",
+        "subtype"
+      ],
+      [
+        "localadmin",
+        "borough",
+        "macrohood",
+        "neighborhood",
+        "microhood"
+      ],
+      true,
+      false
+    ],
+    [
+      "step",
+      [
+        "zoom"
+      ],
+      [
+        "==",
+        [
+          "get",
+          "subtype"
+        ],
+        "borough"
+      ],
+      10,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "borough",
+          "localadmin"
+        ],
+        true,
+        false
+      ],
+      11,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "borough",
+          "localadmin",
+          "macrohood"
+        ],
+        true,
+        false
+      ],
+      12,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "borough",
+          "localadmin",
+          "macrohood"
+        ],
+        true,
+        false
+      ],
+      13,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "borough",
+          "localadmin",
+          "macrohood",
+          "neighborhood"
+        ],
+        true,
+        false
+      ],
+      14,
+      true
+    ]
+  ],
+  "layout": {
+    "text-field": [
+      "get",
+      "@name"
+    ],
+    "text-font": [
+      "match",
+      [
+        "get",
+        "subtype"
+      ],
+      [
+        "suburb",
+        "borough"
+      ],
+      [
+        "literal",
+        "$divisions.division.secondary"
+      ],
+      [
+        "literal",
+        "$divisions.division.tertiary"
+      ]
+    ],
+    "text-size": [
+      "interpolate",
+      [
+        "linear"
+      ],
+      [
+        "zoom"
+      ],
+      10,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "suburb",
+          "borough",
+          "macrohood"
+        ],
+        18,
+        14
+      ],
+      13,
+      [
+        "match",
+        [
+          "get",
+          "subtype"
+        ],
+        [
+          "suburb",
+          "borough",
+          "macrohood"
+        ],
+        22,
+        18
+      ]
+    ],
+    "text-letter-spacing": 0.1,
+    "text-max-width": 8,
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$divisions.division.localadmin_local.color.text",
+    "text-halo-color": "$divisions.division.localadmin_local.color.textHalo",
+    "text-halo-width": 1.5
+  },
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division",
+    "overture:group": "divisions-division",
+    "overture:selectable": true,
+    "overture:item": "localadmin-local-label"
+  }
+}

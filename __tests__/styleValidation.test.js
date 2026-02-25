@@ -1,7 +1,7 @@
 import { validateStyleMin } from '@maplibre/maplibre-gl-style-spec';
-import { geometryLayers, labelLayers, divisionLabelSpec } from '@/lib/map-styles';
+import { defaultLayerSpecs } from '@/components/map';
 
-const allSpecs = [...geometryLayers, ...labelLayers, divisionLabelSpec];
+const allSpecs = defaultLayerSpecs;
 
 // Build a minimal valid style that includes all layers with their sources,
 // so the validator can cross-reference source-layer against source definitions.
@@ -49,29 +49,25 @@ describe('MapLibre style spec validation', () => {
   });
 
   it('every layer has overture:theme metadata', () => {
-    allSpecs.forEach((spec) => {
+    allSpecs
+      .filter((spec) => spec.type !== 'background')
+      .forEach((spec) => {
       expect(spec.metadata).toBeDefined();
       expect(spec.metadata['overture:theme']).toBeDefined();
       expect(spec.metadata['overture:type']).toBeDefined();
-      expect(spec.metadata['overture:pass']).toMatch(/^(geometry|labels|division-labels)$/);
-    });
-  });
-
-  it('geometry layers have overture:color metadata', () => {
-    geometryLayers.forEach((spec) => {
-      // Click buffers don't carry color metadata
-      if (spec.id.includes('click-buffer')) return;
-      expect(spec.metadata['overture:color']).toBeDefined();
     });
   });
 
   it('each layer spec has required MapLibre fields', () => {
-    allSpecs.forEach((spec) => {
+    allSpecs
+      .filter((spec) => spec.type !== 'background')
+      .forEach((spec) => {
       expect(spec).toHaveProperty('id');
       expect(spec).toHaveProperty('type');
       expect(spec).toHaveProperty('source');
       expect(spec).toHaveProperty('source-layer');
-      expect(spec).toHaveProperty('paint');
+      const hasPaintOrLayout = spec.paint || spec.layout;
+      expect(hasPaintOrLayout).toBeTruthy();
     });
   });
 

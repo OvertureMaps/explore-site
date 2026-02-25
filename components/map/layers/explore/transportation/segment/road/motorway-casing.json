@@ -1,0 +1,86 @@
+{
+  "type": "line",
+  "source": "transportation",
+  "source-layer": "segment",
+  "minzoom": 12,
+  "filter": [
+    "==",
+    [
+      "get",
+      "class"
+    ],
+    "motorway"
+  ],
+  "paint": {
+    "line-color": [
+      "step",
+      [
+        "zoom"
+      ],
+      "hsla(0, 0%, 0%, 0)",
+      8,
+      "$transportation.motorway.color.casing"
+    ],
+    "line-width": [
+      "interpolate",
+      [
+        "exponential",
+        1.5
+      ],
+      [
+        "zoom"
+      ],
+      14,
+      1,
+      20,
+      2
+    ],
+    "line-gap-width": [
+      "interpolate",
+      [
+        "exponential",
+        1.5
+      ],
+      [
+        "zoom"
+      ],
+      4,
+      0.5,
+      8,
+      1,
+      12,
+      3,
+      16,
+      8,
+      20,
+      16
+    ]
+  },
+  "layout": {
+    "line-cap": [
+      "step",
+      [
+        "zoom"
+      ],
+      "butt",
+      13,
+      "round"
+    ],
+    "line-join": [
+      "step",
+      [
+        "zoom"
+      ],
+      "miter",
+      13,
+      "round"
+    ]
+  },
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-roads",
+    "overture:selectable": false,
+    "overture:item": "road-motorway"
+  }
+}

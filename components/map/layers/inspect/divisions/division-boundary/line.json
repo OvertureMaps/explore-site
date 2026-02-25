@@ -1,0 +1,17 @@
+{
+  "type": "line",
+  "source": "divisions",
+  "source-layer": "division_boundary",
+  "metadata": {
+    "overture:theme": "divisions",
+    "overture:type": "division_boundary",
+    "overture:group": "divisions-boundary",
+    "overture:item": "division-boundary-line",
+    "overture:selectable": true
+  },
+  "paint": {
+    "line-color": "$inspect.division.color.line",
+    "line-width": 1.5,
+    "line-opacity": "$inspect.division.opacity"
+  }
+}

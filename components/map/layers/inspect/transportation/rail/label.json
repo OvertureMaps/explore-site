@@ -1,0 +1,25 @@
+{
+  "type": "symbol",
+  "source": "transportation",
+  "source-layer": "segment",
+  "metadata": {
+    "overture:theme": "transportation",
+    "overture:type": "segment",
+    "overture:group": "transportation-rail",
+    "overture:item": "rail-label",
+    "overture:selectable": true
+  },
+  "minzoom": 13,
+  "filter": ["==", ["get", "subtype"], "rail"],
+  "layout": {
+    "text-field": ["get", "@name"],
+    "text-font": "$inspect.font",
+    "text-size": 11,
+    "symbol-placement": "line",
+    "text-allow-overlap": false
+  },
+  "paint": {
+    "text-color": "$inspect.rail.color.text",
+    "text-opacity": "$inspect.rail.opacity"
+  }
+}

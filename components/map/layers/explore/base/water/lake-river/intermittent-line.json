@@ -1,0 +1,34 @@
+{
+  "type": "line",
+  "source": "base",
+  "source-layer": "water",
+  "filter": [
+    "all",
+    [
+      "==",
+      [
+        "geometry-type"
+      ],
+      "LineString"
+    ],
+    [
+      "has",
+      "subtype"
+    ],
+    [
+      "has",
+      "is_intermittent"
+    ]
+  ],
+  "paint": {
+    "line-color": "$base.water.lake-river.color.line",
+    "line-opacity": 0.25
+  },
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "water",
+    "overture:group": "base-land",
+    "overture:selectable": true,
+    "overture:item": "lakes-rivers"
+  }
+}

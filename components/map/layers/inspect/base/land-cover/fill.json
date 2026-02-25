@@ -1,0 +1,16 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "land_cover",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "land_cover",
+    "overture:group": "base-land-cover",
+    "overture:item": "land-cover-fill",
+    "overture:selectable": true
+  },
+  "paint": {
+    "fill-color": "$inspect.land_cover.color.fill",
+    "fill-opacity": "$inspect.land_cover.opacity"
+  }
+}

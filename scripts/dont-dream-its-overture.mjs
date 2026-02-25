@@ -28,11 +28,11 @@ const __dirname = path.dirname(__filename);
 
 const SCHEMA_RELEASE = "v1.16.0";
 const TILES_RELEASE = "2026-02-18.0";
-const MAP_DIR = path.resolve(__dirname, "../lib/map-styles");
+const MAP_DIR = path.resolve(__dirname, "../components/map");
 const SCHEMA_OUT = path.join(MAP_DIR, "schema.json");
 const TILES_OUT = path.join(MAP_DIR, "tiles.json");
-const STYLE_DIR = MAP_DIR;
-const REPORT_OUT = path.join(MAP_DIR, "STYLE-AUDIT.md");
+const STYLE_DIR = path.join(MAP_DIR, "layers");
+const REPORT_OUT = path.join(MAP_DIR, "layers/STYLE-AUDIT.md");
 
 // ── Arg parsing ──────────────────────────────────────
 

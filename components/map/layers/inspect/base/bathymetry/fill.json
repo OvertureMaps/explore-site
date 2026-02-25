@@ -1,0 +1,16 @@
+{
+  "type": "fill",
+  "source": "base",
+  "source-layer": "bathymetry",
+  "metadata": {
+    "overture:theme": "base",
+    "overture:type": "bathymetry",
+    "overture:group": "base-bathymetry",
+    "overture:item": "bathymetry-fill",
+    "overture:selectable": true
+  },
+  "paint": {
+    "fill-color": "$inspect.bathymetry.color.fill",
+    "fill-opacity": "$inspect.bathymetry.opacity"
+  }
+}
