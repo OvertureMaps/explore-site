@@ -1,0 +1,351 @@
+{
+  "$generated": "2026-02-25",
+  "$source": "https://tiles.overturemaps.org/2026-02-18.0",
+  "$release": "2026-02-18.0",
+  "themes": {
+    "addresses": {
+      "minzoom": 0,
+      "maxzoom": 14,
+      "bounds": [
+        -180,
+        -85.0511287,
+        180,
+        85.0511287
+      ],
+      "layers": {
+        "address": {
+          "minzoom": 14,
+          "maxzoom": 14,
+          "fields": {
+            "address_levels": "String",
+            "country": "String",
+            "id": "String",
+            "number": "String",
+            "postal_city": "String",
+            "postcode": "String",
+            "sources": "String",
+            "street": "String",
+            "unit": "String",
+            "version": "Number"
+          }
+        }
+      }
+    },
+    "base": {
+      "minzoom": 0,
+      "maxzoom": 13,
+      "bounds": [
+        -180,
+        -85.0511287,
+        180,
+        85.0511287
+      ],
+      "layers": {
+        "bathymetry": {
+          "minzoom": 0,
+          "maxzoom": 13,
+          "fields": {
+            "cartography": "String",
+            "depth": "Number",
+            "id": "String",
+            "sources": "String",
+            "version": "Number"
+          }
+        },
+        "infrastructure": {
+          "minzoom": 13,
+          "maxzoom": 13,
+          "fields": {
+            "@name": "String",
+            "class": "String",
+            "height": "Number",
+            "id": "String",
+            "level": "Number",
+            "names": "String",
+            "source_tags": "String",
+            "sources": "String",
+            "subtype": "String",
+            "surface": "String",
+            "version": "Number",
+            "wikidata": "String"
+          }
+        },
+        "land": {
+          "minzoom": 0,
+          "maxzoom": 13,
+          "fields": {
+            "@name": "String",
+            "class": "String",
+            "elevation": "Number",
+            "id": "String",
+            "level": "Number",
+            "names": "String",
+            "source_tags": "String",
+            "sources": "String",
+            "subtype": "String",
+            "surface": "String",
+            "version": "Number",
+            "wikidata": "String"
+          }
+        },
+        "land_cover": {
+          "minzoom": 0,
+          "maxzoom": 13,
+          "fields": {
+            "cartography": "String",
+            "id": "String",
+            "sources": "String",
+            "subtype": "String",
+            "version": "Number"
+          }
+        },
+        "land_use": {
+          "minzoom": 6,
+          "maxzoom": 13,
+          "fields": {
+            "@name": "String",
+            "class": "String",
+            "elevation": "Number",
+            "id": "String",
+            "level": "Number",
+            "names": "String",
+            "source_tags": "String",
+            "sources": "String",
+            "subtype": "String",
+            "surface": "String",
+            "version": "Number",
+            "wikidata": "String"
+          }
+        },
+        "water": {
+          "minzoom": 0,
+          "maxzoom": 13,
+          "fields": {
+            "@name": "String",
+            "class": "String",
+            "id": "String",
+            "is_intermittent": "Boolean",
+            "is_salt": "Boolean",
+            "level": "Number",
+            "names": "String",
+            "source_tags": "String",
+            "sources": "String",
+            "subtype": "String",
+            "version": "Number",
+            "wikidata": "String"
+          }
+        }
+      }
+    },
+    "buildings": {
+      "minzoom": 0,
+      "maxzoom": 14,
+      "bounds": [
+        -180,
+        -85.0511287,
+        180,
+        85.0511287
+      ],
+      "layers": {
+        "building": {
+          "minzoom": 5,
+          "maxzoom": 14,
+          "fields": {
+            "@geometry_source": "String",
+            "@height_source": "String",
+            "@name": "String",
+            "class": "String",
+            "facade_color": "String",
+            "facade_material": "String",
+            "has_parts": "Boolean",
+            "height": "Number",
+            "id": "String",
+            "is_underground": "Boolean",
+            "level": "Number",
+            "min_floor": "Number",
+            "min_height": "Number",
+            "names": "String",
+            "num_floors": "Number",
+            "num_floors_underground": "Number",
+            "roof_color": "String",
+            "roof_direction": "Number",
+            "roof_height": "Number",
+            "roof_material": "String",
+            "roof_orientation": "String",
+            "roof_shape": "String",
+            "sources": "String",
+            "subtype": "String",
+            "version": "Number"
+          }
+        },
+        "building_part": {
+          "minzoom": 8,
+          "maxzoom": 14,
+          "fields": {
+            "@geometry_source": "String",
+            "@height_source": "String",
+            "@name": "String",
+            "building_id": "String",
+            "facade_color": "String",
+            "facade_material": "String",
+            "height": "Number",
+            "id": "String",
+            "is_underground": "Boolean",
+            "level": "Number",
+            "min_floor": "Number",
+            "min_height": "Number",
+            "names": "String",
+            "num_floors": "Number",
+            "num_floors_underground": "Number",
+            "roof_color": "String",
+            "roof_direction": "Number",
+            "roof_height": "Number",
+            "roof_material": "String",
+            "roof_orientation": "String",
+            "roof_shape": "String",
+            "sources": "String",
+            "version": "Number"
+          }
+        }
+      }
+    },
+    "divisions": {
+      "minzoom": 0,
+      "maxzoom": 12,
+      "bounds": [
+        -180,
+        -85.051129,
+        180,
+        83.875172
+      ],
+      "layers": {
+        "division": {
+          "minzoom": 0,
+          "maxzoom": 12,
+          "fields": {
+            "@name": "String",
+            "capital_division_ids": "String",
+            "country": "String",
+            "hierarchies": "String",
+            "id": "String",
+            "local_type": "String",
+            "names": "String",
+            "norms": "String",
+            "parent_division_id": "String",
+            "population": "Number",
+            "region": "String",
+            "sources": "String",
+            "subtype": "String",
+            "version": "Number",
+            "wikidata": "String"
+          }
+        },
+        "division_area": {
+          "minzoom": 0,
+          "maxzoom": 12,
+          "fields": {
+            "class": "String",
+            "country": "String",
+            "division_id": "String",
+            "id": "String",
+            "names": "String",
+            "region": "String",
+            "sources": "String",
+            "subtype": "String",
+            "version": "Number"
+          }
+        },
+        "division_boundary": {
+          "minzoom": 0,
+          "maxzoom": 12,
+          "fields": {
+            "class": "String",
+            "division_ids": "String",
+            "id": "String",
+            "sources": "String",
+            "subtype": "String",
+            "version": "Number"
+          }
+        }
+      }
+    },
+    "places": {
+      "minzoom": 0,
+      "maxzoom": 15,
+      "bounds": [
+        -180,
+        -85.051129,
+        180,
+        85.051129
+      ],
+      "layers": {
+        "place": {
+          "minzoom": 0,
+          "maxzoom": 15,
+          "fields": {
+            "@name": "String",
+            "addresses": "String",
+            "brand": "String",
+            "categories": "String",
+            "confidence": "Number",
+            "emails": "String",
+            "id": "String",
+            "names": "String",
+            "phones": "String",
+            "socials": "String",
+            "sources": "String",
+            "version": "Number",
+            "websites": "String"
+          }
+        }
+      }
+    },
+    "transportation": {
+      "minzoom": 0,
+      "maxzoom": 14,
+      "bounds": [
+        -180,
+        -85.0511287,
+        180,
+        85.0511287
+      ],
+      "layers": {
+        "connector": {
+          "minzoom": 13,
+          "maxzoom": 14,
+          "fields": {
+            "id": "String",
+            "sources": "String",
+            "version": "Number"
+          }
+        },
+        "segment": {
+          "minzoom": 4,
+          "maxzoom": 14,
+          "fields": {
+            "@name": "String",
+            "access_restrictions": "String",
+            "class": "String",
+            "connectors": "String",
+            "destinations": "String",
+            "id": "String",
+            "level_rules": "String",
+            "names": "String",
+            "prohibited_transitions": "String",
+            "rail_flags": "String",
+            "road_flags": "String",
+            "road_surface": "String",
+            "routes": "String",
+            "sources": "String",
+            "speed_limits": "String",
+            "subclass": "String",
+            "subclass_rules": "String",
+            "subtype": "String",
+            "version": "Number",
+            "width_rules": "String"
+          }
+        }
+      }
+    }
+  }
+}
