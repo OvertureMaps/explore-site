@@ -9,9 +9,10 @@ import DarkModeToggle from "@/components/nav/DarkModeToggle";
 import LanguageSwitcher from "@/components/nav/LanguageSwitcher";
 import ShareButton from "@/components/nav/ShareButton";
 import GithubButton from "@/components/nav/GithubButton";
+import SearchBox from "@/components/nav/SearchBox";
 import PropTypes from "prop-types";
 
-export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, language, setLanguage, inspectMode, setInspectMode, globeMode, setGlobeMode }) {
+export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, language, setLanguage, inspectMode, setInspectMode, globeMode, setGlobeMode, activeFeature }) {
   const isDark = mode === "theme-dark";
 
   return (
@@ -39,7 +40,8 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, lan
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>docs</span>
           </IconButton>
         </Tooltip>
-        <ShareButton visibleTypes={visibleTypes} modeName={mode} />
+        <DownloadButton zoom={zoom} mode={mode} setZoom={setZoom} visibleTypes={visibleTypes} />
+        <ShareButton visibleTypes={visibleTypes} inspectMode={inspectMode} activeFeature={activeFeature} />
         <Tooltip title="Report a bug">
           <IconButton
             href="https://github.com/OvertureMaps/explore-site/issues/new/choose"
@@ -86,7 +88,7 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, lan
         </Tooltip>
         <DarkModeToggle mode={mode} setMode={setMode} />
         <LanguageSwitcher language={language} setLanguage={setLanguage} zoom={zoom} />
-        <DownloadButton zoom={zoom} mode={mode} setZoom={setZoom} visibleTypes={visibleTypes} />
+        <SearchBox mode={mode} />
       </Toolbar>
     </AppBar>
   );
@@ -104,4 +106,5 @@ Header.propTypes = {
   setInspectMode: PropTypes.func.isRequired,
   globeMode: PropTypes.bool.isRequired,
   setGlobeMode: PropTypes.func.isRequired,
+  activeFeature: PropTypes.object,
 };

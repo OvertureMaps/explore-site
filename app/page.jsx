@@ -4,8 +4,8 @@ import "@/components/CustomControls.css";
 import Header from "@/components/nav/Header";
 import Map from "@/components/MapView";
 import MapContext from "@/lib/MapContext";
-import { keepTheme, setTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
-import { useState, useEffect } from "react";
+import { keepTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
+import { useState, useEffect, useRef } from "react";
 import { ThemeProvider } from "@mui/material";
 import { defaultLayerSpecs, inspectLayerSpecs } from "@/components/map";
 
@@ -23,7 +23,7 @@ const ALL_INSPECT_ITEMS = [...new Set(
 )];
 
 // Items disabled by default
-const DEFAULT_OFF = new Set(["place-all-circle", "place-all-density-circle", "building_footprint", "building_part_footprint"]);
+const DEFAULT_OFF = new Set(["place-all-circle", "place-all-density-circle", "building-footprint", "building-part-footprint", "address"]);
 
 const DEFAULT_VISIBLE = ALL_ITEMS.filter((id) => !DEFAULT_OFF.has(id));
 const DEFAULT_INSPECT_VISIBLE = ALL_INSPECT_ITEMS;
@@ -43,6 +43,25 @@ export default function Home() {
   const [visibleTypes, setVisibleTypes] = useState(DEFAULT_VISIBLE);
   const [savedExploreTypes, setSavedExploreTypes] = useState(null);
   const [savedInspectTypes, setSavedInspectTypes] = useState(null);
+  const [pendingFeature, setPendingFeature] = useState(null);
+
+  // Capture the hash position at page load before anything can overwrite it.
+  // MapLibre's hash:true won't see it in time because the component tree
+  // doesn't mount until mounted=true (second render).
+  const initialPositionRef = useRef(null);
+  if (initialPositionRef.current === null && typeof window !== "undefined") {
+    const hash = window.location.hash.replace("#", "");
+    const parts = hash.split("/");
+    if (parts.length >= 3) {
+      const [z, lat, lng] = parts.map(Number);
+      if (!isNaN(z) && !isNaN(lat) && !isNaN(lng)) {
+        initialPositionRef.current = { center: [lng, lat], zoom: z };
+      }
+    }
+    if (!initialPositionRef.current) {
+      initialPositionRef.current = false; // mark as checked
+    }
+  }
 
   // Swap visibleTypes when toggling inspect mode
   useEffect(() => {
@@ -63,15 +82,53 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     const layersParam = params.get("layers");
     const modeParam = params.get("mode");
-    if (layersParam) {
+    const featureParam = params.get("feature");
+
+    if (modeParam === "inspect") {
+      if (layersParam) {
+        setSavedInspectTypes(layersParam.split(","));
+      }
+      setInspectMode(true);
+    }
+    if (layersParam && modeParam !== "inspect") {
       setVisibleTypes(layersParam.split(","));
     }
-    if (modeParam) {
-      setTheme(modeParam, setModeName);
+
+    if (featureParam) {
+      const parts = featureParam.split(".");
+      if (parts.length >= 3) {
+        const [source, sourceLayer, ...rest] = parts;
+        setPendingFeature({ source, sourceLayer, gersId: rest.join(".") });
+      }
     }
 
     setMounted(true);
   }, []);
+
+  // Sync mode + feature state to URL in real time.
+  // Waits for mapInstance so MapLibre has finished reading the hash
+  // before we call replaceState. Only touches search params — leaves the
+  // hash alone so MapLibre's position is never clobbered.
+  useEffect(() => {
+    if (!mounted || !mapInstance) return;
+    const params = new URLSearchParams(window.location.search);
+    params.set("mode", inspectMode ? "inspect" : "explore");
+
+    if (activeFeature?.properties?.id) {
+      const featureKey = [
+        activeFeature.source,
+        activeFeature.sourceLayer,
+        activeFeature.properties.id,
+      ].join(".");
+      params.set("feature", featureKey);
+    } else if (!pendingFeature) {
+      // Only remove once there is no pending restore in progress
+      params.delete("feature");
+    }
+
+    const newUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
+    window.history.replaceState(null, "", newUrl);
+  }, [mounted, mapInstance, inspectMode, activeFeature, pendingFeature]);
 
   // Prevent hydration mismatch — render nothing until client-side mount
   if (!mounted) {
@@ -94,6 +151,7 @@ export default function Home() {
             setInspectMode={setInspectMode}
             globeMode={globeMode}
             setGlobeMode={setGlobeMode}
+            activeFeature={activeFeature}
           />
           <Map
             mode={modeName}
@@ -110,6 +168,9 @@ export default function Home() {
             onMapReady={setMapInstance}
             inspectMode={inspectMode}
             globeMode={globeMode}
+            pendingFeature={pendingFeature}
+            setPendingFeature={setPendingFeature}
+            initialPosition={initialPositionRef.current || undefined}
           />
         </MapContext.Provider>
       </ThemeProvider>

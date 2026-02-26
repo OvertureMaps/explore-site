@@ -7,9 +7,8 @@ import {
   set_panic_hook,
   writeGeoJSON,
 } from "@geoarrow/geoarrow-wasm/esm/index.js";
-import RefreshIcon from "@/components/icons/icon-refresh.svg?react";
 import Tooltip from "@mui/material/Tooltip";
-import "./DownloadButton.css";
+import IconButton from "@mui/material/IconButton";
 import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
 
@@ -134,55 +133,49 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     }
   };
 
-  const downloadContent = (
-    <div className="button--download">
-      <button
-        className={`download-btn ${loading || zoom < ZOOM_BOUND ? "disabled" : ""}`}
-        onClick={handleDownloadClick}
-        disabled={loading || zoom < ZOOM_BOUND}
-      >
-        <div className="wrapper tour-download">
-          <div className="download-icon">
-            {!loading ? (
-              <img className={"dl-img"} src="/download.svg" />
-            ) : (
-              <RefreshIcon />
-            )}
-          </div>
-          <div className="download-text">
-            {loading ? "Downloading..." : "Download Visible"}
-          </div>
-        </div>
-      </button>
-    </div>
-  );
+  const isDisabled = loading || zoom < ZOOM_BOUND;
 
-  if (zoom >= ZOOM_BOUND) {
-    return downloadContent;
-  }
-
-  return (
+  const downloadIcon = (
     <Tooltip
       title={
-        <span>
-          The download button is disabled at zoom levels below {ZOOM_BOUND}.
-          Zoom further in to enable. For larger areas, use{" "}
-          <a
-            href="https://github.com/OvertureMaps/overturemaps-py"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{ color: "#90caf9" }}
-          >
-            overturemaps-py
-          </a>
-          .
-        </span>
+        zoom < ZOOM_BOUND ? (
+          <span>
+            Download is disabled below zoom {ZOOM_BOUND}. Zoom in to enable. For larger areas, use{" "}
+            <a
+              href="https://github.com/OvertureMaps/overturemaps-py"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{ color: "#90caf9" }}
+            >
+              overturemaps-py
+            </a>
+            .
+          </span>
+        ) : loading ? "Downloading..." : "Download visible layers"
       }
       arrow
     >
-      {downloadContent}
+      <span>
+        <IconButton
+          onClick={handleDownloadClick}
+          disabled={isDisabled}
+          aria-label="Download visible layers"
+          sx={{
+            color: "inherit",
+            animation: loading ? "spin 1s linear infinite" : "none",
+            "@keyframes spin": {
+              from: { transform: "rotate(0deg)" },
+              to: { transform: "rotate(-360deg)" },
+            },
+          }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 20 }}>download_for_offline</span>
+        </IconButton>
+      </span>
     </Tooltip>
   );
+
+  return downloadIcon;
 }
 
 DownloadButton.propTypes = {

@@ -125,5 +125,6 @@
   "indigo": {
     "500": "hsl(249, 100%, 55%)"
   },
-  "purple-vivid": "hsl(254, 80%, 55%)"
+  "purple-vivid": "hsl(254, 80%, 55%)",
+  "selection": "hsl(350, 65%, 48%)"
 }

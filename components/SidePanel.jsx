@@ -96,6 +96,9 @@ export default function SidePanel({
             minHeight: 36,
             borderBottom: 1,
             borderColor: "divider",
+            "& .MuiTabs-indicator": {
+              backgroundColor: isDark ? "#fff" : "#000",
+            },
             "& .MuiTab-root": {
               minHeight: 36,
               textTransform: "none",
@@ -104,7 +107,7 @@ export default function SidePanel({
               fontWeight: 500,
               color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
               "&.Mui-selected": {
-                color: isDark ? "#fff" : "#1976d2",
+                color: isDark ? "#fff" : "#000",
               },
             },
           }}

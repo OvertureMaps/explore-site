@@ -84,6 +84,9 @@ export default function Map({
   onMapReady,
   inspectMode,
   globeMode,
+  pendingFeature,
+  setPendingFeature,
+  initialPosition,
 }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
@@ -124,8 +127,8 @@ export default function Map({
     const map = new maplibregl.Map({
       container: mapContainer.current,
       style: MAP_STYLE,
-      center: INITIAL_CENTER,
-      zoom: INITIAL_ZOOM,
+      center: initialPosition?.center || INITIAL_CENTER,
+      zoom: initialPosition?.zoom || INITIAL_ZOOM,
       bearing: 0,
       pitch: 0,
       hash: true,
@@ -319,6 +322,59 @@ export default function Map({
     activeFeatureRef.current = activeFeature;
   }, [activeFeature]);
 
+  // Restore a pending feature from URL params once tiles are loaded
+  useEffect(() => {
+    if (!pendingFeature || !sourcesAdded || !mapRef.current) return;
+    const map = mapRef.current;
+    const { source, sourceLayer, gersId } = pendingFeature;
+
+    function tryFind() {
+      // querySourceFeatures searches cached tile data directly —
+      // more reliable than queryRenderedFeatures for finding by ID.
+      const results = map.querySourceFeatures(source, {
+        sourceLayer,
+        filter: ["==", ["get", "id"], gersId],
+      });
+      if (results.length === 0) return null;
+      // Attach source/sourceLayer so highlightFeature and the panel work
+      const match = results[0];
+      match.source = source;
+      match.sourceLayer = sourceLayer;
+      return match;
+    }
+
+    function resolve(match) {
+      setActiveFeature(match);
+      setFeatures([match]);
+      setActiveTab("features");
+      setDrawerOpen(true);
+      setPendingFeature(null);
+    }
+
+    // Retry on idle events — fires after each render frame completes,
+    // so tiles will be loaded and features queryable.
+    const timeout = setTimeout(() => {
+      map.off("idle", onIdle);
+      setPendingFeature(null);
+    }, 10000);
+
+    function onIdle() {
+      const match = tryFind();
+      if (match) {
+        clearTimeout(timeout);
+        map.off("idle", onIdle);
+        resolve(match);
+      }
+    }
+
+    map.on("idle", onIdle);
+
+    return () => {
+      clearTimeout(timeout);
+      map.off("idle", onIdle);
+    };
+  }, [pendingFeature, sourcesAdded, setPendingFeature, setActiveFeature, setFeatures]);
+
   // Keep window.map in sync
   useEffect(() => {
     window.map = mapRef.current;
@@ -336,9 +392,12 @@ export default function Map({
       inspectActiveRef.current = true;
     } else if (!inspectMode && inspectActiveRef.current) {
       // Leaving inspect mode: remove inspect layers, add styled layers
+      inspectActiveRef.current = false;
       removeInspectLayers(map);
       addAllLayers(map, visibleTypesRef.current).then(() => {
-        inspectActiveRef.current = false;
+        // Visibility types may have been swapped by the parent after this
+        // effect fired — re-apply with the latest ref value.
+        updateLayerVisibility(map, visibleTypesRef.current);
       });
     }
   }, [inspectMode, sourcesAdded]);
@@ -424,4 +483,7 @@ Map.propTypes = {
   onMapReady: PropTypes.func,
   inspectMode: PropTypes.bool.isRequired,
   globeMode: PropTypes.bool.isRequired,
+  pendingFeature: PropTypes.object,
+  setPendingFeature: PropTypes.func.isRequired,
+  initialPosition: PropTypes.object,
 };
