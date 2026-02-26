@@ -1,6 +1,6 @@
 name: Explorer Feature Request
 description: Suggest a new feature or enhancement for the Overture Explorer tool.
-labels: ["Needs: "enhancement"]
+labels: ["Needs: Triage", "enhancement"]
 body:
   - type: markdown
     attributes:
