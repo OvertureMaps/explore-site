@@ -76,9 +76,13 @@ jobs:
     needs: [test, build]
     environment:
       name: staging
-      url: https://staging.overturemaps.org/${{ github.event.repository.name }}/pr/${{ github.event.number }}/index.html
+      url: ${{ steps.deploy_url.outputs.url }}
 
     steps:
+      - name: Set deploy URL
+        id: deploy_url
+        run: echo "url=https://staging.overturemaps.org/${{ github.event.repository.name }}/pr/${{ github.event.number }}/index.html" >> $GITHUB_OUTPUT
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -108,7 +112,7 @@ jobs:
           message: |
             ## 🚀 Overture Maps explore-site branch preview deployed!
 
-            You can review your changes at https://staging.overturemaps.org/${{ github.event.repository.name }}/pr/${{ github.event.number }}/index.html
+            You can review your changes at ${{ steps.deploy_url.outputs.url }}
 
             ---
             <sub>♻️ Last refreshed: ${{ steps.timestamp.outputs.time }}</sub>
