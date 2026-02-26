@@ -1,15 +1,17 @@
+---
 # This workflow builds and deploys to GitHub Pages
 
 name: Production Deployment
+run-name: Publish prod site
 
 on:
   push:
     branches: [main]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read # required to checkout the code from the repo
+  pages: write # required to deploy to GitHub Pages
+  id-token: write # required to use OIDC authentication
 
 concurrency:
   group: "pages"
@@ -24,13 +26,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Use Node.js 20
+      - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version-file: package.json
+
+      - name: Configure sustainable npm
+        uses: lowlydba/sustainable-npm@ed089bd92235c2af803a951fba2bd42c59fbcd73 # v2.0.0
 
       - name: Install
-        run: npm install
+        run: npm ci
 
       - name: Test
         run: npm test
@@ -48,7 +53,7 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: build
     environment:
       name: github-pages
