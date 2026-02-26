@@ -371,14 +371,14 @@ export default function LayerTree({
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  fontSize: 14,
+                  fontSize: 16,
                   opacity: themeDisabled ? 0.38 : 1,
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <Checkbox
                   size="small"
-                  sx={{ p: 0, mr: 0.5 }}
+                  sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" }, "&.MuiCheckbox-indeterminate": { color: "#000" } }}
                   checked={isAllVisible(themeItemIds)}
                   indeterminate={isIndeterminate(themeItemIds)}
                   onChange={() => toggleItems(themeItemIds)}
@@ -408,14 +408,14 @@ export default function LayerTree({
                         sx={{
                           display: "flex",
                           alignItems: "center",
-                          fontSize: 13,
+                          fontSize: 15,
                           opacity: zoomDisabled ? 0.4 : 1,
                         }}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Checkbox
                           size="small"
-                          sx={{ p: 0, mr: 0.5 }}
+                          sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" } }}
                           checked={isItemVisible(item.id)}
                           onChange={() => toggleItems([item.id])}
                           disabled={!item.selectable}
@@ -444,14 +444,14 @@ export default function LayerTree({
                       sx={{
                         display: "flex",
                         alignItems: "center",
-                        fontSize: 13,
+                        fontSize: 15,
                         opacity: groupDisabled ? 0.38 : 1,
                       }}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <Checkbox
                         size="small"
-                        sx={{ p: 0, mr: 0.5 }}
+                        sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" }, "&.MuiCheckbox-indeterminate": { color: "#000" } }}
                         checked={isAllVisible(groupItemIds)}
                         indeterminate={isIndeterminate(groupItemIds)}
                         onChange={() => toggleItems(groupItemIds)}
@@ -475,14 +475,14 @@ export default function LayerTree({
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              fontSize: 12,
+                              fontSize: 14,
                               opacity: zoomDisabled ? 0.4 : 1,
                             }}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Checkbox
                               size="small"
-                              sx={{ p: 0, mr: 0.5 }}
+                              sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" } }}
                               checked={isItemVisible(item.id)}
                               onChange={() => toggleItems([item.id])}
                               disabled={!item.selectable}
