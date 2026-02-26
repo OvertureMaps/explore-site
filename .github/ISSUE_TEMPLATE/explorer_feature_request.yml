@@ -1,0 +1,61 @@
+name: Explorer Feature Request
+description: Suggest a new feature or enhancement for the Overture Explorer tool.
+labels: ["Needs: Triage", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest an improvement to the [Overture Explorer](https://explore.overturemaps.org)! Please provide as much detail as possible so we can evaluate your request.
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Please provide a clear and concise description of the feature you'd like to see. Screenshots, mockups, or sketches are welcome!
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: What problem would this feature solve? How would you use it?
+      placeholder: |
+        I'm trying to ...
+        Currently I have to ...
+        This feature would allow me to ...
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Which area of the Explorer does this relate to?
+      options:
+        - Map display / visualization
+        - Data inspection / property panel
+        - Search / filtering
+        - Data download / export
+        - Navigation / URL sharing
+        - Performance
+        - Accessibility
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+  - type: input
+    id: browser
+    attributes:
+      label: What browser are you using?
+      placeholder: ex. Chrome v112, Safari v16.3, Edge v112, Firefox v112, etc.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add any other context, links, or screenshots about the feature request here. If this relates to a specific location or feature, please include the Explorer URL.
+      placeholder: ex. https://explore.overturemaps.org/?mode=explore&feature=places.place.abc123#16/39.95/-75.15
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion! Our team will review it and follow up.
