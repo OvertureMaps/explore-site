@@ -111,9 +111,8 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
                   var downloadLink = document.createElement("a");
                   downloadLink.href = url;
 
-                  const center = map.getCenter();
-                  const zoom = map.getZoom();
-                  downloadLink.download = `overture-${releaseVersion}-${wasmTable.type}-${zoom}-${center.lat}-${center.lng}.geojson`;
+                  const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
+                  downloadLink.download = `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`;
 
                   document.body.appendChild(downloadLink);
                   downloadLink.click();
