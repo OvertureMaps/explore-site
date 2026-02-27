@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useMapInstance } from "@/lib/MapContext";
 import { useEffect, useState } from "react";
 import { getDownloadCatalog } from "@/lib/DownloadCatalog";
+import { getLatestReleaseVersion } from "@/lib/stacService";
 import {
   ParquetDataset,
   set_panic_hook,
@@ -63,8 +64,11 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
 
       set_panic_hook();
 
-      // Get the download catalog - now this is async
-      const downloadCatalog = await getDownloadCatalog(bbox, getVisibleTypes(visibleTypes));
+      // Get the download catalog and release version concurrently (STAC data is shared/cached)
+      const [downloadCatalog, releaseVersion] = await Promise.all([
+        getDownloadCatalog(bbox, getVisibleTypes(visibleTypes)),
+        getLatestReleaseVersion(),
+      ]);
 
       console.log(downloadCatalog);
 
@@ -109,7 +113,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
 
                   const center = map.getCenter();
                   const zoom = map.getZoom();
-                  downloadLink.download = `overture-${wasmTable.type}-${zoom}-${center.lat}-${center.lng}.geojson`;
+                  downloadLink.download = `overture-${releaseVersion}-${wasmTable.type}-${zoom}-${center.lat}-${center.lng}.geojson`;
 
                   document.body.appendChild(downloadLink);
                   downloadLink.click();
