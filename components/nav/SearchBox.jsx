@@ -29,7 +29,7 @@ const TYPE_LABELS = {
 const SEARCH_MODES = [
   { value: "locality", label: "Locality" },
   { value: "country", label: "Country" },
-  { value: "gers", label: "GERS", disabled: true },
+  { value: "gers", label: "GERS" },
 ];
 
 const PLACEHOLDER = {
@@ -38,12 +38,13 @@ const PLACEHOLDER = {
   gers: "Enter GERS ID…",
 };
 
-export default function SearchBox({ mode }) {
+export default function SearchBox({ mode, onGersSelect }) {
   const isDark = mode === "theme-dark";
   const map = useMapInstance();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const [searchMode, setSearchMode] = useState("locality");
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuOpen = Boolean(menuAnchor);
@@ -58,6 +59,7 @@ export default function SearchBox({ mode }) {
     if (!q || q.length < 2) {
       setResults([]);
       setOpen(false);
+      setNotFound(false);
       return;
     }
 
@@ -70,13 +72,21 @@ export default function SearchBox({ mode }) {
           `${GEOCODER_BASE}/id/${encodeURIComponent(q.trim())}`,
           { signal: controller.signal }
         );
+        if (!res.ok) {
+          setResults([]);
+          setNotFound(true);
+          setOpen(true);
+          return;
+        }
         const data = await res.json();
         if (data.bbox) {
           setResults([{ gers_id: data.id, name: data.id, type: "gers", bbox: [data.bbox.xmin, data.bbox.ymin, data.bbox.xmax, data.bbox.ymax] }]);
+          setNotFound(false);
           setOpen(true);
         } else {
           setResults([]);
-          setOpen(false);
+          setNotFound(true);
+          setOpen(true);
         }
       } else {
         const res = await fetch(
@@ -89,7 +99,8 @@ export default function SearchBox({ mode }) {
           items = items.filter((r) => r.type === "country");
         }
         setResults(items);
-        setOpen(items.length > 0);
+        setNotFound(items.length === 0);
+        setOpen(items.length > 0 || items.length === 0);
       }
     } catch (err) {
       if (err.name !== "AbortError") {
@@ -110,6 +121,7 @@ export default function SearchBox({ mode }) {
     setMenuAnchor(null);
     setResults([]);
     setOpen(false);
+    setNotFound(false);
     if (query.length >= 2) {
       clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => search(query, newMode), 200);
@@ -120,10 +132,29 @@ export default function SearchBox({ mode }) {
     setQuery(result.name);
     setOpen(false);
     setResults([]);
+    setNotFound(false);
 
     if (!map) return;
 
-    if (searchMode === "country" && result.lat != null && result.lon != null) {
+    if (searchMode === "gers" && result.bbox && result.bbox.length === 4) {
+      const bboxWidth = Math.abs(result.bbox[2] - result.bbox[0]);
+      const bboxHeight = Math.abs(result.bbox[3] - result.bbox[1]);
+      if (bboxWidth > 0.001 && bboxHeight > 0.001) {
+        map.fitBounds(
+          [[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]],
+          { padding: 60, maxZoom: 14.5, animate: false }
+        );
+      } else {
+        const centerLng = (result.bbox[0] + result.bbox[2]) / 2;
+        const centerLat = (result.bbox[1] + result.bbox[3]) / 2;
+        map.jumpTo({ center: [centerLng, centerLat], zoom: 16 });
+      }
+      if (onGersSelect) {
+        const centerLng = (result.bbox[0] + result.bbox[2]) / 2;
+        const centerLat = (result.bbox[1] + result.bbox[3]) / 2;
+        onGersSelect({ gersId: result.gers_id, center: [centerLng, centerLat] });
+      }
+    } else if (searchMode === "country" && result.lat != null && result.lon != null) {
       map.jumpTo({ center: [result.lon, result.lat], zoom: 4 });
     } else if (result.bbox && result.bbox.length === 4 &&
       Math.abs(result.bbox[2] - result.bbox[0]) > 0.001 &&
@@ -232,7 +263,7 @@ export default function SearchBox({ mode }) {
           />
         </Box>
 
-        {open && results.length > 0 && (
+        {open && (results.length > 0 || notFound) && (
           <Paper
             elevation={6}
             sx={{
@@ -247,7 +278,20 @@ export default function SearchBox({ mode }) {
               bgcolor: isDark ? "#2a2a2a" : "#fff",
             }}
           >
-            <List dense disablePadding>
+            {notFound && results.length === 0 ? (
+              <Typography
+                variant="body2"
+                sx={{
+                  px: 2,
+                  py: 1.5,
+                  color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)",
+                  fontStyle: "italic",
+                }}
+              >
+                No results found
+              </Typography>
+            ) : (
+              <List dense disablePadding>
               {results.map((r, i) => (
                 <ListItemButton
                   key={r.gers_id || i}
@@ -281,7 +325,8 @@ export default function SearchBox({ mode }) {
                   />
                 </ListItemButton>
               ))}
-            </List>
+              </List>
+            )}
           </Paper>
         )}
       </Box>
@@ -291,4 +336,5 @@ export default function SearchBox({ mode }) {
 
 SearchBox.propTypes = {
   mode: PropTypes.string.isRequired,
+  onGersSelect: PropTypes.func,
 };
