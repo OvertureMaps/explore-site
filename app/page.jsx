@@ -152,6 +152,9 @@ export default function Home() {
             globeMode={globeMode}
             setGlobeMode={setGlobeMode}
             activeFeature={activeFeature}
+            onGersSelect={({ gersId }) => {
+              setPendingFeature({ gersId, searchAll: true });
+            }}
           />
           <Map
             mode={modeName}

@@ -326,17 +326,43 @@ export default function Map({
   useEffect(() => {
     if (!pendingFeature || !sourcesAdded || !mapRef.current) return;
     const map = mapRef.current;
-    const { source, sourceLayer, gersId } = pendingFeature;
+    const { gersId } = pendingFeature;
+
+    const SOURCE_LAYER_COMBOS = [
+      { source: "base", sourceLayers: ["land_cover", "land_use", "water", "land", "infrastructure", "bathymetry"] },
+      { source: "buildings", sourceLayers: ["building", "building_part"] },
+      { source: "places", sourceLayers: ["place"] },
+      { source: "divisions", sourceLayers: ["division", "division_area", "division_boundary"] },
+      { source: "transportation", sourceLayers: ["segment", "connector"] },
+      { source: "addresses", sourceLayers: ["address"] },
+    ];
 
     function tryFind() {
-      // querySourceFeatures searches cached tile data directly —
-      // more reliable than queryRenderedFeatures for finding by ID.
+      if (pendingFeature.searchAll) {
+        for (const { source, sourceLayers } of SOURCE_LAYER_COMBOS) {
+          if (!map.getSource(source)) continue;
+          for (const sl of sourceLayers) {
+            const results = map.querySourceFeatures(source, {
+              sourceLayer: sl,
+              filter: ["==", ["get", "id"], gersId],
+            });
+            if (results.length > 0) {
+              const match = results[0];
+              match.source = source;
+              match.sourceLayer = sl;
+              return match;
+            }
+          }
+        }
+        return null;
+      }
+      // Single source/sourceLayer lookup (URL restore path)
+      const { source, sourceLayer } = pendingFeature;
       const results = map.querySourceFeatures(source, {
         sourceLayer,
         filter: ["==", ["get", "id"], gersId],
       });
       if (results.length === 0) return null;
-      // Attach source/sourceLayer so highlightFeature and the panel work
       const match = results[0];
       match.source = source;
       match.sourceLayer = sourceLayer;

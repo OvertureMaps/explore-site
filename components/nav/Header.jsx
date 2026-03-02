@@ -12,7 +12,7 @@ import GithubButton from "@/components/nav/GithubButton";
 import SearchBox from "@/components/nav/SearchBox";
 import PropTypes from "prop-types";
 
-export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, language, setLanguage, inspectMode, setInspectMode, globeMode, setGlobeMode, activeFeature }) {
+export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, language, setLanguage, inspectMode, setInspectMode, globeMode, setGlobeMode, activeFeature, onGersSelect }) {
   const isDark = mode === "theme-dark";
 
   return (
@@ -88,7 +88,7 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, lan
         </Tooltip>
         <DarkModeToggle mode={mode} setMode={setMode} />
         <LanguageSwitcher language={language} setLanguage={setLanguage} zoom={zoom} />
-        <SearchBox mode={mode} />
+        <SearchBox mode={mode} onGersSelect={onGersSelect} />
       </Toolbar>
     </AppBar>
   );
@@ -107,4 +107,5 @@ Header.propTypes = {
   globeMode: PropTypes.bool.isRequired,
   setGlobeMode: PropTypes.func.isRequired,
   activeFeature: PropTypes.object,
+  onGersSelect: PropTypes.func,
 };
