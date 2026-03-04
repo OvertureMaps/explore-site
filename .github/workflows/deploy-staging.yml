@@ -90,7 +90,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Download artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: build-artifact
           path: build
