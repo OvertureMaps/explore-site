@@ -127,7 +127,13 @@ export default function Map({
 
   // Wait for map fonts to be loaded by the browser
   useEffect(() => {
-    Promise.all(fontNames.map((name) => document.fonts.load(`24px "${name}"`))).then(
+    Promise.all(fontNames.map((name) => {
+      try {
+        document.fonts.load(`24px "${name}"`)
+      } catch (e) {
+        // fail gracefully if font loading 403/404s
+      }
+    })).then(
       (x) => setFontsLoaded(true)
     );
   }, []);
