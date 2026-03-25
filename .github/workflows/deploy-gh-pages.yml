@@ -32,7 +32,7 @@ jobs:
           node-version-file: package.json
 
       - name: Configure sustainable npm
-        uses: lowlydba/sustainable-npm@ed089bd92235c2af803a951fba2bd42c59fbcd73 # v2.0.0
+        uses: lowlydba/sustainable-npm@31d51025884f424f58f22e4e6578178bb4e79632 # v3.0.0
 
       - name: Install
         run: npm ci
