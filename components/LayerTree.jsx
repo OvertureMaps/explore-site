@@ -158,13 +158,13 @@ const BADGE_STYLE = {
 
 function ConfidenceBadge({ threshold, zoom }) {
   const value = evalAtZoom(threshold, Math.floor(zoom));
-  const label = value !== null ? `>${value.toFixed(2)}` : ">0.90";
+  const label = value !== null ? `>=${value.toFixed(2)}` : ">=0.90";
   return <span style={BADGE_STYLE}>{label}</span>;
 }
 
 function ConfidenceBadgeWithInfo({ threshold, zoom }) {
   const value = evalAtZoom(threshold, Math.floor(zoom));
-  const label = value !== null ? `>${value.toFixed(2)}` : ">0.90";
+  const label = value !== null ? `>=${value.toFixed(2)}` : ">=0.90";
   const tooltipText = buildStepTooltip(threshold);
   return (
     <Tooltip
