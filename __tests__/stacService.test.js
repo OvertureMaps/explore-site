@@ -85,6 +85,24 @@ describe('stacService', () => {
     expect(JSON.parse(localStorage.getItem(CACHE_KEY)).releaseId).toBe('2024-09-18');
   });
 
+  it.each([
+    { label: 'null',    pmtilesUrls: null },
+    { label: 'missing', pmtilesUrls: undefined },
+    { label: 'array',   pmtilesUrls: [] },
+    { label: 'string',  pmtilesUrls: 'bad' },
+  ])('wrong-shape cache (pmtilesUrls is $label): evicts key and falls through to full waterfall', async ({ pmtilesUrls }) => {
+    const entry = { releaseUrl: RELEASE_URL, releaseId: '2024-09-18' };
+    if (pmtilesUrls !== undefined) entry.pmtilesUrls = pmtilesUrls;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(entry));
+    const removeSpy = jest.spyOn(Storage.prototype, 'removeItem');
+
+    const urls = await loadPmtilesFromStac();
+
+    expect(removeSpy).toHaveBeenCalledWith(CACHE_KEY);
+    expect(global.fetch).toHaveBeenCalledTimes(3);
+    expect(urls.get('base')).toBe(PMTILES_URL);
+  });
+
   it('in-memory session cache: second call within same session does not re-fetch', async () => {
     await loadPmtilesFromStac();
     await loadPmtilesFromStac();
