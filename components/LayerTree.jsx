@@ -172,7 +172,12 @@ function ConfidenceBadgeWithInfo({ threshold, zoom }) {
       placement="right"
       arrow
     >
-      <span style={{ ...BADGE_STYLE, cursor: "default", display: "inline-flex", alignItems: "center", gap: 2 }}>
+      <span
+        style={{ ...BADGE_STYLE, cursor: "default", display: "inline-flex", alignItems: "center", gap: 2 }}
+        tabIndex={0}
+        role="button"
+        aria-label="Show confidence threshold details by zoom level"
+      >
         {label}
         <InfoOutlinedIcon style={{ fontSize: 13, opacity: 0.6 }} />
       </span>
