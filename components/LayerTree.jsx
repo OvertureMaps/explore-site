@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import { Checkbox, Box, IconButton } from "@mui/material";
+import { Checkbox, Box, IconButton, Tooltip } from "@mui/material";
 import SquareIcon from "@mui/icons-material/Square";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import CircleIcon from "@mui/icons-material/Circle";
@@ -11,6 +11,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { themes, groups, defaultLayerSpecs, inspectThemes, inspectGroups, inspectLayerSpecs } from "@/components/map";
 
 const COLOR_PROPERTY = {
@@ -112,31 +113,87 @@ ZoomBadge.propTypes = {
   minzoom: PropTypes.number.isRequired,
 };
 
-function ConfidenceBadge() {
+// Evaluate a MapLibre step expression at a given zoom level, or return the
+// value directly if it is already a number.
+function evalAtZoom(expr, zoom) {
+  if (typeof expr === "number") return expr;
+  if (!Array.isArray(expr) || expr[0] !== "step") return null;
+  // ["step", input, default, stop1, val1, stop2, val2, ...]
+  let value = expr[2];
+  for (let i = 3; i + 1 < expr.length; i += 2) {
+    if (zoom >= expr[i]) value = expr[i + 1];
+  }
+  return value;
+}
+
+// Build tooltip lines describing each zoom-based confidence threshold step.
+function buildStepTooltip(expr) {
+  if (typeof expr === "number") return `confidence >= ${expr.toFixed(2)} at all zooms`;
+  if (!Array.isArray(expr) || expr[0] !== "step") return null;
+  // ["step", input, default, stop1, val1, stop2, val2, ...]
+  const stops = [];
+  for (let i = 3; i + 1 < expr.length; i += 2) {
+    stops.push([expr[i], expr[i + 1]]);
+  }
+  const lines = [`z<${stops[0][0]}: >=${expr[2].toFixed(2)}`];
+  for (let i = 0; i < stops.length; i++) {
+    const nextZoom = stops[i + 1]?.[0];
+    const zLabel = nextZoom !== undefined ? `z${stops[i][0]}–${nextZoom - 1}` : `z${stops[i][0]}+`;
+    lines.push(`${zLabel}: >=${stops[i][1].toFixed(2)}`);
+  }
+  return lines.join("\n");
+}
+
+const BADGE_STYLE = {
+  marginLeft: 4,
+  fontSize: 10,
+  fontWeight: 600,
+  lineHeight: 1,
+  padding: "1px 4px",
+  borderRadius: 3,
+  backgroundColor: "rgba(128,128,128,0.2)",
+  color: "inherit",
+  whiteSpace: "nowrap",
+};
+
+function ConfidenceBadge({ threshold, zoom }) {
+  const value = evalAtZoom(threshold, Math.floor(zoom));
+  const label = value !== null ? `>${value.toFixed(2)}` : ">0.90";
+  return <span style={BADGE_STYLE}>{label}</span>;
+}
+
+function ConfidenceBadgeWithInfo({ threshold, zoom }) {
+  const value = evalAtZoom(threshold, Math.floor(zoom));
+  const label = value !== null ? `>${value.toFixed(2)}` : ">0.90";
+  const tooltipText = buildStepTooltip(threshold);
   return (
-    <span
-      style={{
-        marginLeft: 4,
-        fontSize: 10,
-        fontWeight: 600,
-        lineHeight: 1,
-        padding: "1px 4px",
-        borderRadius: 3,
-        backgroundColor: "rgba(128,128,128,0.2)",
-        color: "inherit",
-        whiteSpace: "nowrap",
-      }}
+    <Tooltip
+      title={<span style={{ whiteSpace: "pre-line", fontSize: 11 }}>{tooltipText}</span>}
+      placement="right"
+      arrow
     >
-      &gt;0.90
-    </span>
+      <span style={{ ...BADGE_STYLE, cursor: "default", display: "inline-flex", alignItems: "center", gap: 2 }}>
+        {label}
+        <InfoOutlinedIcon style={{ fontSize: 13, opacity: 0.6 }} />
+      </span>
+    </Tooltip>
   );
 }
 
-// Check if a filter array contains a confidence >= condition
-function hasConfidence(filter) {
-  if (!Array.isArray(filter)) return false;
-  if (filter[0] === ">=" && Array.isArray(filter[1]) && filter[1][1] === "confidence") return true;
-  return filter.some((item) => Array.isArray(item) && hasConfidence(item));
+// Extract the confidence threshold expression (number or step array) from a
+// filter, or return null if no confidence condition is present.
+function extractConfidenceThreshold(filter) {
+  if (!Array.isArray(filter)) return null;
+  if (filter[0] === ">=" && Array.isArray(filter[1]) && filter[1][1] === "confidence") {
+    return filter[2];
+  }
+  for (const item of filter) {
+    if (Array.isArray(item)) {
+      const result = extractConfidenceThreshold(item);
+      if (result !== null) return result;
+    }
+  }
+  return null;
 }
 
 // Build hierarchical data: theme → group → items
@@ -162,7 +219,7 @@ function buildHierarchy(layerSpecs, treeGroups, treeThemes) {
         geometryType: getGeometryType(spec),
         minzoom: specMinZoom,
         maxzoom: specMaxZoom,
-        hasConfidenceFilter: hasConfidence(spec.filter),
+        confidenceThreshold: extractConfidenceThreshold(spec.filter),
         iconImage: spec.layout?.["icon-image"] || null,
       };
     } else {
@@ -426,7 +483,7 @@ export default function LayerTree({
                           iconImage={item.iconImage}
                         />
                         <span>{group.name}</span>
-                        {item.hasConfidenceFilter && <ConfidenceBadge />}
+                        {item.confidenceThreshold !== null && <ConfidenceBadge threshold={item.confidenceThreshold} zoom={zoom} />}
                         {(item.minzoom > 0 || item.maxzoom != null) && <ZoomBadge minzoom={item.minzoom} maxzoom={item.maxzoom} />}
                       </Box>
                     }
@@ -458,7 +515,7 @@ export default function LayerTree({
                         disabled={groupDisabled}
                       />
                       <span>{group.name}</span>
-                      {group.items.every((i) => i.hasConfidenceFilter) && <ConfidenceBadge />}
+                      {group.items.every((i) => i.confidenceThreshold !== null) && <ConfidenceBadgeWithInfo threshold={group.items[0].confidenceThreshold} zoom={zoom} />}
                     </Box>
                   }
                 >
@@ -493,7 +550,7 @@ export default function LayerTree({
                               iconImage={item.iconImage}
                             />
                             <span>{item.name}</span>
-                            {item.hasConfidenceFilter && <ConfidenceBadge />}
+                            {item.confidenceThreshold !== null && <ConfidenceBadge threshold={item.confidenceThreshold} zoom={zoom} />}
                             {(item.minzoom > 0 || item.maxzoom != null) && <ZoomBadge minzoom={item.minzoom} maxzoom={item.maxzoom} />}
                           </Box>
                         }
