@@ -97,7 +97,7 @@ jobs:
 
       - name: Copy to S3
         run: |
-          aws s3 sync --delete build s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/
+          aws s3 sync --delete --exclude "icons/*" build s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/
           aws s3 sync build/icons s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/icons \
             --cache-control "public, max-age=31536000, immutable"
 
