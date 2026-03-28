@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/copy-rtl-plugin.mjs",
+    "postinstall": "node scripts/copy-rtl-plugin.mjs",
     "build": "next build",
     "build:schema": "node scripts/dont-dream-its-overture.mjs --build-schema",
     "build:tiles": "node scripts/dont-dream-its-overture.mjs --build-tiles",
