@@ -57,7 +57,7 @@
     justify-content: space-between;
     grid-template-columns: auto auto;
     place-items: start;
-    height: 26px;
+    min-height: 26px;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -118,4 +118,3 @@ div.panel-row {
   display: flex;
   justify-content: space-between;
 }
-
