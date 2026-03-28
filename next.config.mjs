@@ -1,20 +1,3 @@
-import { copyFileSync, mkdirSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// Serve the RTL text plugin from public/ instead of an external CDN
-try {
-  mkdirSync(resolve(__dirname, "public"), { recursive: true });
-  copyFileSync(
-    resolve(__dirname, "node_modules/@mapbox/mapbox-gl-rtl-text/dist/mapbox-gl-rtl-text.js"),
-    resolve(__dirname, "public/mapbox-gl-rtl-text.js")
-  );
-} catch (e) {
-  console.warn("Could not copy RTL text plugin:", e.message);
-}
-
 const basePath = process.env.BASEURL ? `/${process.env.BASEURL}` : "";
 
 /** @type {import('next').NextConfig} */
