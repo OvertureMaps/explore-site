@@ -98,21 +98,29 @@ jobs:
       - name: Copy to S3
         run: |
           aws s3 sync --delete build s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/
+          aws s3 sync build/icons s3://overture-managed-staging-usw2/gh-pages/${{ github.event.repository.name }}/pr/${{ github.event.number }}/icons \
+            --cache-control "public, max-age=31536000, immutable"
 
       - name: Bust the Cache
         run: aws cloudfront create-invalidation --distribution-id E1KP2IN0H2RGGT --paths "/${{ github.event.repository.name }}/pr/${{ github.event.number }}/*"
 
       - name: Get deploy timestamp
         id: timestamp
-        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+        run: |
+          echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+          echo "short-sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@70d2764d1a7d5d9560b100cbea0077fc8f633987 # v3.0.2
         with:
           message: |
-            ## 🚀 Overture Maps ${{ github.event.repository.name }} branch preview deployed!
+            ## 🗺️ Overture Maps Explorer preview is live!
 
-            You can review your changes at ${{ steps.deploy_url.outputs.url }}
+            |                |                                                                                                                                                       |
+            |----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+            | 🌍 **Preview** | ${{ steps.deploy_url.outputs.url }}                                                                                                                   |
+            | 🕐 **Updated** | ${{ steps.timestamp.outputs.time }}                                                                                                                   |
+            | 📝 **Commit**  | [${{ steps.timestamp.outputs.short-sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }})        |
 
-            ---
-            <sub>♻️ Last refreshed: ${{ steps.timestamp.outputs.time }}</sub>
+            > [!NOTE]
+            > ♻️ This preview updates automatically with each push to this PR.
