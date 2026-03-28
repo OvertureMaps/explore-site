@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 try {
   mkdirSync(resolve(__dirname, "public"), { recursive: true });
   copyFileSync(
-    resolve(__dirname, "node_modules/@mapbox/mapbox-gl-rtl-text/mapbox-gl-rtl-text.js"),
+    resolve(__dirname, "node_modules/@mapbox/mapbox-gl-rtl-text/dist/mapbox-gl-rtl-text.js"),
     resolve(__dirname, "public/mapbox-gl-rtl-text.js")
   );
 } catch (e) {

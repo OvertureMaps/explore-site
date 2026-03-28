@@ -10,7 +10,7 @@ export default function OvertureWordmark() {
       style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "inherit" }}
     >
       <img
-        src="/omf_logo_transparent.png"
+        src={`${basePath}/omf_logo_transparent.png`}
         alt="Overture Maps Foundation Logo"
         className="logo"
         style={{ height: "2.5em", padding: "0.25em" }}
