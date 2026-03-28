@@ -48,7 +48,7 @@ function GeometryIcon({ geometryType, color, iconImage }) {
   if (iconImage && typeof iconImage === "string") {
     return (
       <img
-        src={`/icons/${iconImage}.svg`}
+        src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icons/${iconImage}.svg`}
         alt={iconImage}
         style={{
           width: 18,
