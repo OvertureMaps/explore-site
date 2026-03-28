@@ -4,7 +4,7 @@
  * Copies the Mapbox RTL text plugin from node_modules into public/ so it can
  * be served locally instead of fetched from an external CDN.
  *
- * Run automatically as the `prebuild` npm script before `next build`.
+ * Run automatically as the `postinstall` npm script after dependencies are installed.
  */
 
 import { copyFileSync, mkdirSync } from "fs";
