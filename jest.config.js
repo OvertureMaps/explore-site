@@ -7,6 +7,8 @@ const createJestConfig = nextJest({
 /** @type {import('jest').Config} */
 const config = {
   testEnvironment: 'jest-environment-jsdom',
+  // .mjs files use Node's built-in test runner (node:test) rather than Jest — exclude them here
+  testPathIgnorePatterns: ['/node_modules/', '\\.mjs$'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '\\.svg\\?react$': '<rootDir>/__mocks__/svgMock.js',

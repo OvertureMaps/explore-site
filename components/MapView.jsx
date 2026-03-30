@@ -9,6 +9,7 @@ import BookmarkDial from "@/components/BookmarkDial";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
 import { getInspectTokens } from "@/components/map";
+import fontsJson from "@/components/map/tokens/primitive/fonts.json";
 import {
   addSources,
   addAllLayers,
@@ -24,17 +25,19 @@ import {
 
 // Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
 try {
-  maplibregl.setRTLTextPlugin(
-    "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js",
-    null,
-    true
-  );
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  maplibregl.setRTLTextPlugin(`${basePath}/mapbox-gl-rtl-text.js`, null, true);
 } catch {
   // Already set — ignore
 }
 
 // Load PMTiles URLs from STAC catalog at module load time
 const pmtilesPromise = loadPmtilesFromStac();
+
+// All font family names used by the map (must match @font-face declarations in globals.css)
+const fontNames = Object.values(fontsJson).flatMap((variants) =>
+  Object.values(variants)
+);
 
 const INITIAL_CENTER = [-98.58, 39.83];
 const INITIAL_ZOOM = 2;
@@ -62,7 +65,6 @@ for (const theme of ["base", "buildings", "transportation", "addresses", "places
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
   version: 8,
-  glyphs: "/fonts/{fontstack}/{range}.pbf",
   sources: {},
   layers: [],
   projection: { type: "globe" },
@@ -92,6 +94,7 @@ export default function Map({
   const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [pmtilesUrls, setPmtilesUrls] = useState({});
+  const [fontsLoaded, setFontsLoaded] = useState(false);
   const [sourcesAdded, setSourcesAdded] = useState(false);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -117,6 +120,19 @@ export default function Map({
       .catch((error) => {
         console.error("Failed to load PMTiles from STAC catalog:", error);
       });
+  }, []);
+
+  // Wait for map fonts to be loaded by the browser
+  useEffect(() => {
+    Promise.all(fontNames.map((name) => {
+      try {
+        document.fonts.load(`24px "${name}"`)
+      } catch (e) {
+        // fail gracefully if font loading 403/404s
+      }
+    })).then(
+      (x) => setFontsLoaded(true)
+    );
   }, []);
 
   // Initialize map
@@ -244,15 +260,15 @@ export default function Map({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Add sources and layers when map is loaded and PMTiles URLs are ready
+  // Add sources and layers when map is loaded, PMTiles URLs are ready, and fonts are loaded
   useEffect(() => {
-    if (!mapLoaded || !mapRef.current || Object.keys(pmtilesUrls).length === 0) return;
+    if (!mapLoaded || !fontsLoaded || !mapRef.current || Object.keys(pmtilesUrls).length === 0) return;
 
     const map = mapRef.current;
     addSources(map, pmtilesUrls);
     addAllLayers(map, visibleTypes).then(() => setSourcesAdded(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapLoaded, pmtilesUrls]);
+  }, [mapLoaded, fontsLoaded, pmtilesUrls]);
 
   // Update layer visibility when visibleTypes change
   useEffect(() => {

@@ -93,6 +93,7 @@ export default function BookmarkDial({ mode }) {
         );
       })}
       <Fab
+        aria-label="Bookmarks"
         onClick={() => setOpen(!open)}
         sx={{
           bgcolor: isDark ? '#000000' : '#ffffff',

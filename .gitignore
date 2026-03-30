@@ -2,3 +2,4 @@ node_modules
 .next
 out
 .swc
+public/mapbox-gl-rtl-text.js
