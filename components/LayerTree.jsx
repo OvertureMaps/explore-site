@@ -440,11 +440,12 @@ export default function LayerTree({
               >
                 <Checkbox
                   size="small"
-                  sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" }, "&.MuiCheckbox-indeterminate": { color: "#000" } }}
+                  sx={{ p: 0, mr: 0.5, color: "inherit", "&.Mui-checked": { color: "inherit" }, "&.MuiCheckbox-indeterminate": { color: "inherit" } }}
                   checked={isAllVisible(themeItemIds)}
                   indeterminate={isIndeterminate(themeItemIds)}
                   onChange={() => toggleItems(themeItemIds)}
                   disabled={themeDisabled}
+                  inputProps={{ 'aria-label': themeEntry.name }}
                 />
                 <span>{themeEntry.name}</span>
               </Box>
@@ -477,10 +478,11 @@ export default function LayerTree({
                       >
                         <Checkbox
                           size="small"
-                          sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" } }}
+                          sx={{ p: 0, mr: 0.5, color: "inherit", "&.Mui-checked": { color: "inherit" } }}
                           checked={isItemVisible(item.id)}
                           onChange={() => toggleItems([item.id])}
                           disabled={!item.selectable}
+                          inputProps={{ 'aria-label': group.name }}
                         />
                         <GeometryIcon
                           geometryType={item.geometryType}
@@ -513,11 +515,12 @@ export default function LayerTree({
                     >
                       <Checkbox
                         size="small"
-                        sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" }, "&.MuiCheckbox-indeterminate": { color: "#000" } }}
+                        sx={{ p: 0, mr: 0.5, color: "inherit", "&.Mui-checked": { color: "inherit" }, "&.MuiCheckbox-indeterminate": { color: "inherit" } }}
                         checked={isAllVisible(groupItemIds)}
                         indeterminate={isIndeterminate(groupItemIds)}
                         onChange={() => toggleItems(groupItemIds)}
                         disabled={groupDisabled}
+                        inputProps={{ 'aria-label': group.name }}
                       />
                       <span>{group.name}</span>
                       {group.items.every((i) => i.confidenceThreshold !== null) && <ConfidenceBadgeWithInfo threshold={group.items[0].confidenceThreshold} zoom={zoom} />}
@@ -544,10 +547,11 @@ export default function LayerTree({
                           >
                             <Checkbox
                               size="small"
-                              sx={{ p: 0, mr: 0.5, color: "#000", "&.Mui-checked": { color: "#000" } }}
+                              sx={{ p: 0, mr: 0.5, color: "inherit", "&.Mui-checked": { color: "inherit" } }}
                               checked={isItemVisible(item.id)}
                               onChange={() => toggleItems([item.id])}
                               disabled={!item.selectable}
+                              inputProps={{ 'aria-label': item.name }}
                             />
                             <GeometryIcon
                               geometryType={item.geometryType}
