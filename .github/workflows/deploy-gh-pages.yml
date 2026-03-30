@@ -35,7 +35,9 @@ jobs:
         uses: lowlydba/sustainable-npm@31d51025884f424f58f22e4e6578178bb4e79632 # v3.0.0
 
       - name: Install
-        run: npm ci
+        run: |
+          npm ci
+          npm run postinstall
 
       - name: Test
         run: npm test
