@@ -70,10 +70,40 @@ jobs:
         path: out
         if-no-files-found: error
 
+  a11y:
+    name: Accessibility
+    runs-on: ubuntu-latest
+    # No basePath — built at root so the local test server can resolve assets
+    # The deployment build (with BASEURL) is tested separately via the build job
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+
+      - name: Configure sustainable npm
+        uses: lowlydba/sustainable-npm@31d51025884f424f58f22e4e6578178bb4e79632 # v3.0.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browser
+        run: npx playwright install chromium --with-deps
+
+      - name: Run accessibility tests
+        run: npm run test:a11y
+
   deploy:
     name: Deploy
     runs-on: ubuntu-slim
-    needs: [test, build]
+    needs: [test, build, a11y]
     environment:
       name: staging
       url: ${{ steps.deploy_url.outputs.url }}

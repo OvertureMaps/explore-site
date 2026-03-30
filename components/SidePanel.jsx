@@ -30,6 +30,7 @@ export default function SidePanel({
       {/* Toggle button — visible when drawer is closed */}
       {!drawerOpen && (
         <IconButton
+          aria-label="Open layers panel"
           onClick={() => setDrawerOpen(true)}
           sx={{
             position: "fixed",
@@ -80,6 +81,7 @@ export default function SidePanel({
           }}
         >
           <IconButton
+            aria-label="Close layers panel"
             onClick={() => setDrawerOpen(false)}
             sx={{ color: isDark ? "white" : "#333" }}
           >

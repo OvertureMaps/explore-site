@@ -1,5 +1,7 @@
 <h1 align="center">The Overture Maps Explore site</h1>
 
+[![WCAG 2.2 AA compliant](https://img.shields.io/badge/WCAG_2.2-AA_compliant-blue)](https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/)
+
 The Explore Site is a web-based map viewer designed for accessible downloading of geospatial data. io-site allows for the downloading of small segments of geospatial data so that small and independent customers are able to withstand the size of the incoming data. The site also facilitates easy viewing of geospatial data by translating complex vectors and properties to a more user-friendly, readable format.
 
 The data accessible through the site is drawn from the [Overture Maps Foundation](https://overturemaps.org/). This data is collected through open source avenues, and as such provides a free, low barrier to entry to mappers to download global data.
