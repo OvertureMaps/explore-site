@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "postinstall": "node scripts/copy-rtl-plugin.mjs",
     "build": "next build",
     "build:schema": "node scripts/dont-dream-its-overture.mjs --build-schema",
     "build:tiles": "node scripts/dont-dream-its-overture.mjs --build-tiles",
@@ -23,7 +24,7 @@
     "@geoarrow/geoarrow-wasm": "^0.2.0-beta.5",
     "@mapbox-controls/language": "^3.0.0",
     "@mapbox-controls/tooltip": "^3.0.0",
-    "@mapbox/mapbox-gl-rtl-text": "^0.3.0",
+    "@mapbox/mapbox-gl-rtl-text": "^0.4.0",
     "@maplibre/maplibre-gl-inspect": "^1.8.2",
     "@mui/base": "^5.0.0-beta.40",
     "@mui/icons-material": "^5.15.21",

@@ -25,11 +25,8 @@ import {
 
 // Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
 try {
-  maplibregl.setRTLTextPlugin(
-    "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js",
-    null,
-    true
-  );
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  maplibregl.setRTLTextPlugin(`${basePath}/mapbox-gl-rtl-text.js`, null, true);
 } catch {
   // Already set — ignore
 }

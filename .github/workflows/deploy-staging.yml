@@ -56,7 +56,10 @@ jobs:
       uses: lowlydba/sustainable-npm@31d51025884f424f58f22e4e6578178bb4e79632 # v3.0.0
 
     - name: Install
-      run: npm ci
+      # install scripts disabled by sustainable-npm, so run postinstall manually & safely just for this package
+      run: |
+        npm ci
+        npm run postinstall
 
     - name: Build
       run: npm run build
@@ -134,15 +137,21 @@ jobs:
 
       - name: Get deploy timestamp
         id: timestamp
-        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+        run: |
+          echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+          echo "short-sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@70d2764d1a7d5d9560b100cbea0077fc8f633987 # v3.0.2
         with:
           message: |
-            ## 🚀 Overture Maps ${{ github.event.repository.name }} branch preview deployed!
+            ## 🗺️ Overture Maps Explorer preview is live!
 
-            You can review your changes at ${{ steps.deploy_url.outputs.url }}
+            |                |                                                                                                                                                       |
+            |----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+            | 🌍 **Preview** | ${{ steps.deploy_url.outputs.url }}                                                                                                                   |
+            | 🕐 **Updated** | ${{ steps.timestamp.outputs.time }}                                                                                                                   |
+            | 📝 **Commit**  | [${{ steps.timestamp.outputs.short-sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }})        |
 
-            ---
-            <sub>♻️ Last refreshed: ${{ steps.timestamp.outputs.time }}</sub>
+            > [!NOTE]
+            > ♻️ This preview updates automatically with each push to this PR.
