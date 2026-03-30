@@ -56,7 +56,10 @@ jobs:
       uses: lowlydba/sustainable-npm@31d51025884f424f58f22e4e6578178bb4e79632 # v3.0.0
 
     - name: Install
-      run: npm ci
+      # install scripts disabled by sustainable-npm, so run postinstall manually & safely just for this package
+      run: |
+        npm ci
+        npm run postinstall
 
     - name: Build
       run: npm run build
