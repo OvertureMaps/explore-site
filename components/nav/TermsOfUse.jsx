@@ -47,7 +47,7 @@ export default function TermsOfUse() {
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Terms of Use</DialogTitle>
         <DialogContent dividers>
-          <Typography paragraph>
+          <Typography paragraph variant="body2">
             By using Overture Maps Explorer (&quot;Explorer&quot;) you acknowledge and agree to (1) the{" "}
             <Link
               href="https://overturemaps.org/terms-of-use/"
@@ -58,29 +58,29 @@ export default function TermsOfUse() {
             </Link>
             , and (2) these additional terms of use.
           </Typography>
-          <Typography paragraph>
+          <Typography paragraph variant="body2">
             Explorer is a visualization and inspection tool that helps developers, researchers, and
             data practitioners understand the structure, coverage, and characteristics of Overture
             Maps data and schema. You are permitted to use Explorer solely for these uses.
           </Typography>
-          <Typography paragraph>
+          <Typography paragraph variant="body2">
             Explorer is not a product or a service. The tile endpoints powering Explorer are not
             stable production infrastructure and as such you should not use them for any purpose
             other than the purposes described in the prior paragraph. Explorer is not a mapping
             service and is not intended for navigation, routing, or operational use of any kind.
           </Typography>
-          <Typography paragraph sx={{ fontWeight: 600 }}>
+          <Typography paragraph variant="body2" sx={{ fontWeight: 600 }}>
             EXPLORER IS PROVIDED AS-IS AND WITHOUT WARRANTIES OF ANY KIND.
           </Typography>
-          <Typography paragraph>
+          <Typography paragraph variant="body2">
             The datasets displayed in Explorer are subject to the licenses of third party data
-            providers. Please see{" "}
+            providers. Please see Overture&apos;s{" "}
             <Link
-              href="https://www.openstreetmap.org/copyright"
+              href="https://docs.overturemaps.org/attribution/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Copyright and License | OpenStreetMap
+              attribution and licensing guide
             </Link>{" "}
             for details.
           </Typography>
