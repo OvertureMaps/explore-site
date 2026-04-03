@@ -59,8 +59,7 @@ export default function TermsOfUse() {
             , and (2) these additional terms of use.
           </Typography>
           <Typography paragraph variant="body2">
-            Explorer is a visualization and inspection tool that helps developers, researchers, and
-            data practitioners understand the structure, coverage, and characteristics of Overture
+            Explorer is a visualization and inspection tool to help you understand the structure, coverage, and characteristics of Overture
             Maps data and schema. You are permitted to use Explorer solely for these uses.
           </Typography>
           <Typography paragraph variant="body2">
