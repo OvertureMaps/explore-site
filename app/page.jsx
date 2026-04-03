@@ -4,6 +4,7 @@ import "@/components/CustomControls.css";
 import Header from "@/components/nav/Header";
 import Map from "@/components/MapView";
 import MapContext from "@/lib/MapContext";
+import TermsOfUse from "@/components/nav/TermsOfUse";
 import { keepTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
 import { useState, useEffect, useRef } from "react";
 import { ThemeProvider } from "@mui/material";
@@ -176,6 +177,7 @@ export default function Home() {
             initialPosition={initialPositionRef.current || undefined}
           />
         </MapContext.Provider>
+        <TermsOfUse />
       </ThemeProvider>
     </div>
   );
