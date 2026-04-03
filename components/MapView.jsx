@@ -39,7 +39,7 @@ const fontNames = Object.values(fontsJson).flatMap((variants) =>
   Object.values(variants)
 );
 
-const INITIAL_CENTER = [-98.58, 39.83];
+const INITIAL_CENTER = [-80, 10];
 const INITIAL_ZOOM = 2;
 
 // Build a flat lookup from source-layer name to inspectColor
