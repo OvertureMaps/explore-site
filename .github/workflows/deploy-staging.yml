@@ -1,5 +1,12 @@
 ---
-# This workflow will do a clean install of node dependencies and deploy to AWS.
+# Staging Deploy Workflow
+#
+# Triggered on: pull requests targeting main
+# Jobs:
+#   - test:   Lints and runs unit tests
+#   - build:  Builds the site with a PR-specific base URL and uploads artifacts
+#   - a11y:   Runs accessibility tests against the root build
+#   - deploy: Syncs build to S3, invalidates CloudFront cache, and comments the staging URL on the PR
 
 name: Staging Deploy
 run-name: Publish staging site

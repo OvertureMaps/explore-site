@@ -1,5 +1,10 @@
 ---
-# This workflow builds and deploys to GitHub Pages
+# Production Deployment Workflow
+#
+# Triggered on: push to main
+# Jobs:
+#   - build:  Installs dependencies, runs tests, builds the site, and uploads a Pages artifact
+#   - deploy: Deploys the artifact to GitHub Pages via OIDC
 
 name: Production Deployment
 run-name: Publish prod site
