@@ -10,8 +10,6 @@ on:
 
 permissions:
   contents: read # required to checkout the code from the repo
-  pages: write # required to deploy to GitHub Pages
-  id-token: write # required to use OIDC authentication
 
 concurrency:
   group: "pages"
@@ -21,15 +19,17 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: package.json
 
@@ -48,10 +48,10 @@ jobs:
         run: npm run build
 
       - name: Setup Pages
-        uses: actions/configure-pages@v6
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: out
 
@@ -59,6 +59,9 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-slim
     needs: build
+    permissions:
+      pages: write # required to deploy to GitHub Pages
+      id-token: write # required to use OIDC authentication
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -66,4 +69,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
