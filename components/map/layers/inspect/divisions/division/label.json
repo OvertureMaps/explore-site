@@ -36,7 +36,8 @@
       16
     ],
     "text-max-width": 8,
-    "text-allow-overlap": false
+    "text-allow-overlap": false,
+    "text-offset": [0, 0.75]
   },
   "paint": {
     "text-color": "$inspect.division.color.text",

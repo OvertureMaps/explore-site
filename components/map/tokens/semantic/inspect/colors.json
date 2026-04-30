@@ -35,20 +35,20 @@
   "division": {
     "primary": "$globals.color.purple",
     "secondary": "$globals.color.gray.500",
-    "label": "$globals.color.purple",
+    "label": "$globals.color.white.50",
     "opacity": 0.05
   },
   "building": {
     "primary": "$globals.color.red.500",
     "secondary": "$globals.color.red.500",
     "label": "$globals.color.red.500",
-    "opacity": 0.25
+    "opacity": 0.50
   },
   "building_part": {
     "primary": "$globals.color.rose.200",
     "secondary": "$globals.color.rose.200",
     "label": "$globals.color.rose.200",
-    "opacity": 0.25
+    "opacity": 0.50
   },
   "place": {
     "primary": "$globals.color.indigo.500",
