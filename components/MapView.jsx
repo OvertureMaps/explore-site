@@ -207,6 +207,10 @@ export default function Map({
       const seenIds = new Set();
 
       for (const feature of queriedFeatures) {
+        if (map.getZoom() < 10 && !inspectActiveRef.current && feature.source === "base") {
+          continue;
+        }
+
         if (isTypeVisible(feature.layer["source-layer"], currentVisibleTypes)) {
           if (!seenIds.has(feature.properties.id)) {
             clickedFeatures.push(feature);
