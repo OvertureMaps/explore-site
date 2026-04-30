@@ -13,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
 import { downloadAsZip } from "@/lib/zipDownload";
+import { buildDownloadMetadata } from "@/lib/downloadMetadata";
 
 const ZOOM_BOUND = 15;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -105,17 +106,32 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
         // Collect each non-empty layer as a GeoJSON file inside a single ZIP.
         // Bundling avoids iOS Safari silently dropping multi-file downloads
         // and Chrome's "allow multiple downloads" prompt — see issue #190.
-        const files = wasmTables
-          .filter((wasmTable) => wasmTable?.reader?.numBatches > 0)
-          .map((wasmTable) => ({
-            name: `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`,
-            data: writeGeoJSON(wasmTable.reader),
-          }));
+        const nonEmptyTables = wasmTables.filter(
+          (wasmTable) => wasmTable?.reader?.numBatches > 0
+        );
+
+        const files = nonEmptyTables.map((wasmTable) => ({
+          name: `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`,
+          data: writeGeoJSON(wasmTable.reader),
+        }));
 
         if (files.length === 0) {
           console.warn("No non-empty layers in the current view");
           return;
         }
+
+        // Include a metadata.json describing the bbox, release, and current
+        // map view URL so the download is self-describing and reproducible
+        // via overturemaps-py / DuckDB. See issue #156.
+        files.push({
+          name: "metadata.json",
+          data: buildDownloadMetadata({
+            bbox,
+            releaseVersion,
+            layers: nonEmptyTables.map((t) => t.type),
+            viewUrl: typeof window !== "undefined" ? window.location.href : undefined,
+          }),
+        });
 
         const archiveName = `overture-${releaseVersion}-${bboxStr}.zip`;
         downloadAsZip(files, archiveName);
