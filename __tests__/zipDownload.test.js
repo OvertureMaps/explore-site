@@ -78,6 +78,47 @@ describe("buildZip", () => {
   it("throws when a file is missing data", () => {
     expect(() => buildZip([{ name: "a.txt" }])).toThrow(/missing.*data/);
   });
+
+  it("accepts ArrayBuffer entries by wrapping them in a Uint8Array", () => {
+    const buf = new ArrayBuffer(4);
+    new Uint8Array(buf).set([0xde, 0xad, 0xbe, 0xef]);
+
+    const zipped = buildZip([{ name: "x.bin", data: buf }]);
+    const unzipped = unzipSync(zipped);
+    expect(Array.from(unzipped["x.bin"])).toEqual([0xde, 0xad, 0xbe, 0xef]);
+  });
+
+  it.each([
+    ["number", 42],
+    ["plain object", { foo: "bar" }],
+    ["Blob", new Blob(["hello"])],
+    ["array", [1, 2, 3]],
+  ])("throws TypeError when data is an unsupported type (%s)", (_label, data) => {
+    expect(() => buildZip([{ name: "f.bin", data }])).toThrow(
+      /must have `data` as a string, Uint8Array, or ArrayBuffer/
+    );
+  });
+
+  it.each(["__proto__", "prototype", "constructor"])(
+    "rejects the reserved filename %s to prevent prototype pollution / fflate input collisions",
+    (name) => {
+      // Without this guard, "__proto__" would mutate Object.prototype on a
+      // plain-object map, and even Object.create(null) doesn't help because
+      // fflate's own input handling can't accept that key. See the lib comment.
+      const protoBefore = Object.prototype.toString;
+      expect(() => buildZip([{ name, data: "x" }])).toThrow(
+        /reserved and cannot be used/
+      );
+      expect(Object.prototype.toString).toBe(protoBefore);
+    }
+  );
+
+  it("does not pollute Object.prototype when zipping an ordinary archive", () => {
+    const protoBefore = Object.prototype.toString;
+    buildZip([{ name: "real.txt", data: "ok" }]);
+    expect(Object.prototype.toString).toBe(protoBefore);
+    expect({}.__proto__).toBe(Object.prototype);
+  });
 });
 
 describe("triggerBrowserDownload", () => {
