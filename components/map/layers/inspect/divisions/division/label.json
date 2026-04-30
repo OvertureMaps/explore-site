@@ -41,6 +41,6 @@
   },
   "paint": {
     "text-color": "$inspect.division.color.text",
-    "text-opacity": 0.75
+    "text-opacity": 1.0
   }
 }

@@ -35,7 +35,7 @@
   "division": {
     "primary": "$globals.color.purple",
     "secondary": "$globals.color.gray.500",
-    "label": "$globals.color.white.50",
+    "label": "$globals.color.gray.500",
     "opacity": 0.05
   },
   "building": {
