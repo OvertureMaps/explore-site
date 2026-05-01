@@ -12,6 +12,8 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
+import { downloadAsZip } from "@/lib/zipDownload";
+import { buildDownloadMetadata } from "@/lib/downloadMetadata";
 
 const ZOOM_BOUND = 15;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -88,46 +90,56 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
         );
       });
 
-      await Promise.all(datasets)
-        .then((datasets) => {
-          return datasets.map((dataset) =>
-            dataset.parquet.read(readOptions).then((reader) => {
-              return { type: dataset.type, reader: reader };
-            })
-          );
-        })
-        .then((tableReads) =>
-          Promise.all(tableReads)
-            .then((wasmTables) => {
-              wasmTables.map((wasmTable) => {
-                if (wasmTable?.reader?.numBatches > 0) {
-                  const binaryDataForDownload = writeGeoJSON(wasmTable.reader);
+      try {
+        const resolvedDatasets = await Promise.all(datasets);
+        const wasmTables = await Promise.all(
+          resolvedDatasets.map((dataset) =>
+            dataset.parquet.read(readOptions).then((reader) => ({
+              type: dataset.type,
+              reader,
+            }))
+          )
+        );
 
-                  let blerb = new Blob([binaryDataForDownload], {
-                    type: "application/octet-stream",
-                  });
+        const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
 
-                  const url = URL.createObjectURL(blerb);
-                  var downloadLink = document.createElement("a");
-                  downloadLink.href = url;
+        // Collect each non-empty layer as a GeoJSON file inside a single ZIP.
+        // Bundling avoids iOS Safari silently dropping multi-file downloads
+        // and Chrome's "allow multiple downloads" prompt — see issue #190.
+        const nonEmptyTables = wasmTables.filter(
+          (wasmTable) => wasmTable?.reader?.numBatches > 0
+        );
 
-                  const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
-                  downloadLink.download = `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`;
+        const files = nonEmptyTables.map((wasmTable) => ({
+          name: `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`,
+          data: writeGeoJSON(wasmTable.reader),
+        }));
 
-                  document.body.appendChild(downloadLink);
-                  downloadLink.click();
-                  document.body.removeChild(downloadLink);
-                }
-              });
-            })
-            .then(() => {
-              setLoading(false);
-            })
-        ).catch(error => {
-          // Something went wrong with the download.
-          console.error("An error occurred during the download:", error);
-          alert("An error occurred during the download. Please try again.");
+        if (files.length === 0) {
+          console.warn("No non-empty layers in the current view");
+          return;
+        }
+
+        // Include a metadata.json describing the bbox, release, and current
+        // map view URL so the download is self-describing and reproducible
+        // via overturemaps-py / DuckDB. See issue #156.
+        files.push({
+          name: "metadata.json",
+          data: buildDownloadMetadata({
+            bbox,
+            releaseVersion,
+            layers: nonEmptyTables.map((t) => t.type),
+            viewUrl: typeof window !== "undefined" ? window.location.href : undefined,
+          }),
         });
+
+        const archiveName = `overture-${releaseVersion}-${bboxStr}.zip`;
+        downloadAsZip(files, archiveName);
+      } catch (error) {
+        // Something went wrong with the download.
+        console.error("An error occurred during the download:", error);
+        alert("An error occurred during the download. Please try again.");
+      }
     } catch (error) {
       console.error("Error in download process:", error);
       alert("An error occurred while preparing the download. Please try again.");

@@ -31,6 +31,7 @@
     "@mui/material": "^5.15.20",
     "@mui/x-tree-view": "^8.27.2",
     "apache-arrow": "^15.0.2",
+    "fflate": "^0.8.2",
     "iconoir-react": "^7.11.0",
     "maplibre-gl": "^5.18.0",
     "next": "^14.2.0",
