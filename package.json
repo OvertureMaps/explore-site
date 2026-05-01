@@ -2,6 +2,17 @@
   "name": "explore-site",
   "version": "1.0.0",
   "private": true,
+  "exports": {
+    ".": "./app/page.jsx",
+    "./components/*": "./components/*.jsx",
+    "./components/nav/*": "./components/nav/*.jsx",
+    "./components/inspector_panel/*": "./components/inspector_panel/*.jsx",
+    "./components/map": "./components/map/index.js",
+    "./components/map/*": "./components/map/*",
+    "./lib/*": "./lib/*.js",
+    "./lib/util/*": "./lib/util/*.js",
+    "./app/globals.css": "./app/globals.css"
+  },
   "scripts": {
     "dev": "next dev",
     "postinstall": "node scripts/copy-rtl-plugin.mjs",
