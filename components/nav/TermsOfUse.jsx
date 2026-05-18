@@ -48,7 +48,7 @@ export default function TermsOfUse() {
         <DialogTitle>Terms of Use</DialogTitle>
         <DialogContent dividers>
           <Typography paragraph variant="body2">
-            By using Overture Maps Explorer (&quot;Explorer&quot;) you acknowledge and agree to (1) the{" "}
+            By using Overture Explorer (&quot;Explorer&quot;) you acknowledge and agree to (1) the{" "}
             <Link
               href="https://overturemaps.org/terms-of-use/"
               target="_blank"
