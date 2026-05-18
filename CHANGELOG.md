@@ -1,5 +1,5 @@
 # What's New
-The Overture Explorer Site is an open source project. You can submit bug reports, help out, or learn more by visiting our project page on GitHub: :octocat: https://github.com/OvertureMaps/io-site
+The Overture Explorer Site is an open source project. You can submit bug reports, help out, or learn more by visiting our project page on GitHub: :octocat: https://github.com/OvertureMaps/explore-site
 
 Please star our project on GitHub to show your support! ⭐️
 
@@ -26,10 +26,10 @@ Please star our project on GitHub to show your support! ⭐️
 ###### Changed Presets
 ###### New and Changed Fields
 
-[#xxxx]: https://github.com/OvertureMaps/io-site/issues/xxxx
+[#xxxx]: https://github.com/OvertureMaps/explore-site/issues/xxxx
 [@xxxx]: https://github.com/xxxx
 -->
-# [1.0.0-beta.2](https://github.com/OvertureMaps/io-site/releases/tag/v1.0.0-beta.2)
+# [1.0.0-beta.2](https://github.com/OvertureMaps/explore-site/releases/tag/v1.0.0-beta.2)
 #### 2024-Aug-28
 
 Many thanks to [@eti7075] for all his hard work on the site during the summer! 
@@ -48,22 +48,22 @@ Many thanks to [@eti7075] for all his hard work on the site during the summer!
   * [#150],[#147] Adjusted the case of GitHub in tour tooltips
 
 
-[#151]: https://github.com/OvertureMaps/io-site/issues/151
-[#147]: https://github.com/OvertureMaps/io-site/issues/147
-[#133]: https://github.com/OvertureMaps/io-site/issues/133
-[#131]: https://github.com/OvertureMaps/io-site/issues/131
-[#114]: https://github.com/OvertureMaps/io-site/issues/114
-[#111]: https://github.com/OvertureMaps/io-site/issues/111
-[#105]: https://github.com/OvertureMaps/io-site/issues/105
-[#150]: https://github.com/OvertureMaps/io-site/issues/150
-[#108]: https://github.com/OvertureMaps/io-site/issues/108
-[#129]: https://github.com/OvertureMaps/io-site/issues/129
-[#89]: https://github.com/OvertureMaps/io-site/issues/89
-[#92]: https://github.com/OvertureMaps/io-site/issues/92
+[#151]: https://github.com/OvertureMaps/explore-site/issues/151
+[#147]: https://github.com/OvertureMaps/explore-site/issues/147
+[#133]: https://github.com/OvertureMaps/explore-site/issues/133
+[#131]: https://github.com/OvertureMaps/explore-site/issues/131
+[#114]: https://github.com/OvertureMaps/explore-site/issues/114
+[#111]: https://github.com/OvertureMaps/explore-site/issues/111
+[#105]: https://github.com/OvertureMaps/explore-site/issues/105
+[#150]: https://github.com/OvertureMaps/explore-site/issues/150
+[#108]: https://github.com/OvertureMaps/explore-site/issues/108
+[#129]: https://github.com/OvertureMaps/explore-site/issues/129
+[#89]: https://github.com/OvertureMaps/explore-site/issues/89
+[#92]: https://github.com/OvertureMaps/explore-site/issues/92
 [@eti7075]: https://github.com/eti7075
 
 
-# [1.0.0-beta.1](https://github.com/OvertureMaps/io-site/releases/tag/v1.0.0-beta.1)
+# [1.0.0-beta.1](https://github.com/OvertureMaps/explore-site/releases/tag/v1.0.0-beta.1)
 #### 2024-Jul-23
 * This was our initial announcement/release of the site, so no issues had been publicly shipped yet. 
 

@@ -3,7 +3,7 @@ import './globals.css';
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export const metadata = {
-  title: 'Overture Maps Explorer (Beta)',
+  title: 'Overture Explorer',
   description: 'Explore Overture Maps Foundation geospatial data',
   icons: {
     icon: `${basePath}/favicon.png`,

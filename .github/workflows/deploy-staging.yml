@@ -179,7 +179,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         with:
           message: |
-            ## 🗺️ Overture Maps Explorer preview is live!
+            ## 🗺️ Overture Explorer preview is live!
 
             |                |                                                                                                                                                       |
             |----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|

@@ -15,7 +15,7 @@ export default function OvertureWordmark() {
         className="logo"
         style={{ height: "2.5em", padding: "0.25em" }}
       />
-      <b className="tour-homepage" style={{ whiteSpace: "nowrap" }}>Overture Maps Explorer</b>
+      <b className="tour-homepage" style={{ whiteSpace: "nowrap" }}>Overture Explorer</b>
     </a>
   );
 }
