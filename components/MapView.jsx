@@ -1,14 +1,14 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import * as pmtiles from "pmtiles";
 import maplibregl from "maplibre-gl";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import "@/components/CustomControls.css";
 import SidePanel from "@/components/SidePanel";
 import BookmarkDial from "@/components/BookmarkDial";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
-import { getInspectTokens } from "@/components/map";
+import { getInspectTokens, inspectLayerSpecs } from "@/components/map";
 import fontsJson from "@/components/map/tokens/primitive/fonts.json";
 import {
   addSources,
@@ -17,10 +17,7 @@ import {
   highlightFeature,
   getInteractiveLayerIds,
   isTypeVisible,
-  removeDefaultLayers,
   addInspectLayers,
-  removeInspectLayers,
-  updateInspectVisibility,
 } from "@/lib/LayerManager";
 
 // Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
@@ -62,6 +59,10 @@ for (const theme of ["base", "buildings", "transportation", "addresses", "places
   }
 }
 
+const ALL_INSPECT_ITEMS = [...new Set(
+  inspectLayerSpecs.map((spec) => spec.metadata?.["overture:item"]).filter(Boolean)
+)];
+
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
   version: 8,
@@ -84,7 +85,6 @@ export default function Map({
   setVisibleTypes,
   defaultVisibleTypes,
   onMapReady,
-  inspectMode,
   globeMode,
   pendingFeature,
   setPendingFeature,
@@ -108,7 +108,20 @@ export default function Map({
   }, [visibleTypes]);
 
   const activeFeatureRef = useRef(null);
-  const inspectActiveRef = useRef(false);
+
+  const inspectMapContainer = useRef(null);
+  const inspectMapRef = useRef(null);
+  const containerRef = useRef(null);
+  const [sliderPosition, setSliderPosition] = useState(0.5);
+  const sliderPositionRef = useRef(0.5);
+  const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
+  const [inspectMapLoaded, setInspectMapLoaded] = useState(false);
+  const [clickedMap, setClickedMap] = useState(null);
+
+  useEffect(() => {
+    sliderPositionRef.current = sliderPosition;
+  }, [sliderPosition]);
 
   // Load PMTiles URLs from STAC catalog
   useEffect(() => {
@@ -186,15 +199,26 @@ export default function Map({
       setZoom(map.getZoom());
     });
 
+    // Determine which map the cursor is over based on divider position
+    function pickTargetMap(e) {
+      const container = containerRef.current;
+      if (!container || !inspectMapRef.current) return { targetMap: map, targetItems: visibleTypesRef.current };
+      const rect = container.getBoundingClientRect();
+      const clickRatio = (e.originalEvent.clientX - rect.left) / rect.width;
+      if (clickRatio >= sliderPositionRef.current) {
+        return { targetMap: inspectMapRef.current, targetItems: ALL_INSPECT_ITEMS };
+      }
+      return { targetMap: map, targetItems: visibleTypesRef.current };
+    }
+
     // Click handler
     map.on("click", (e) => {
-      const currentVisibleTypes = visibleTypesRef.current;
-      const interactiveIds = getInteractiveLayerIds(map, currentVisibleTypes);
+      const { targetMap, targetItems } = pickTargetMap(e);
+      const interactiveIds = getInteractiveLayerIds(targetMap, targetItems);
 
       const queriedFeatures = interactiveIds.length > 0
-        ? map.queryRenderedFeatures(e.point, { layers: interactiveIds })
+        ? targetMap.queryRenderedFeatures(e.point, { layers: interactiveIds })
         : [];
-
 
       const coords = {
         longitude: e.lngLat.lng,
@@ -202,16 +226,17 @@ export default function Map({
       };
 
       setLastClickedCoords(coords);
+      setClickedMap(targetMap);
 
       const clickedFeatures = [];
       const seenIds = new Set();
 
       for (const feature of queriedFeatures) {
-        if (map.getZoom() < 10 && !inspectActiveRef.current && feature.source === "base") {
+        if (targetMap.getZoom() < 10 && feature.source === "base") {
           continue;
         }
 
-        if (isTypeVisible(feature.layer["source-layer"], currentVisibleTypes)) {
+        if (isTypeVisible(feature.layer["source-layer"], targetItems)) {
           if (!seenIds.has(feature.properties.id)) {
             clickedFeatures.push(feature);
             seenIds.add(feature.properties.id);
@@ -222,7 +247,6 @@ export default function Map({
       if (clickedFeatures.length > 0) {
         setFeatures(clickedFeatures);
         setActiveFeature(clickedFeatures[0]);
-        // Auto-switch to Features tab and open drawer
         setActiveTab("features");
         setDrawerOpen(true);
       } else {
@@ -233,21 +257,21 @@ export default function Map({
 
     // Cursor handler
     map.on("mousemove", (e) => {
-      const currentVisibleTypes = visibleTypesRef.current;
-      const interactiveIds = getInteractiveLayerIds(map, currentVisibleTypes);
+      const { targetMap, targetItems } = pickTargetMap(e);
+      const interactiveIds = getInteractiveLayerIds(targetMap, targetItems);
 
       if (interactiveIds.length === 0) {
         map.getCanvas().style.cursor = "auto";
         return;
       }
 
-      const featuresAtPoint = map.queryRenderedFeatures(e.point, {
+      const featuresAtPoint = targetMap.queryRenderedFeatures(e.point, {
         layers: interactiveIds,
       });
 
       map.getCanvas().style.cursor =
         featuresAtPoint.some(
-          (f) => isTypeVisible(f.layer["source-layer"], currentVisibleTypes)
+          (f) => isTypeVisible(f.layer["source-layer"], targetItems)
         )
           ? "pointer"
           : "auto";
@@ -257,8 +281,35 @@ export default function Map({
     window.map = map;
     if (onMapReady) onMapReady(map);
 
+    // Create inspect map (non-interactive overlay, camera-synced)
+    const inspectMap = new maplibregl.Map({
+      container: inspectMapContainer.current,
+      style: MAP_STYLE,
+      center: initialPosition?.center || INITIAL_CENTER,
+      zoom: initialPosition?.zoom || INITIAL_ZOOM,
+      bearing: 0,
+      pitch: 0,
+      hash: false,
+      attributionControl: false,
+      interactive: false,
+    });
+
+    inspectMap.on("load", () => setInspectMapLoaded(true));
+
+    map.on("move", () => {
+      inspectMap.jumpTo({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+        bearing: map.getBearing(),
+        pitch: map.getPitch(),
+      });
+    });
+
+    inspectMapRef.current = inspectMap;
+
     return () => {
       map.remove();
+      inspectMap.remove();
       maplibregl.removeProtocol("pmtiles");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -274,20 +325,23 @@ export default function Map({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, fontsLoaded, pmtilesUrls]);
 
+  // Add sources and inspect layers to the inspect map
+  useEffect(() => {
+    if (!inspectMapLoaded || !inspectMapRef.current || Object.keys(pmtilesUrls).length === 0) return;
+    const inspectMap = inspectMapRef.current;
+    addSources(inspectMap, pmtilesUrls);
+    addInspectLayers(inspectMap, ALL_INSPECT_ITEMS);
+  }, [inspectMapLoaded, pmtilesUrls]);
+
   // Update layer visibility when visibleTypes change
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
-    if (inspectActiveRef.current) {
-      updateInspectVisibility(mapRef.current, visibleTypes);
-    } else {
-      updateLayerVisibility(mapRef.current, visibleTypes);
-    }
+    updateLayerVisibility(mapRef.current, visibleTypes);
   }, [visibleTypes, sourcesAdded]);
 
   // Update map language on symbol layers
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
-    if (inspectActiveRef.current) return;
     const map = mapRef.current;
     const style = map.getStyle();
     if (!style) return;
@@ -426,51 +480,64 @@ export default function Map({
     window.map = mapRef.current;
   });
 
-  // Sync inspect mode — swap between styled layers and inspect layers
-  useEffect(() => {
-    if (!sourcesAdded || !mapRef.current) return;
-    const map = mapRef.current;
-
-    if (inspectMode && !inspectActiveRef.current) {
-      // Entering inspect mode: remove styled layers, add inspect layers
-      removeDefaultLayers(map);
-      addInspectLayers(map, visibleTypesRef.current);
-      inspectActiveRef.current = true;
-    } else if (!inspectMode && inspectActiveRef.current) {
-      // Leaving inspect mode: remove inspect layers, add styled layers
-      inspectActiveRef.current = false;
-      removeInspectLayers(map);
-      addAllLayers(map, visibleTypesRef.current).then(() => {
-        // Visibility types may have been swapped by the parent after this
-        // effect fired — re-apply with the latest ref value.
-        updateLayerVisibility(map, visibleTypesRef.current);
-      });
-    }
-  }, [inspectMode, sourcesAdded]);
-
   // Toggle globe/mercator projection
   useEffect(() => {
     if (!mapRef.current || !mapLoaded) return;
-    mapRef.current.setProjection({
-      type: globeMode ? "globe" : "mercator",
-    });
+    const projection = { type: globeMode ? "globe" : "mercator" };
+    mapRef.current.setProjection(projection);
+    if (inspectMapRef.current) {
+      inspectMapRef.current.setProjection(projection);
+    }
   }, [globeMode, mapLoaded]);
 
-  // Resize map when drawer opens/closes so it fills the remaining space
+  // Resize maps when drawer opens/closes
   useEffect(() => {
     if (!mapRef.current) return;
-    // Wait for the CSS transition to finish before resizing
     const timer = setTimeout(() => {
       mapRef.current?.resize();
+      inspectMapRef.current?.resize();
     }, 250);
     return () => clearTimeout(timer);
   }, [drawerOpen]);
+
+  // Divider drag handlers
+  const handleDividerStart = useCallback((e) => {
+    e.preventDefault();
+    draggingRef.current = true;
+    setDragging(true);
+  }, []);
+
+  useEffect(() => {
+    const handleMove = (e) => {
+      if (!draggingRef.current) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      setSliderPosition(Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)));
+    };
+    const handleEnd = () => {
+      if (!draggingRef.current) return;
+      draggingRef.current = false;
+      setDragging(false);
+    };
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleEnd);
+    window.addEventListener("touchmove", handleMove);
+    window.addEventListener("touchend", handleEnd);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleEnd);
+      window.removeEventListener("touchmove", handleMove);
+      window.removeEventListener("touchend", handleEnd);
+    };
+  }, []);
 
   return (
     <>
       <div className={`map ${mode} tour-map`}>
         <div
-          ref={mapContainer}
+          ref={containerRef}
           style={{
             position: "fixed",
             top: 60,
@@ -478,11 +545,40 @@ export default function Map({
             width: drawerOpen ? "calc(100% - 340px)" : "100%",
             height: "calc(100vh - 60px)",
             transition: "left 225ms cubic-bezier(0,0,0.2,1), width 225ms cubic-bezier(0,0,0.2,1)",
+            userSelect: dragging ? "none" : undefined,
           }}
-        />
+        >
+          <div ref={mapContainer} style={{ position: "absolute", inset: 0 }} />
+          <div
+            ref={inspectMapContainer}
+            style={{
+              position: "absolute",
+              inset: 0,
+              clipPath: `inset(0 0 0 ${sliderPosition * 100}%)`,
+              pointerEvents: "none",
+              background: "#121212",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: `${sliderPosition * 100}%`,
+              width: 4,
+              marginLeft: -2,
+              background: "#000",
+              cursor: "col-resize",
+              zIndex: 1000,
+              touchAction: "none",
+            }}
+            onMouseDown={handleDividerStart}
+            onTouchStart={handleDividerStart}
+          />
+        </div>
 
         <FeaturePopup
-          map={mapRef.current}
+          map={clickedMap || mapRef.current}
           coordinates={lastClickedCoords}
           features={features}
           onClose={() => setLastClickedCoords(null)}
@@ -503,7 +599,6 @@ export default function Map({
           visibleTypes={visibleTypes}
           setVisibleTypes={setVisibleTypes}
           defaultVisibleTypes={defaultVisibleTypes}
-          inspectMode={inspectMode}
           zoom={zoom}
           features={features}
           setFeatures={setFeatures}
@@ -527,7 +622,6 @@ Map.propTypes = {
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,
   onMapReady: PropTypes.func,
-  inspectMode: PropTypes.bool.isRequired,
   globeMode: PropTypes.bool.isRequired,
   pendingFeature: PropTypes.object,
   setPendingFeature: PropTypes.func.isRequired,

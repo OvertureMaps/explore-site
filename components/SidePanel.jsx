@@ -16,7 +16,6 @@ export default function SidePanel({
   visibleTypes,
   setVisibleTypes,
   defaultVisibleTypes,
-  inspectMode,
   zoom,
   features,
   setFeatures,
@@ -125,7 +124,6 @@ export default function SidePanel({
               visibleTypes={visibleTypes}
               setVisibleTypes={setVisibleTypes}
               defaultVisibleTypes={defaultVisibleTypes}
-              inspectMode={inspectMode}
               zoom={zoom}
             />
           )}
@@ -170,7 +168,6 @@ SidePanel.propTypes = {
   setActiveTab: PropTypes.func.isRequired,
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,
-  inspectMode: PropTypes.bool.isRequired,
   zoom: PropTypes.number.isRequired,
   features: PropTypes.array.isRequired,
   setFeatures: PropTypes.func.isRequired,
