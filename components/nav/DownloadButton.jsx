@@ -14,6 +14,7 @@ import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
 import { downloadAsZip } from "@/lib/zipDownload";
 import { buildDownloadMetadata } from "@/lib/downloadMetadata";
+import DownloadDialog from "@/components/nav/DownloadDialog";
 
 const ZOOM_BOUND = 15;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -22,6 +23,8 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const map = useMapInstance();
 
   const [loading, setLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [pendingBbox, setPendingBbox] = useState(null);
 
   useEffect(() => {
     if (map) {
@@ -30,8 +33,32 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     }
   }, [map, setZoom]);
 
-  const handleDownloadClick = async () => {
+  // Opens the confirmation dialog and captures the current bbox.
+  const handleDownloadClick = () => {
     if (!map) return;
+    const bounds = map.getBounds();
+    setPendingBbox([
+      bounds.getWest(),
+      bounds.getSouth(),
+      bounds.getEast(),
+      bounds.getNorth(),
+    ]);
+    setDialogOpen(true);
+  };
+
+  const handleDialogCancel = () => {
+    setDialogOpen(false);
+    setPendingBbox(null);
+  };
+
+  // Runs after user confirms in dialog.
+  const handleDialogConfirm = async () => {
+    setDialogOpen(false);
+
+    if (!map || !pendingBbox) return;
+
+    const bbox = pendingBbox;
+    setPendingBbox(null);
 
     //TODO: Make this async and parallelize with the startup of the map component, rather than blocking in.
     await initWasm();
@@ -39,15 +66,6 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
 
     setLoading(true);
     try {
-      //Get current map dimensions and convert to bbox
-      const bounds = map.getBounds();
-      let bbox = [
-        bounds.getWest(),  //xmin
-        bounds.getSouth(), //ymin
-        bounds.getEast(),  //xmax
-        bounds.getNorth(), //ymax
-      ];
-
       //Send those to the download engine
       const xmin = ["bbox", "xmin"];
       const ymin = ["bbox", "ymin"];
@@ -190,7 +208,18 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     </Tooltip>
   );
 
-  return downloadIcon;
+  return (
+    <>
+      {downloadIcon}
+      <DownloadDialog
+        open={dialogOpen}
+        onConfirm={handleDialogConfirm}
+        onCancel={handleDialogCancel}
+        visibleTypes={getVisibleTypes(visibleTypes)}
+        bbox={pendingBbox}
+      />
+    </>
+  );
 }
 
 DownloadButton.propTypes = {
