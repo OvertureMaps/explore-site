@@ -8,11 +8,12 @@
 
 import { buildDownloadHierarchy } from "@/lib/layerHierarchy";
 
+// Distinct overture:type values so items survive deduplication.
 const SPECS = [
-  { metadata: { "overture:item": "building",        "overture:type": "buildings" } },
-  { metadata: { "overture:item": "building-part",   "overture:type": "buildings" } },
-  { metadata: { "overture:item": "place",            "overture:type": "places"   } },
-  { metadata: { "overture:item": "road",             "overture:type": "transportation" } },
+  { metadata: { "overture:item": "building",      "overture:type": "building"   } },
+  { metadata: { "overture:item": "building-part", "overture:type": "building_part" } },
+  { metadata: { "overture:item": "place",          "overture:type": "place"      } },
+  { metadata: { "overture:item": "road",           "overture:type": "segment"    } },
 ];
 
 const GROUPS = {
@@ -21,7 +22,7 @@ const GROUPS = {
       name: "Main",
       order: 1,
       items: {
-        building:      { name: "Building",      order: 1 },
+        building:        { name: "Building",      order: 1 },
         "building-part": { name: "Building Part", order: 2 },
       },
     },
@@ -36,7 +37,7 @@ const GROUPS = {
     },
   },
   transportation: {
-    "roads": {
+    roads: {
       name: "Roads",
       order: 1,
       items: {
@@ -59,7 +60,11 @@ describe("buildDownloadHierarchy", () => {
   });
 
   it("sorts themes by the order field", () => {
-    const shuffledThemes = { transportation: { name: "T", order: 3 }, buildings: { name: "B", order: 1 }, places: { name: "P", order: 2 } };
+    const shuffledThemes = {
+      transportation: { name: "T", order: 3 },
+      buildings: { name: "B", order: 1 },
+      places: { name: "P", order: 2 },
+    };
     const h = buildDownloadHierarchy(SPECS, GROUPS, shuffledThemes);
     expect(h.map((t) => t.key)).toEqual(["buildings", "places", "transportation"]);
   });
@@ -71,14 +76,21 @@ describe("buildDownloadHierarchy", () => {
 
   it("each item carries the correct source-layer type", () => {
     const h = buildDownloadHierarchy(SPECS, GROUPS, THEMES);
-    const buildingItems = h.find((t) => t.key === "buildings").groups.flatMap((g) => g.items);
-    expect(buildingItems.every((i) => i.type === "buildings")).toBe(true);
+    const buildingItems = h.find((t) => t.key === "buildings").items;
+    expect(buildingItems.map((i) => i.type)).toEqual(["building", "building_part"]);
   });
 
-  it("sorts items within a group by order", () => {
+  it("items are deduplicated by type and ordered by first appearance", () => {
     const h = buildDownloadHierarchy(SPECS, GROUPS, THEMES);
-    const items = h.find((t) => t.key === "buildings").groups[0].items;
-    expect(items.map((i) => i.id)).toEqual(["building", "building-part"]);
+    const items = h.find((t) => t.key === "buildings").items;
+    expect(items.map((i) => i.type)).toEqual(["building", "building_part"]);
+  });
+
+  it("item names are derived from the overture:type string", () => {
+    const h = buildDownloadHierarchy(SPECS, GROUPS, THEMES);
+    const items = h.find((t) => t.key === "buildings").items;
+    expect(items.find((i) => i.type === "building").name).toBe("Building");
+    expect(items.find((i) => i.type === "building_part").name).toBe("Building Part");
   });
 
   it("excludes themes that have no matching specs", () => {
@@ -86,20 +98,21 @@ describe("buildDownloadHierarchy", () => {
     expect(h).toHaveLength(0);
   });
 
-  it("excludes items with no matching spec", () => {
+  it("excludes items with no matching spec (ghost items produce no output)", () => {
     const sparseGroups = {
       buildings: {
-        "g": {
-          name: "G", order: 1,
+        g: {
+          name: "G",
+          order: 1,
           items: {
-            building: { name: "Building", order: 1 },
-            "ghost-item": { name: "Ghost", order: 2 }, // no spec
+            building:     { name: "Building", order: 1 },
+            "ghost-item": { name: "Ghost",    order: 2 }, // no spec
           },
         },
       },
     };
     const h = buildDownloadHierarchy(SPECS, sparseGroups, { buildings: { name: "Buildings", order: 1 } });
-    expect(h[0].groups[0].items.map((i) => i.id)).toEqual(["building"]);
+    expect(h[0].items.map((i) => i.type)).toEqual(["building"]);
   });
 
   it("returns empty array when treeGroups is empty", () => {
