@@ -14,6 +14,7 @@ import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
 import { downloadAsZip } from "@/lib/zipDownload";
 import { buildDownloadMetadata } from "@/lib/downloadMetadata";
+import { fetchTypeSize } from "@/lib/downloadSize";
 import DownloadDialog from "@/components/nav/DownloadDialog";
 
 const ZOOM_BOUND = 15;
@@ -25,6 +26,8 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingBbox, setPendingBbox] = useState(null);
+  const [zipName, setZipName] = useState(null);
+  const [layerSizes, setLayerSizes] = useState(null);
 
   useEffect(() => {
     if (map) {
@@ -33,17 +36,48 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     }
   }, [map, setZoom]);
 
+  // Fetches catalog + release version in the background while the dialog is
+  // open, then issues HEAD requests per type to estimate download sizes.
+  const loadDialogInfo = async (bbox, activeTypes) => {
+    try {
+      const [catalog, releaseVersion] = await Promise.all([
+        getDownloadCatalog(bbox, activeTypes),
+        getLatestReleaseVersion(),
+      ]);
+
+      const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
+      setZipName(`overture-${releaseVersion}-${bboxStr}.zip`);
+
+      // Seed the sizes map so the dialog knows which types to show spinners for.
+      const initial = Object.fromEntries(activeTypes.map((t) => [t, null]));
+      setLayerSizes(initial);
+
+      // Resolve each type's size independently so they populate as they arrive.
+      catalog.types.forEach(async (type) => {
+        const bytes = await fetchTypeSize(catalog.basePath, type.files);
+        setLayerSizes((prev) => ({ ...prev, [type.name]: bytes }));
+      });
+    } catch (err) {
+      console.error("Failed to load dialog info:", err);
+      // Leave zipName/layerSizes null — dialog degrades gracefully.
+    }
+  };
+
   // Opens the confirmation dialog and captures the current bbox.
   const handleDownloadClick = () => {
     if (!map) return;
     const bounds = map.getBounds();
-    setPendingBbox([
+    const bbox = [
       bounds.getWest(),
       bounds.getSouth(),
       bounds.getEast(),
       bounds.getNorth(),
-    ]);
+    ];
+    setPendingBbox(bbox);
+    setZipName(null);
+    setLayerSizes(null);
     setDialogOpen(true);
+    loadDialogInfo(bbox, getVisibleTypes(visibleTypes));
   };
 
   const handleDialogCancel = () => {
@@ -217,6 +251,8 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
         onCancel={handleDialogCancel}
         visibleTypes={getVisibleTypes(visibleTypes)}
         bbox={pendingBbox}
+        zipName={zipName}
+        layerSizes={layerSizes}
       />
     </>
   );
