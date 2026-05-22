@@ -50,8 +50,7 @@ export default function DownloadDialog({ open, onConfirm, onCancel, visibleTypes
       <DialogContent dividers>
         <Typography variant="body2" gutterBottom>
           The following visible layers will be downloaded as GeoJSON files
-          bundled into a single ZIP archive. For best results, zoom in until
-          your area of interest is small — downloads work best under ~10 MB.
+          bundled into a single ZIP archive (< ~10MB).
           To remove a layer, disable it using the layer toggler before
           downloading.
         </Typography>

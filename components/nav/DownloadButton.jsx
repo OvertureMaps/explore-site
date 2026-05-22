@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useMapInstance } from "@/lib/MapContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getDownloadCatalog } from "@/lib/DownloadCatalog";
 import { getLatestReleaseVersion } from "@/lib/stacService";
 import {
@@ -26,6 +26,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingBbox, setPendingBbox] = useState(null);
   const [zipName, setZipName] = useState(null);
+  const loadReqRef = useRef(0);
 
   useEffect(() => {
     if (map) {
@@ -35,10 +36,14 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   }, [map, setZoom]);
 
   // Fetches the release version in the background while the dialog is open
-  // in order to pre-compute the archive name.
+  // in order to pre-compute the archive name. A request token guards against
+  // stale responses overwriting state when the dialog is cancelled and
+  // reopened before the previous fetch completes.
   const loadDialogInfo = async (bbox) => {
+    const reqId = ++loadReqRef.current;
     try {
       const releaseVersion = await getLatestReleaseVersion();
+      if (reqId !== loadReqRef.current) return; // stale — a newer open superseded this one
       const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
       setZipName(`overture-${releaseVersion}-${bboxStr}.zip`);
     } catch (err) {
