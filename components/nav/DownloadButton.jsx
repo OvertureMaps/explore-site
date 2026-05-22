@@ -14,7 +14,6 @@ import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
 import { downloadAsZip } from "@/lib/zipDownload";
 import { buildDownloadMetadata } from "@/lib/downloadMetadata";
-import { fetchTypeSize } from "@/lib/downloadSize";
 import DownloadDialog from "@/components/nav/DownloadDialog";
 
 const ZOOM_BOUND = 15;
@@ -27,7 +26,6 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingBbox, setPendingBbox] = useState(null);
   const [zipName, setZipName] = useState(null);
-  const [layerSizes, setLayerSizes] = useState(null);
 
   useEffect(() => {
     if (map) {
@@ -36,30 +34,16 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     }
   }, [map, setZoom]);
 
-  // Fetches catalog + release version in the background while the dialog is
-  // open, then issues HEAD requests per type to estimate download sizes.
-  const loadDialogInfo = async (bbox, activeTypes) => {
+  // Fetches the release version in the background while the dialog is open
+  // in order to pre-compute the archive name.
+  const loadDialogInfo = async (bbox) => {
     try {
-      const [catalog, releaseVersion] = await Promise.all([
-        getDownloadCatalog(bbox, activeTypes),
-        getLatestReleaseVersion(),
-      ]);
-
+      const releaseVersion = await getLatestReleaseVersion();
       const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
       setZipName(`overture-${releaseVersion}-${bboxStr}.zip`);
-
-      // Seed the sizes map so the dialog knows which types to show spinners for.
-      const initial = Object.fromEntries(activeTypes.map((t) => [t, null]));
-      setLayerSizes(initial);
-
-      // Resolve each type's size independently so they populate as they arrive.
-      catalog.types.forEach(async (type) => {
-        const bytes = await fetchTypeSize(catalog.basePath, type.files);
-        setLayerSizes((prev) => ({ ...prev, [type.name]: bytes }));
-      });
     } catch (err) {
       console.error("Failed to load dialog info:", err);
-      // Leave zipName/layerSizes null — dialog degrades gracefully.
+      // Leave zipName null — dialog degrades gracefully.
     }
   };
 
@@ -75,9 +59,8 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     ];
     setPendingBbox(bbox);
     setZipName(null);
-    setLayerSizes(null);
     setDialogOpen(true);
-    loadDialogInfo(bbox, getVisibleTypes(visibleTypes));
+    loadDialogInfo(bbox);
   };
 
   const handleDialogCancel = () => {
@@ -252,7 +235,6 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
         visibleTypes={getVisibleTypes(visibleTypes)}
         bbox={pendingBbox}
         zipName={zipName}
-        layerSizes={layerSizes}
       />
     </>
   );

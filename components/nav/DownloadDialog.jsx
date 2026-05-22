@@ -13,15 +13,15 @@ import Checkbox from "@mui/material/Checkbox";
 import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
-import { formatBytes } from "@/lib/downloadSize";
 import { exploreHierarchy } from "@/lib/layerHierarchy";
+
 
 /**
  * Confirmation dialog shown before a data download begins.
  * Surfaces the layers, file format, and bounding box so users can
  * verify — and cancel — before committing to the download.
  */
-export default function DownloadDialog({ open, onConfirm, onCancel, visibleTypes, bbox, zipName, layerSizes }) {
+export default function DownloadDialog({ open, onConfirm, onCancel, visibleTypes, bbox, zipName }) {
   const hasTypes = Array.isArray(visibleTypes) && visibleTypes.length > 0;
 
   const bboxLabel =
@@ -50,8 +50,10 @@ export default function DownloadDialog({ open, onConfirm, onCancel, visibleTypes
       <DialogContent dividers>
         <Typography variant="body2" gutterBottom>
           The following visible layers will be downloaded as GeoJSON files
-          bundled into a single ZIP archive. To remove a layer, disable it
-          using the layer toggler before downloading.
+          bundled into a single ZIP archive. For best results, zoom in until
+          your area of interest is small — downloads work best under ~10 MB.
+          To remove a layer, disable it using the layer toggler before
+          downloading.
         </Typography>
 
         {bboxLabel && (
@@ -88,82 +90,49 @@ export default function DownloadDialog({ open, onConfirm, onCancel, visibleTypes
 
         {hasTypes ? (
           <Box sx={{ mt: 1.5 }}>
-            {visibleHierarchy.map((theme) => {
-              // Compute total size = sum of all visible item types in this theme.
-              const sizeValues =
-                layerSizes === null
-                  ? null
-                  : theme.items.map((item) => layerSizes[item.type]);
-              const anyLoading =
-                sizeValues === null ||
-                sizeValues.some((s) => s === null || s === undefined);
-              const totalSize = !anyLoading
-                ? sizeValues.reduce((a, b) => a + b, 0)
-                : null;
-
-              return (
-                <Box key={theme.key} sx={{ mb: 1 }}>
-                  {/* Theme header row */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      py: 0.25,
-                    }}
-                    data-testid={`theme-${theme.key}`}
+            {visibleHierarchy.map((theme) => (
+              <Box key={theme.key} sx={{ mb: 1 }}>
+                {/* Theme header row */}
+                <Box
+                  sx={{ py: 0.25 }}
+                  data-testid={`theme-${theme.key}`}
+                >
+                  <Typography
+                    variant="caption"
+                    fontWeight={700}
+                    color="text.secondary"
+                    sx={{ textTransform: "uppercase", letterSpacing: 0.5 }}
                   >
-                    <Typography
-                      variant="caption"
-                      fontWeight={700}
-                      color="text.secondary"
-                      sx={{ textTransform: "uppercase", letterSpacing: 0.5 }}
-                    >
-                      {theme.name}
-                    </Typography>
-                    {anyLoading ? (
-                      <CircularProgress
-                        size={10}
-                        aria-label={`Loading size for ${theme.key}`}
-                      />
-                    ) : totalSize !== null ? (
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        data-testid={`size-${theme.key}`}
-                      >
-                        {totalSize === 0 ? "—" : `~${formatBytes(totalSize)}`}
-                      </Typography>
-                    ) : null}
-                  </Box>
-
-                  <List dense disablePadding>
-                    {theme.items.map((item) => (
-                      <ListItem
-                        key={item.type}
-                        disableGutters
-                        sx={{ py: 0, pl: 1 }}
-                      >
-                        <ListItemIcon sx={{ minWidth: 32 }}>
-                          <Checkbox
-                            checked
-                            disabled
-                            size="small"
-                            disableRipple
-                            inputProps={{ "aria-label": item.name }}
-                            sx={{ p: 0.5 }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item.name}
-                          primaryTypographyProps={{ variant: "body2" }}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
+                    {theme.name}
+                  </Typography>
                 </Box>
-              );
-            })}
+
+                <List dense disablePadding>
+                  {theme.items.map((item) => (
+                    <ListItem
+                      key={item.type}
+                      disableGutters
+                      sx={{ py: 0, pl: 1 }}
+                    >
+                      <ListItemIcon sx={{ minWidth: 32 }}>
+                        <Checkbox
+                          checked
+                          disabled
+                          size="small"
+                          disableRipple
+                          inputProps={{ "aria-label": item.name }}
+                          sx={{ p: 0.5 }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.name}
+                        primaryTypographyProps={{ variant: "body2" }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            ))}
           </Box>
         ) : (
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -200,5 +169,4 @@ DownloadDialog.propTypes = {
   visibleTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   bbox: PropTypes.arrayOf(PropTypes.number),
   zipName: PropTypes.string,
-  layerSizes: PropTypes.objectOf(PropTypes.number),
 };

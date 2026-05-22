@@ -32,11 +32,9 @@ jest.mock("@/lib/layerHierarchy", () => ({
   ],
 }));
 
-// Actual overture:type values (singular) that getVisibleTypes() returns.
 const TYPES = ["building", "place", "segment"];
 const BBOX = [-77.69, 39.13, -77.68, 39.15];
 const ZIP_NAME = "overture-2024-09-18--77.690,39.130,-77.680,39.150.zip";
-const LAYER_SIZES = { building: 1024 * 1024, place: 512 * 1024, segment: 0 };
 
 function renderDialog(props = {}) {
   const defaults = {
@@ -46,7 +44,6 @@ function renderDialog(props = {}) {
     visibleTypes: TYPES,
     bbox: BBOX,
     zipName: ZIP_NAME,
-    layerSizes: LAYER_SIZES,
   };
   return render(<DownloadDialog {...defaults} {...props} />);
 }
@@ -116,31 +113,6 @@ describe("DownloadDialog", () => {
       renderDialog({ zipName: null });
       expect(screen.queryByTestId("download-dialog-zipname")).not.toBeInTheDocument();
       expect(screen.getByLabelText("Loading archive name")).toBeInTheDocument();
-    });
-  });
-
-  describe("layer sizes", () => {
-    it("shows formatted sizes at the theme level when layerSizes is populated", () => {
-      renderDialog();
-      expect(screen.getByTestId("size-buildings")).toHaveTextContent("1.0 MB");
-      expect(screen.getByTestId("size-places")).toHaveTextContent("512.0 KB");
-    });
-
-    it("shows — for a theme with 0 bytes", () => {
-      renderDialog();
-      expect(screen.getByTestId("size-transportation")).toHaveTextContent("—");
-    });
-
-    it("shows per-theme spinners when layerSizes is null (not yet loaded)", () => {
-      renderDialog({ layerSizes: null });
-      const spinners = screen.getAllByRole("progressbar");
-      expect(spinners.length).toBeGreaterThanOrEqual(TYPES.length);
-    });
-
-    it("shows spinner for a theme whose size is still null", () => {
-      renderDialog({ layerSizes: { building: 1024, place: null, segment: 512 } });
-      expect(screen.getByLabelText("Loading size for places")).toBeInTheDocument();
-      expect(screen.getByTestId("size-buildings")).toBeInTheDocument();
     });
   });
 
