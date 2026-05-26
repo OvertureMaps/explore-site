@@ -171,6 +171,7 @@ export default function Home() {
             defaultVisibleTypes={inspectMode ? DEFAULT_INSPECT_VISIBLE : DEFAULT_VISIBLE}
             onMapReady={setMapInstance}
             inspectMode={inspectMode}
+            setInspectMode={setInspectMode}
             globeMode={globeMode}
             pendingFeature={pendingFeature}
             setPendingFeature={setPendingFeature}

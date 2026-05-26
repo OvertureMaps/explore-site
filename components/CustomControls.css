@@ -17,6 +17,11 @@
   pointer-events: auto;
 }
 
+/* Push top-right controls below the map inset */
+.maplibregl-ctrl-top-right {
+  top: 230px !important;
+}
+
 /* ── Material Symbols map control icons ── */
 
 .maplibregl-ctrl button .maplibregl-ctrl-icon {

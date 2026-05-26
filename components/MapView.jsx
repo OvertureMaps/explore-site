@@ -8,7 +8,7 @@ import SidePanel from "@/components/SidePanel";
 import BookmarkDial from "@/components/BookmarkDial";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
-import { getInspectTokens } from "@/components/map";
+import { getInspectTokens, inspectLayerSpecs } from "@/components/map";
 import fontsJson from "@/components/map/tokens/primitive/fonts.json";
 import {
   addSources,
@@ -62,6 +62,10 @@ for (const theme of ["base", "buildings", "transportation", "addresses", "places
   }
 }
 
+const ALL_INSPECT_ITEMS = [...new Set(
+  inspectLayerSpecs.map((spec) => spec.metadata?.["overture:item"]).filter(Boolean)
+)];
+
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
   version: 8,
@@ -85,6 +89,7 @@ export default function Map({
   defaultVisibleTypes,
   onMapReady,
   inspectMode,
+  setInspectMode,
   globeMode,
   pendingFeature,
   setPendingFeature,
@@ -109,6 +114,12 @@ export default function Map({
 
   const activeFeatureRef = useRef(null);
   const inspectActiveRef = useRef(false);
+
+  const insetMapContainer = useRef(null);
+  const insetMapRef = useRef(null);
+  const [insetMapLoaded, setInsetMapLoaded] = useState(false);
+  const [insetSourcesAdded, setInsetSourcesAdded] = useState(false);
+  const insetInspectRef = useRef(true);
 
   // Load PMTiles URLs from STAC catalog
   useEffect(() => {
@@ -257,8 +268,62 @@ export default function Map({
     window.map = map;
     if (onMapReady) onMapReady(map);
 
+    // Inset map — non-interactive preview of the alternate mode
+    const insetMap = new maplibregl.Map({
+      container: insetMapContainer.current,
+      style: MAP_STYLE,
+      center: initialPosition?.center || INITIAL_CENTER,
+      zoom: initialPosition?.zoom || INITIAL_ZOOM,
+      bearing: 0,
+      pitch: 0,
+      hash: false,
+      attributionControl: false,
+      interactive: false,
+    });
+
+    insetMap.on("load", () => setInsetMapLoaded(true));
+
+    // Sync camera so inset features align with the main map.
+    // The inset covers a specific screen rectangle; we set its center
+    // to the geographic point the main map shows at that rectangle's
+    // center so both maps render identical pixels there.
+    function syncInset() {
+      const zoom = map.getZoom();
+      const bearing = map.getBearing();
+      const pitch = map.getPitch();
+
+      // At low zoom in globe mode the 3D perspective differs between
+      // viewport sizes, so pixel-aligned unproject doesn't work.
+      // Fall back to a simple center sync there.
+      if (zoom < 6 && map.getProjection?.()?.type === "globe") {
+        insetMap.jumpTo({ center: map.getCenter(), zoom, bearing, pitch });
+        return;
+      }
+
+      const mainContainer = mapContainer.current;
+      const insetEl = insetMapContainer.current?.parentElement;
+      if (!mainContainer || !insetEl) {
+        insetMap.jumpTo({ center: map.getCenter(), zoom, bearing, pitch });
+        return;
+      }
+      const mainRect = mainContainer.getBoundingClientRect();
+      const insetRect = insetEl.getBoundingClientRect();
+      const insetCenterX = insetRect.left + insetRect.width / 2 - mainRect.left;
+      const insetCenterY = insetRect.top + insetRect.height / 2 - mainRect.top;
+      insetMap.jumpTo({
+        center: map.unproject([insetCenterX, insetCenterY]),
+        zoom,
+        bearing,
+        pitch,
+      });
+    }
+    map.on("move", syncInset);
+
+    insetMapRef.current = insetMap;
+
     return () => {
       map.remove();
+      insetMap.remove();
       maplibregl.removeProtocol("pmtiles");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -448,20 +513,49 @@ export default function Map({
     }
   }, [inspectMode, sourcesAdded]);
 
+  // Inset map: add sources and initial layers (inspect, since main starts in explore)
+  useEffect(() => {
+    if (!insetMapLoaded || !insetMapRef.current || Object.keys(pmtilesUrls).length === 0) return;
+    const insetMap = insetMapRef.current;
+    addSources(insetMap, pmtilesUrls);
+    addInspectLayers(insetMap, ALL_INSPECT_ITEMS);
+    insetInspectRef.current = true;
+    setInsetSourcesAdded(true);
+  }, [insetMapLoaded, pmtilesUrls]);
+
+  // Inset map: swap layers to always show the opposite of the main map
+  useEffect(() => {
+    if (!insetSourcesAdded || !insetMapRef.current) return;
+    const insetMap = insetMapRef.current;
+    const insetShouldBeInspect = !inspectMode;
+
+    if (insetShouldBeInspect && !insetInspectRef.current) {
+      removeDefaultLayers(insetMap);
+      addInspectLayers(insetMap, ALL_INSPECT_ITEMS);
+      insetInspectRef.current = true;
+    } else if (!insetShouldBeInspect && insetInspectRef.current) {
+      removeInspectLayers(insetMap);
+      addAllLayers(insetMap, visibleTypesRef.current);
+      insetInspectRef.current = false;
+    }
+  }, [inspectMode, insetSourcesAdded]);
+
   // Toggle globe/mercator projection
   useEffect(() => {
     if (!mapRef.current || !mapLoaded) return;
-    mapRef.current.setProjection({
-      type: globeMode ? "globe" : "mercator",
-    });
-  }, [globeMode, mapLoaded]);
+    const projection = { type: globeMode ? "globe" : "mercator" };
+    mapRef.current.setProjection(projection);
+    if (insetMapRef.current) {
+      insetMapRef.current.setProjection(projection);
+    }
+  }, [globeMode, mapLoaded, insetMapLoaded]);
 
   // Resize map when drawer opens/closes so it fills the remaining space
   useEffect(() => {
     if (!mapRef.current) return;
-    // Wait for the CSS transition to finish before resizing
     const timer = setTimeout(() => {
       mapRef.current?.resize();
+      insetMapRef.current?.resize();
     }, 250);
     return () => clearTimeout(timer);
   }, [drawerOpen]);
@@ -480,6 +574,41 @@ export default function Map({
             transition: "left 225ms cubic-bezier(0,0,0.2,1), width 225ms cubic-bezier(0,0,0.2,1)",
           }}
         />
+
+        {/* Inset map — clickable preview of the alternate mode */}
+        <div
+          onClick={() => setInspectMode(!inspectMode)}
+          title={inspectMode ? "Switch to explore view" : "Switch to x-ray view"}
+          style={{
+            position: "fixed",
+            top: 70,
+            right: 10,
+            width: 360,
+            height: 220,
+            borderRadius: 8,
+            overflow: "hidden",
+            border: "2px solid rgba(255,255,255,0.4)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+            cursor: "pointer",
+            zIndex: 2,
+            background: "#121212",
+          }}
+        >
+          <div ref={insetMapContainer} style={{ width: "100%", height: "100%" }} />
+          <div style={{
+            position: "absolute",
+            bottom: 4,
+            left: 8,
+            color: "#fff",
+            fontSize: 11,
+            fontFamily: "Montserrat, sans-serif",
+            fontWeight: 600,
+            textShadow: "0 1px 3px rgba(0,0,0,0.8)",
+            pointerEvents: "none",
+          }}>
+            {inspectMode ? "Explore" : "X-Ray"}
+          </div>
+        </div>
 
         <FeaturePopup
           map={mapRef.current}
@@ -528,6 +657,7 @@ Map.propTypes = {
   setVisibleTypes: PropTypes.func.isRequired,
   onMapReady: PropTypes.func,
   inspectMode: PropTypes.bool.isRequired,
+  setInspectMode: PropTypes.func.isRequired,
   globeMode: PropTypes.bool.isRequired,
   pendingFeature: PropTypes.object,
   setPendingFeature: PropTypes.func.isRequired,
