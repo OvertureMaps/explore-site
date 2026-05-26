@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useMapInstance } from "@/lib/MapContext";
 import { useEffect, useRef, useState } from "react";
 import { getDownloadCatalog } from "@/lib/DownloadCatalog";
-import { getLatestReleaseVersion, getThemeTypes } from "@/lib/stacService";
+import { getLatestReleaseVersion } from "@/lib/stacService";
 import {
   ParquetDataset,
   set_panic_hook,
