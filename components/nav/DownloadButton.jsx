@@ -26,6 +26,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingBbox, setPendingBbox] = useState(null);
   const [zipName, setZipName] = useState(null);
+  const [themeTypes, setThemeTypes] = useState(null);
   const loadReqRef = useRef(0);
 
   useEffect(() => {
@@ -42,13 +43,17 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const loadDialogInfo = async (bbox) => {
     const reqId = ++loadReqRef.current;
     try {
-      const releaseVersion = await getLatestReleaseVersion();
+      const [releaseVersion, stacThemeTypes] = await Promise.all([
+        getLatestReleaseVersion(),
+        getThemeTypes(),
+      ]);
       if (reqId !== loadReqRef.current) return; // stale — a newer open superseded this one
       const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
       setZipName(`overture-${releaseVersion}-${bboxStr}.zip`);
+      setThemeTypes(stacThemeTypes);
     } catch (err) {
       console.error("Failed to load dialog info:", err);
-      // Leave zipName null — dialog degrades gracefully.
+      // Leave zipName/themeTypes null — dialog degrades gracefully.
     }
   };
 
@@ -64,6 +69,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     ];
     setPendingBbox(bbox);
     setZipName(null);
+    setThemeTypes(null);
     setDialogOpen(true);
     loadDialogInfo(bbox);
   };
