@@ -1,7 +1,7 @@
 /**
  * Tests for components/nav/DownloadDialog.jsx
  *
- * Covers: type list rendering, bbox display, zip name,
+ * Covers: themed hierarchy rendering, bbox display, zip name, layer sizes,
  * confirm/cancel callbacks, disabled state when no types, and closed state.
  */
 
@@ -9,6 +9,28 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import DownloadDialog from "@/components/nav/DownloadDialog";
+
+// Mock the hierarchy so tests don't depend on real explore-tree.json data.
+// Each theme has items with source-layer types matching TYPES below.
+jest.mock("@/lib/layerHierarchy", () => ({
+  exploreHierarchy: [
+    {
+      key: "buildings",
+      name: "Buildings",
+      items: [{ type: "building", name: "Building" }],
+    },
+    {
+      key: "places",
+      name: "Places",
+      items: [{ type: "place", name: "Place" }],
+    },
+    {
+      key: "transportation",
+      name: "Transportation",
+      items: [{ type: "segment", name: "Segment" }],
+    },
+  ],
+}));
 
 const TYPES = ["building", "place", "segment"];
 const BBOX = [-77.69, 39.13, -77.68, 39.15];
@@ -33,9 +55,21 @@ describe("DownloadDialog", () => {
       expect(screen.getByText("Confirm Download")).toBeInTheDocument();
     });
 
-    it("lists each visible type", () => {
+    it("shows a theme header for each visible source-layer type", () => {
       renderDialog();
-      TYPES.forEach((t) => expect(screen.getByText(t)).toBeInTheDocument());
+      expect(screen.getByTestId("theme-buildings")).toBeInTheDocument();
+      expect(screen.getByTestId("theme-places")).toBeInTheDocument();
+      expect(screen.getByTestId("theme-transportation")).toBeInTheDocument();
+    });
+
+    it("renders checked disabled checkboxes for visible items", () => {
+      renderDialog();
+      const checkboxes = screen.getAllByRole("checkbox");
+      expect(checkboxes.length).toBeGreaterThan(0);
+      checkboxes.forEach((cb) => {
+        expect(cb).toBeChecked();
+        expect(cb).toBeDisabled();
+      });
     });
 
     it("shows the bounding box", () => {
@@ -57,9 +91,10 @@ describe("DownloadDialog", () => {
       expect(screen.getByText(/layer toggler/i)).toBeInTheDocument();
     });
 
-    it("shows fallback message when visibleTypes is empty", () => {
+    it("shows no theme headers and fallback message when visibleTypes is empty", () => {
       renderDialog({ visibleTypes: [] });
       expect(screen.getByText(/No visible layers available/i)).toBeInTheDocument();
+      expect(screen.queryByTestId("theme-buildings")).not.toBeInTheDocument();
     });
 
     it("does not render when open is false", () => {
@@ -96,7 +131,7 @@ describe("DownloadDialog", () => {
       expect(onConfirm).toHaveBeenCalledTimes(1);
     });
 
-    it("calls onCancel when Escape is pressed", () => {
+    it("calls onCancel when the dialog backdrop is clicked (Escape / outside click)", () => {
       const onCancel = jest.fn();
       renderDialog({ onCancel });
       fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
