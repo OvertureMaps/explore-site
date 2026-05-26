@@ -8,7 +8,7 @@ import SidePanel from "@/components/SidePanel";
 import BookmarkDial from "@/components/BookmarkDial";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
-import { getInspectTokens, inspectLayerSpecs } from "@/components/map";
+import { getInspectTokens, inspectLayerSpecs, defaultLayerSpecs } from "@/components/map";
 import fontsJson from "@/components/map/tokens/primitive/fonts.json";
 import {
   addSources,
@@ -66,6 +66,10 @@ const ALL_INSPECT_ITEMS = [...new Set(
   inspectLayerSpecs.map((spec) => spec.metadata?.["overture:item"]).filter(Boolean)
 )];
 
+const ALL_EXPLORE_ITEMS = [...new Set(
+  defaultLayerSpecs.map((spec) => spec.metadata?.["overture:item"]).filter(Boolean)
+)];
+
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
   version: 8,
@@ -117,9 +121,8 @@ export default function Map({
 
   const insetMapContainer = useRef(null);
   const insetMapRef = useRef(null);
-  const [insetMapLoaded, setInsetMapLoaded] = useState(false);
   const [insetSourcesAdded, setInsetSourcesAdded] = useState(false);
-  const insetInspectRef = useRef(true);
+  const insetInspectRef = useRef(null);
 
   // Load PMTiles URLs from STAC catalog
   useEffect(() => {
@@ -281,7 +284,6 @@ export default function Map({
       interactive: false,
     });
 
-    insetMap.on("load", () => setInsetMapLoaded(true));
 
     // Sync camera so inset features align with the main map.
     // The inset covers a specific screen rectangle; we set its center
@@ -336,6 +338,19 @@ export default function Map({
     const map = mapRef.current;
     addSources(map, pmtilesUrls);
     addAllLayers(map, visibleTypes).then(() => setSourcesAdded(true));
+
+    if (insetMapRef.current) {
+      const insetMap = insetMapRef.current;
+      addSources(insetMap, pmtilesUrls);
+      if (inspectMode) {
+        addAllLayers(insetMap, ALL_EXPLORE_ITEMS);
+        insetInspectRef.current = false;
+      } else {
+        addInspectLayers(insetMap, ALL_INSPECT_ITEMS);
+        insetInspectRef.current = true;
+      }
+      setInsetSourcesAdded(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, fontsLoaded, pmtilesUrls]);
 
@@ -513,31 +528,21 @@ export default function Map({
     }
   }, [inspectMode, sourcesAdded]);
 
-  // Inset map: add sources and initial layers (inspect, since main starts in explore)
-  useEffect(() => {
-    if (!insetMapLoaded || !insetMapRef.current || Object.keys(pmtilesUrls).length === 0) return;
-    const insetMap = insetMapRef.current;
-    addSources(insetMap, pmtilesUrls);
-    addInspectLayers(insetMap, ALL_INSPECT_ITEMS);
-    insetInspectRef.current = true;
-    setInsetSourcesAdded(true);
-  }, [insetMapLoaded, pmtilesUrls]);
-
   // Inset map: swap layers to always show the opposite of the main map
   useEffect(() => {
     if (!insetSourcesAdded || !insetMapRef.current) return;
     const insetMap = insetMapRef.current;
     const insetShouldBeInspect = !inspectMode;
+    if (insetShouldBeInspect === insetInspectRef.current) return;
 
-    if (insetShouldBeInspect && !insetInspectRef.current) {
+    if (insetShouldBeInspect) {
       removeDefaultLayers(insetMap);
       addInspectLayers(insetMap, ALL_INSPECT_ITEMS);
-      insetInspectRef.current = true;
-    } else if (!insetShouldBeInspect && insetInspectRef.current) {
+    } else {
       removeInspectLayers(insetMap);
-      addAllLayers(insetMap, visibleTypesRef.current);
-      insetInspectRef.current = false;
+      addAllLayers(insetMap, ALL_EXPLORE_ITEMS);
     }
+    insetInspectRef.current = insetShouldBeInspect;
   }, [inspectMode, insetSourcesAdded]);
 
   // Toggle globe/mercator projection
@@ -548,7 +553,7 @@ export default function Map({
     if (insetMapRef.current) {
       insetMapRef.current.setProjection(projection);
     }
-  }, [globeMode, mapLoaded, insetMapLoaded]);
+  }, [globeMode, mapLoaded]);
 
   // Resize map when drawer opens/closes so it fills the remaining space
   useEffect(() => {
