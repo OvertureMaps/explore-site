@@ -240,6 +240,7 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
         visibleTypes={getVisibleTypes(visibleTypes)}
         bbox={pendingBbox}
         zipName={zipName}
+        themeTypes={themeTypes}
       />
     </>
   );
