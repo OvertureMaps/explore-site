@@ -557,24 +557,99 @@ export default function Map({
               clipPath: `inset(0 0 0 ${sliderPosition * 100}%)`,
               pointerEvents: "none",
               background: "#121212",
+              transition: !dragging ? "clip-path 300ms ease" : undefined,
             }}
           />
+          {/* Divider with snap handle */}
           <div
             style={{
               position: "absolute",
               top: 0,
               bottom: 0,
               left: `${sliderPosition * 100}%`,
-              width: 4,
-              marginLeft: -2,
-              background: "#000",
+              width: 20,
+              marginLeft: -10,
               cursor: "col-resize",
               zIndex: 1000,
               touchAction: "none",
+              transition: !dragging ? "left 300ms ease" : undefined,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             onMouseDown={handleDividerStart}
             onTouchStart={handleDividerStart}
-          />
+            onDoubleClick={() => setSliderPosition(0.5)}
+          >
+            {/* Visible divider line */}
+            <div style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: "50%",
+              width: 4,
+              marginLeft: -2,
+              background: "#000",
+              pointerEvents: "none",
+            }} />
+            {/* Handle pill with snap buttons */}
+            <div style={{
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              background: "rgba(0,0,0,0.8)",
+              borderRadius: 14,
+              padding: "6px 2px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+            }}>
+              <button
+                onClick={() => setSliderPosition(0)}
+                onMouseDown={(e) => e.stopPropagation()}
+                onDoubleClick={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: sliderPosition < 0.01 ? "rgba(255,255,255,0.2)" : "#fff",
+                  cursor: sliderPosition < 0.01 ? "default" : "pointer",
+                  padding: "2px 4px",
+                  fontSize: 12,
+                  lineHeight: 1,
+                  display: "flex",
+                }}
+                title="Full inspect view"
+                disabled={sliderPosition < 0.01}
+              >
+                ◀
+              </button>
+              <div style={{ display: "flex", flexDirection: "column", gap: 3, padding: "6px 0" }}>
+                <div style={{ width: 10, height: 2, background: "rgba(255,255,255,0.35)", borderRadius: 1 }} />
+                <div style={{ width: 10, height: 2, background: "rgba(255,255,255,0.35)", borderRadius: 1 }} />
+                <div style={{ width: 10, height: 2, background: "rgba(255,255,255,0.35)", borderRadius: 1 }} />
+              </div>
+              <button
+                onClick={() => setSliderPosition(1)}
+                onMouseDown={(e) => e.stopPropagation()}
+                onDoubleClick={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: sliderPosition > 0.99 ? "rgba(255,255,255,0.2)" : "#fff",
+                  cursor: sliderPosition > 0.99 ? "default" : "pointer",
+                  padding: "2px 4px",
+                  fontSize: 12,
+                  lineHeight: 1,
+                  display: "flex",
+                }}
+                title="Full explore view"
+                disabled={sliderPosition > 0.99}
+              >
+                ▶
+              </button>
+            </div>
+          </div>
         </div>
 
         <FeaturePopup
