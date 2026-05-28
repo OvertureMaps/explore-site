@@ -35,6 +35,7 @@ export default function Home() {
 
   const [visibleTypes, setVisibleTypes] = useState(DEFAULT_VISIBLE);
   const [pendingFeature, setPendingFeature] = useState(null);
+  const [initialSlider, setInitialSlider] = useState(null);
 
   // Capture the hash position at page load before anything can overwrite it.
   // MapLibre's hash:true won't see it in time because the component tree
@@ -73,6 +74,10 @@ export default function Home() {
         setPendingFeature({ source, sourceLayer, gersId: rest.join(".") });
       }
     }
+
+    const viewParam = params.get("view");
+    if (viewParam === "explore") setInitialSlider(1);
+    else if (viewParam === "inspect") setInitialSlider(0);
 
     setMounted(true);
   }, []);
@@ -143,6 +148,7 @@ export default function Home() {
             pendingFeature={pendingFeature}
             setPendingFeature={setPendingFeature}
             initialPosition={initialPositionRef.current || undefined}
+            initialSlider={initialSlider}
           />
         </MapContext.Provider>
         <TermsOfUse />

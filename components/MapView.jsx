@@ -89,6 +89,7 @@ export default function Map({
   pendingFeature,
   setPendingFeature,
   initialPosition,
+  initialSlider,
 }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
@@ -112,8 +113,8 @@ export default function Map({
   const inspectMapContainer = useRef(null);
   const inspectMapRef = useRef(null);
   const containerRef = useRef(null);
-  const [sliderPosition, setSliderPosition] = useState(0.5);
-  const sliderPositionRef = useRef(0.5);
+  const [sliderPosition, setSliderPosition] = useState(initialSlider ?? 0.5);
+  const sliderPositionRef = useRef(initialSlider ?? 0.5);
   const [dragging, setDragging] = useState(false);
   const draggingRef = useRef(false);
   const [inspectMapLoaded, setInspectMapLoaded] = useState(false);
@@ -701,4 +702,5 @@ Map.propTypes = {
   pendingFeature: PropTypes.object,
   setPendingFeature: PropTypes.func.isRequired,
   initialPosition: PropTypes.object,
+  initialSlider: PropTypes.number,
 };
