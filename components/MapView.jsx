@@ -90,6 +90,7 @@ export default function Map({
   setPendingFeature,
   initialPosition,
   initialSlider,
+  onSliderChange,
 }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
@@ -122,7 +123,8 @@ export default function Map({
 
   useEffect(() => {
     sliderPositionRef.current = sliderPosition;
-  }, [sliderPosition]);
+    onSliderChange?.(sliderPosition);
+  }, [sliderPosition, onSliderChange]);
 
   // Load PMTiles URLs from STAC catalog
   useEffect(() => {
@@ -567,11 +569,21 @@ export default function Map({
               position: "absolute",
               top: 0,
               bottom: 0,
-              left: `${sliderPosition * 100}%`,
+              // Clamp the rendered position so the handle never straddles the
+              // viewport edge and get half-clipped at the extremes (0/1). The
+              // clip-path above still uses the true sliderPosition, so the maps
+              // collapse fully — only the grab handle is held a margin inward.
+              left: `clamp(20px, ${sliderPosition * 100}%, calc(100% - 20px))`,
               width: 20,
               marginLeft: -10,
               cursor: "col-resize",
-              zIndex: 1000,
+              // Sits between the map canvas (z-index auto/0, so the handle is
+              // draggable) and MapLibre's control corners (z-index 2 in
+              // maplibre-gl.css, so zoom/rotate/geolocate buttons stay
+              // clickable). .maplibregl-map is position:relative with no
+              // z-index, so it's not a stacking context and these compare
+              // directly here.
+              zIndex: 1,
               touchAction: "none",
               transition: !dragging ? "left 300ms ease" : undefined,
               display: "flex",
@@ -703,4 +715,5 @@ Map.propTypes = {
   setPendingFeature: PropTypes.func.isRequired,
   initialPosition: PropTypes.object,
   initialSlider: PropTypes.number,
+  onSliderChange: PropTypes.func,
 };

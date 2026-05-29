@@ -11,7 +11,6 @@ export default function ShareButton({ visibleTypes, activeFeature }) {
   const handleShare = () => {
     const url = new URL(window.location.href);
     url.searchParams.set("layers", visibleTypes.join(","));
-    url.searchParams.delete("mode");
 
     if (activeFeature?.properties?.id) {
       const featureKey = [
