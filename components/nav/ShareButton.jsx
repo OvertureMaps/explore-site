@@ -5,13 +5,12 @@ import Snackbar from "@mui/material/Snackbar";
 import { ShareAndroid } from "iconoir-react";
 import PropTypes from "prop-types";
 
-export default function ShareButton({ visibleTypes, inspectMode, activeFeature }) {
+export default function ShareButton({ visibleTypes, activeFeature }) {
   const [snackOpen, setSnackOpen] = useState(false);
 
   const handleShare = () => {
     const url = new URL(window.location.href);
     url.searchParams.set("layers", visibleTypes.join(","));
-    url.searchParams.set("mode", inspectMode ? "inspect" : "explore");
 
     if (activeFeature?.properties?.id) {
       const featureKey = [
@@ -52,6 +51,5 @@ export default function ShareButton({ visibleTypes, inspectMode, activeFeature }
 
 ShareButton.propTypes = {
   visibleTypes: PropTypes.array.isRequired,
-  inspectMode: PropTypes.bool.isRequired,
   activeFeature: PropTypes.object,
 };
