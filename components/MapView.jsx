@@ -8,7 +8,7 @@ import SidePanel from "@/components/SidePanel";
 import BookmarkDial from "@/components/BookmarkDial";
 import FeaturePopup from "@/components/FeatureSelector";
 import { loadPmtilesFromStac } from "@/lib/stacService";
-import { getInspectTokens, inspectLayerSpecs } from "@/components/map";
+import { getInspectTokens } from "@/components/map";
 import fontsJson from "@/components/map/tokens/primitive/fonts.json";
 import {
   addSources,
@@ -18,6 +18,7 @@ import {
   getInteractiveLayerIds,
   isTypeVisible,
   addInspectLayers,
+  updateInspectVisibility,
 } from "@/lib/LayerManager";
 
 // Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
@@ -59,9 +60,6 @@ for (const theme of ["base", "buildings", "transportation", "addresses", "places
   }
 }
 
-const ALL_INSPECT_ITEMS = [...new Set(
-  inspectLayerSpecs.map((spec) => spec.metadata?.["overture:item"]).filter(Boolean)
-)];
 
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
@@ -84,6 +82,9 @@ export default function Map({
   visibleTypes,
   setVisibleTypes,
   defaultVisibleTypes,
+  inspectVisibleTypes,
+  setInspectVisibleTypes,
+  defaultInspectVisibleTypes,
   onMapReady,
   globeMode,
   pendingFeature,
@@ -108,6 +109,11 @@ export default function Map({
   useEffect(() => {
     visibleTypesRef.current = visibleTypes;
   }, [visibleTypes]);
+
+  const inspectVisibleTypesRef = useRef(inspectVisibleTypes);
+  useEffect(() => {
+    inspectVisibleTypesRef.current = inspectVisibleTypes;
+  }, [inspectVisibleTypes]);
 
   const activeFeatureRef = useRef(null);
 
@@ -209,7 +215,7 @@ export default function Map({
       const rect = container.getBoundingClientRect();
       const clickRatio = (e.originalEvent.clientX - rect.left) / rect.width;
       if (clickRatio >= sliderPositionRef.current) {
-        return { targetMap: inspectMapRef.current, targetItems: ALL_INSPECT_ITEMS };
+        return { targetMap: inspectMapRef.current, targetItems: inspectVisibleTypesRef.current };
       }
       return { targetMap: map, targetItems: visibleTypesRef.current };
     }
@@ -333,14 +339,20 @@ export default function Map({
     if (!inspectMapLoaded || !inspectMapRef.current || Object.keys(pmtilesUrls).length === 0) return;
     const inspectMap = inspectMapRef.current;
     addSources(inspectMap, pmtilesUrls);
-    addInspectLayers(inspectMap, ALL_INSPECT_ITEMS);
+    addInspectLayers(inspectMap, inspectVisibleTypesRef.current);
   }, [inspectMapLoaded, pmtilesUrls]);
 
-  // Update layer visibility when visibleTypes change
+  // Update explore-map layer visibility when visibleTypes change
   useEffect(() => {
     if (!sourcesAdded || !mapRef.current) return;
     updateLayerVisibility(mapRef.current, visibleTypes);
   }, [visibleTypes, sourcesAdded]);
+
+  // Update inspect-map layer visibility when its own inspectVisibleTypes change
+  useEffect(() => {
+    if (!inspectMapLoaded || !inspectMapRef.current) return;
+    updateInspectVisibility(inspectMapRef.current, inspectVisibleTypes);
+  }, [inspectVisibleTypes, inspectMapLoaded]);
 
   // Update map language on symbol layers
   useEffect(() => {
@@ -687,6 +699,9 @@ export default function Map({
           visibleTypes={visibleTypes}
           setVisibleTypes={setVisibleTypes}
           defaultVisibleTypes={defaultVisibleTypes}
+          inspectVisibleTypes={inspectVisibleTypes}
+          setInspectVisibleTypes={setInspectVisibleTypes}
+          defaultInspectVisibleTypes={defaultInspectVisibleTypes}
           zoom={zoom}
           features={features}
           setFeatures={setFeatures}
@@ -709,6 +724,10 @@ Map.propTypes = {
   setZoom: PropTypes.func.isRequired,
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,
+  defaultVisibleTypes: PropTypes.array,
+  inspectVisibleTypes: PropTypes.array.isRequired,
+  setInspectVisibleTypes: PropTypes.func.isRequired,
+  defaultInspectVisibleTypes: PropTypes.array,
   onMapReady: PropTypes.func,
   globeMode: PropTypes.bool.isRequired,
   pendingFeature: PropTypes.object,

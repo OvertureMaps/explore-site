@@ -8,7 +8,7 @@ import TermsOfUse from "@/components/nav/TermsOfUse";
 import { keepTheme, darkTheme, lightTheme } from "@/lib/themeUtils";
 import { useState, useEffect, useRef } from "react";
 import { ThemeProvider } from "@mui/material";
-import { defaultLayerSpecs } from "@/components/map";
+import { defaultLayerSpecs, inspectLayerSpecs } from "@/components/map";
 
 // All unique overture:item values from layer specs
 const ALL_ITEMS = [...new Set(
@@ -22,6 +22,13 @@ const DEFAULT_OFF = new Set(["place-all-circle", "place-all-density-circle", "bu
 
 const DEFAULT_VISIBLE = ALL_ITEMS.filter((id) => !DEFAULT_OFF.has(id));
 
+// Inspect map has its own item vocabulary; show all of it by default.
+const DEFAULT_INSPECT_VISIBLE = [...new Set(
+  inspectLayerSpecs
+    .map((spec) => spec.metadata?.["overture:item"])
+    .filter(Boolean)
+)];
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [modeName, setModeName] = useState("theme-dark");
@@ -34,6 +41,7 @@ export default function Home() {
   const [language, setLanguage] = useState("mul");
 
   const [visibleTypes, setVisibleTypes] = useState(DEFAULT_VISIBLE);
+  const [inspectVisibleTypes, setInspectVisibleTypes] = useState(DEFAULT_INSPECT_VISIBLE);
   const [pendingFeature, setPendingFeature] = useState(null);
   const [initialSlider, setInitialSlider] = useState(null);
   const [sliderPosition, setSliderPosition] = useState(0.5);
@@ -157,6 +165,9 @@ export default function Home() {
             visibleTypes={visibleTypes}
             setVisibleTypes={setVisibleTypes}
             defaultVisibleTypes={DEFAULT_VISIBLE}
+            inspectVisibleTypes={inspectVisibleTypes}
+            setInspectVisibleTypes={setInspectVisibleTypes}
+            defaultInspectVisibleTypes={DEFAULT_INSPECT_VISIBLE}
             onMapReady={setMapInstance}
             globeMode={globeMode}
             pendingFeature={pendingFeature}
