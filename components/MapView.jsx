@@ -229,14 +229,6 @@ export default function Map({
         ? targetMap.queryRenderedFeatures(e.point, { layers: interactiveIds })
         : [];
 
-      const coords = {
-        longitude: e.lngLat.lng,
-        latitude: e.lngLat.lat,
-      };
-
-      setLastClickedCoords(coords);
-      setClickedMap(targetMap);
-
       const clickedFeatures = [];
       const seenIds = new Set();
 
@@ -254,11 +246,17 @@ export default function Map({
       }
 
       if (clickedFeatures.length > 0) {
+        setLastClickedCoords({
+          longitude: e.lngLat.lng,
+          latitude: e.lngLat.lat,
+        });
+        setClickedMap(targetMap);
         setFeatures(clickedFeatures);
         setActiveFeature(clickedFeatures[0]);
         setActiveTab("features");
         setDrawerOpen(true);
       } else {
+        setLastClickedCoords(null);
         setFeatures([]);
         setActiveFeature(null);
       }
@@ -280,7 +278,9 @@ export default function Map({
 
       map.getCanvas().style.cursor =
         featuresAtPoint.some(
-          (f) => isTypeVisible(f.layer["source-layer"], targetItems)
+          (f) =>
+            !(targetMap.getZoom() < 10 && f.source === "base") &&
+            isTypeVisible(f.layer["source-layer"], targetItems)
         )
           ? "pointer"
           : "auto";
