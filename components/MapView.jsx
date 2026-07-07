@@ -124,6 +124,18 @@ export default function Map({
   const sliderPositionRef = useRef(initialSlider ?? 0.5);
   const [dragging, setDragging] = useState(false);
   const draggingRef = useRef(false);
+  const [sliderTransitionMs, setSliderTransitionMs] = useState(300);
+  const sliderTransitionTimeoutRef = useRef(null);
+
+  const animateSlider = useCallback((target, durationMs) => {
+    clearTimeout(sliderTransitionTimeoutRef.current);
+    setSliderTransitionMs(durationMs);
+    setSliderPosition(target);
+    sliderTransitionTimeoutRef.current = setTimeout(
+      () => setSliderTransitionMs(300),
+      durationMs + 100,
+    );
+  }, []);
   const [inspectMapLoaded, setInspectMapLoaded] = useState(false);
   const [clickedMap, setClickedMap] = useState(null);
 
@@ -572,7 +584,7 @@ export default function Map({
               clipPath: `inset(0 0 0 ${sliderPosition * 100}%)`,
               pointerEvents: "none",
               background: "#121212",
-              transition: !dragging ? "clip-path 300ms ease" : undefined,
+              transition: !dragging ? `clip-path ${sliderTransitionMs}ms ease` : undefined,
             }}
           />
           {/* Divider with snap handle */}
@@ -597,7 +609,7 @@ export default function Map({
               // directly here.
               zIndex: 1,
               touchAction: "none",
-              transition: !dragging ? "left 300ms ease" : undefined,
+              transition: !dragging ? `left ${sliderTransitionMs}ms ease` : undefined,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -687,7 +699,7 @@ export default function Map({
         />
 
         <div className="custom-controls">
-          <BookmarkDial mode={mode} />
+          <BookmarkDial mode={mode} animateSlider={animateSlider} />
         </div>
 
         <SidePanel

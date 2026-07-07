@@ -44,6 +44,9 @@ const FLY_DURATION_MS = 3000;
 const DWELL_MS = 10000;
 const ROTATION_DEGREES = 25;
 const OVERLAY_FADE_IN_DELAY = 1500; // show city name mid-fly for context
+const SLIDER_SWEEP_START = 4000;   // ms after flyTo begins to start slider sweep
+const SLIDER_SWEEP_DURATION = 2000; // ms for each sweep leg
+const SLIDER_HOLD_MS = 500;        // ms to hold at the edge before sweeping back
 
 function getArcPosition(angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -53,7 +56,7 @@ function getArcPosition(angleDeg) {
   };
 }
 
-export default function BookmarkDial({ mode }) {
+export default function BookmarkDial({ mode, animateSlider }) {
   const [open, setOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentCity, setCurrentCity] = useState(null);
@@ -64,14 +67,20 @@ export default function BookmarkDial({ mode }) {
   const intervalRef = useRef(null);
   const rotateTimeoutRef = useRef(null);
   const overlayTimeoutRef = useRef(null);
+  const sliderSweepRef = useRef(null);
+  const sliderReturnRef = useRef(null);
 
   const clearAllTimers = useCallback(() => {
     clearInterval(intervalRef.current);
     clearTimeout(rotateTimeoutRef.current);
     clearTimeout(overlayTimeoutRef.current);
+    clearTimeout(sliderSweepRef.current);
+    clearTimeout(sliderReturnRef.current);
     intervalRef.current = null;
     rotateTimeoutRef.current = null;
     overlayTimeoutRef.current = null;
+    sliderSweepRef.current = null;
+    sliderReturnRef.current = null;
   }, []);
 
   const flyToBookmark = useCallback((bookmark) => {
@@ -102,12 +111,24 @@ export default function BookmarkDial({ mode }) {
         easing: (t) => t,
       });
     }, FLY_DURATION_MS);
-  }, [map]);
+
+    // Alternate between sweeping to inspect (0) and explore (1)
+    if (animateSlider) {
+      const sweepTarget = indexRef.current % 2 === 0 ? 0 : 1;
+      sliderSweepRef.current = setTimeout(() => {
+        animateSlider(sweepTarget, SLIDER_SWEEP_DURATION);
+        sliderReturnRef.current = setTimeout(() => {
+          animateSlider(0.5, SLIDER_SWEEP_DURATION);
+        }, SLIDER_SWEEP_DURATION + SLIDER_HOLD_MS);
+      }, SLIDER_SWEEP_START);
+    }
+  }, [map, animateSlider]);
 
   const stopDemo = useCallback(() => {
     setIsPlaying(false);
     setShowOverlay(false);
-  }, []);
+    animateSlider?.(0.5, 600);
+  }, [animateSlider]);
 
   useEffect(() => {
     if (!map) return;
@@ -124,6 +145,7 @@ export default function BookmarkDial({ mode }) {
     } else {
       clearAllTimers();
       setShowOverlay(false);
+      animateSlider?.(0.5, 600);
       map.off('dragstart', stopDemo);
     }
 
