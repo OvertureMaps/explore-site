@@ -42,7 +42,7 @@ const RADIUS = 90;
 const ANGLES = [155, 115, 65, 25];
 
 const FLY_DURATION_MS = 3000;
-const DWELL_MS = 9000; // time at each location before flying to next
+const DWELL_MS = 10000; // time at each location before flying to next
 
 function getArcPosition(angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;
