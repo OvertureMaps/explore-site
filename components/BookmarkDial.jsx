@@ -47,6 +47,7 @@ const OVERLAY_FADE_IN_DELAY = 2000; // show city name mid-fly for context
 const SLIDER_SWEEP_START = 4500;   // ms after flyTo begins to start slider sweep
 const SLIDER_SWEEP_DURATION = 2500; // ms for each sweep leg
 const SLIDER_HOLD_MS = 800;        // ms to hold at the edge before sweeping back
+const SELECT_DELAY = FLY_DURATION_MS + 2000; // ms after flyTo begins to query features (tile load buffer)
 
 function getArcPosition(angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -56,7 +57,7 @@ function getArcPosition(angleDeg) {
   };
 }
 
-export default function BookmarkDial({ mode, animateSlider }) {
+export default function BookmarkDial({ mode, animateSlider, selectDemoFeature, clearDemoSelection }) {
   const [open, setOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentCity, setCurrentCity] = useState(null);
@@ -69,6 +70,7 @@ export default function BookmarkDial({ mode, animateSlider }) {
   const overlayTimeoutRef = useRef(null);
   const sliderSweepRef = useRef(null);
   const sliderReturnRef = useRef(null);
+  const selectTimeoutRef = useRef(null);
 
   const clearAllTimers = useCallback(() => {
     clearInterval(intervalRef.current);
@@ -76,17 +78,20 @@ export default function BookmarkDial({ mode, animateSlider }) {
     clearTimeout(overlayTimeoutRef.current);
     clearTimeout(sliderSweepRef.current);
     clearTimeout(sliderReturnRef.current);
+    clearTimeout(selectTimeoutRef.current);
     intervalRef.current = null;
     rotateTimeoutRef.current = null;
     overlayTimeoutRef.current = null;
     sliderSweepRef.current = null;
     sliderReturnRef.current = null;
+    selectTimeoutRef.current = null;
   }, []);
 
   const flyToBookmark = useCallback((bookmark) => {
     if (!map) return;
 
     setShowOverlay(false);
+    clearDemoSelection?.();
 
     map.flyTo({
       center: bookmark.center,
@@ -112,6 +117,11 @@ export default function BookmarkDial({ mode, animateSlider }) {
       });
     }, FLY_DURATION_MS);
 
+    // Select a feature after landing and tiles have loaded
+    if (selectDemoFeature) {
+      selectTimeoutRef.current = setTimeout(selectDemoFeature, SELECT_DELAY);
+    }
+
     // Alternate between sweeping to inspect (0) and explore (1)
     if (animateSlider) {
       const sweepTarget = indexRef.current % 2 === 0 ? 0 : 1;
@@ -122,7 +132,7 @@ export default function BookmarkDial({ mode, animateSlider }) {
         }, SLIDER_SWEEP_DURATION + SLIDER_HOLD_MS);
       }, SLIDER_SWEEP_START);
     }
-  }, [map, animateSlider]);
+  }, [map, animateSlider, selectDemoFeature, clearDemoSelection]);
 
   const stopDemo = useCallback(() => {
     setIsPlaying(false);

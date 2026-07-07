@@ -136,6 +136,41 @@ export default function Map({
       durationMs + 100,
     );
   }, []);
+
+  const selectDemoFeature = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const interactiveIds = getInteractiveLayerIds(map, visibleTypesRef.current);
+    if (!interactiveIds.length) return;
+    const center = map.project(map.getCenter());
+    const pad = 80;
+    const queried = map.queryRenderedFeatures(
+      [[center.x - pad, center.y - pad], [center.x + pad, center.y + pad]],
+      { layers: interactiveIds },
+    );
+    const seen = new Set();
+    const deduped = [];
+    for (const f of queried) {
+      if (map.getZoom() < 10 && f.source === 'base') continue;
+      if (!seen.has(f.properties.id)) {
+        seen.add(f.properties.id);
+        deduped.push(f);
+      }
+    }
+    if (deduped.length > 0) {
+      setFeatures(deduped);
+      setActiveFeature(deduped[0]);
+      setActiveTab('features');
+      setDrawerOpen(true);
+    }
+  }, [setFeatures, setActiveFeature]);
+
+  const clearDemoSelection = useCallback(() => {
+    setActiveFeature(null);
+    setFeatures([]);
+    setDrawerOpen(false);
+  }, [setActiveFeature, setFeatures]);
+
   const [inspectMapLoaded, setInspectMapLoaded] = useState(false);
   const [clickedMap, setClickedMap] = useState(null);
 
@@ -699,7 +734,12 @@ export default function Map({
         />
 
         <div className="custom-controls">
-          <BookmarkDial mode={mode} animateSlider={animateSlider} />
+          <BookmarkDial
+            mode={mode}
+            animateSlider={animateSlider}
+            selectDemoFeature={selectDemoFeature}
+            clearDemoSelection={clearDemoSelection}
+          />
         </div>
 
         <SidePanel
