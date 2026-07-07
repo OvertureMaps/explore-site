@@ -37,12 +37,13 @@ const BOOKMARKS = [
   },
 ];
 
-// Spread 5 items in an arc above the button (160° to 20°, left to right)
 const RADIUS = 90;
 const ANGLES = [155, 115, 65, 25];
 
 const FLY_DURATION_MS = 3000;
-const DWELL_MS = 10000; // time at each location before flying to next
+const DWELL_MS = 10000;
+const ROTATION_DEGREES = 25;
+const OVERLAY_FADE_IN_DELAY = 1500; // show city name mid-fly for context
 
 function getArcPosition(angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -55,13 +56,29 @@ function getArcPosition(angleDeg) {
 export default function BookmarkDial({ mode }) {
   const [open, setOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentCity, setCurrentCity] = useState(null);
+  const [showOverlay, setShowOverlay] = useState(false);
   const map = useMapInstance();
   const isDark = mode === "theme-dark";
   const indexRef = useRef(0);
   const intervalRef = useRef(null);
+  const rotateTimeoutRef = useRef(null);
+  const overlayTimeoutRef = useRef(null);
+
+  const clearAllTimers = useCallback(() => {
+    clearInterval(intervalRef.current);
+    clearTimeout(rotateTimeoutRef.current);
+    clearTimeout(overlayTimeoutRef.current);
+    intervalRef.current = null;
+    rotateTimeoutRef.current = null;
+    overlayTimeoutRef.current = null;
+  }, []);
 
   const flyToBookmark = useCallback((bookmark) => {
     if (!map) return;
+
+    setShowOverlay(false);
+
     map.flyTo({
       center: bookmark.center,
       zoom: bookmark.zoom,
@@ -70,10 +87,26 @@ export default function BookmarkDial({ mode }) {
       duration: FLY_DURATION_MS,
       essential: true,
     });
+
+    // Fade in city name card while fly is still in progress
+    overlayTimeoutRef.current = setTimeout(() => {
+      setCurrentCity(bookmark.name);
+      setShowOverlay(true);
+    }, OVERLAY_FADE_IN_DELAY);
+
+    // Slowly orbit after landing
+    rotateTimeoutRef.current = setTimeout(() => {
+      map.easeTo({
+        bearing: bookmark.bearing + ROTATION_DEGREES,
+        duration: DWELL_MS - FLY_DURATION_MS,
+        easing: (t) => t,
+      });
+    }, FLY_DURATION_MS);
   }, [map]);
 
   const stopDemo = useCallback(() => {
     setIsPlaying(false);
+    setShowOverlay(false);
   }, []);
 
   useEffect(() => {
@@ -89,17 +122,17 @@ export default function BookmarkDial({ mode }) {
 
       map.on('dragstart', stopDemo);
     } else {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+      clearAllTimers();
+      setShowOverlay(false);
       map.off('dragstart', stopDemo);
     }
 
     return () => {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+      clearAllTimers();
       map.off('dragstart', stopDemo);
+      map.stop();
     };
-  }, [isPlaying, map, flyToBookmark, stopDemo]);
+  }, [isPlaying, map, flyToBookmark, stopDemo, clearAllTimers]);
 
   const handleClick = (bookmark) => {
     if (!map) return;
@@ -121,60 +154,97 @@ export default function BookmarkDial({ mode }) {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 1000 }}>
-      {BOOKMARKS.map((bookmark, i) => {
-        const pos = getArcPosition(ANGLES[i]);
-        return (
-          <Chip
-            key={bookmark.name}
-            label={bookmark.name}
-            onClick={() => handleClick(bookmark)}
-            sx={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: open
-                ? `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px)) scale(1)`
-                : 'translate(-50%, -50%) scale(0)',
-              opacity: open ? 1 : 0,
-              transition: `transform 0.3s ${i * 0.03}s, opacity 0.2s ${i * 0.03}s`,
-              bgcolor: isDark ? '#000000' : '#ffffff',
-              color: isDark ? '#ffffff' : '#000000',
-              fontWeight: 600,
-              cursor: 'pointer',
-              maxWidth: 'none',
-              '& .MuiChip-label': { overflow: 'visible' },
-              '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
-            }}
-          />
-        );
-      })}
-      <Fab
-        aria-label={isPlaying ? 'Stop demo' : 'Start demo'}
-        onClick={toggleDemo}
-        sx={{
-          position: 'absolute',
+    <>
+      {/* City name overlay card */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 110,
           left: '50%',
-          top: '50%',
-          transform: 'translate(calc(-50% - 68px), -50%)',
-          bgcolor: isPlaying ? (isDark ? '#1a3a1a' : '#e8f5e9') : (isDark ? '#000000' : '#ffffff'),
-          color: isDark ? '#ffffff' : '#000000',
-          '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
+          transform: 'translateX(-50%)',
+          zIndex: 999,
+          opacity: showOverlay ? 1 : 0,
+          transition: 'opacity 0.8s ease',
+          pointerEvents: 'none',
+          textAlign: 'center',
         }}
       >
-        {isPlaying ? <PauseIcon sx={{ fontSize: 28 }} /> : <PlayArrowIcon sx={{ fontSize: 28 }} />}
-      </Fab>
-      <Fab
-        aria-label="Bookmarks"
-        onClick={() => setOpen(!open)}
-        sx={{
-          bgcolor: isDark ? '#000000' : '#ffffff',
-          color: isDark ? '#ffffff' : '#000000',
-          '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
-        }}
-      >
-        <StarIcon sx={{ fontSize: 28 }} />
-      </Fab>
-    </div>
+        <div
+          style={{
+            background: isDark ? 'rgba(0,0,0,0.72)' : 'rgba(255,255,255,0.82)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            borderRadius: 20,
+            padding: '18px 48px 16px',
+            color: isDark ? '#ffffff' : '#000000',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+          }}
+        >
+          <div style={{ fontSize: 52, fontWeight: 700, letterSpacing: '-1px', lineHeight: 1 }}>
+            {currentCity}
+          </div>
+          <div style={{ fontSize: 13, opacity: 0.5, marginTop: 8, letterSpacing: 3, textTransform: 'uppercase' }}>
+            Overture Maps
+          </div>
+        </div>
+      </div>
+
+      {/* Bookmark dial */}
+      <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 1000 }}>
+        {BOOKMARKS.map((bookmark, i) => {
+          const pos = getArcPosition(ANGLES[i]);
+          return (
+            <Chip
+              key={bookmark.name}
+              label={bookmark.name}
+              onClick={() => handleClick(bookmark)}
+              sx={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: open
+                  ? `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px)) scale(1)`
+                  : 'translate(-50%, -50%) scale(0)',
+                opacity: open ? 1 : 0,
+                transition: `transform 0.3s ${i * 0.03}s, opacity 0.2s ${i * 0.03}s`,
+                bgcolor: isDark ? '#000000' : '#ffffff',
+                color: isDark ? '#ffffff' : '#000000',
+                fontWeight: 600,
+                cursor: 'pointer',
+                maxWidth: 'none',
+                '& .MuiChip-label': { overflow: 'visible' },
+                '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
+              }}
+            />
+          );
+        })}
+        <Fab
+          aria-label={isPlaying ? 'Stop demo' : 'Start demo'}
+          onClick={toggleDemo}
+          sx={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(calc(-50% - 68px), -50%)',
+            bgcolor: isPlaying ? (isDark ? '#1a3a1a' : '#e8f5e9') : (isDark ? '#000000' : '#ffffff'),
+            color: isDark ? '#ffffff' : '#000000',
+            '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
+          }}
+        >
+          {isPlaying ? <PauseIcon sx={{ fontSize: 28 }} /> : <PlayArrowIcon sx={{ fontSize: 28 }} />}
+        </Fab>
+        <Fab
+          aria-label="Bookmarks"
+          onClick={() => setOpen(!open)}
+          sx={{
+            bgcolor: isDark ? '#000000' : '#ffffff',
+            color: isDark ? '#ffffff' : '#000000',
+            '&:hover': { bgcolor: isDark ? '#222222' : '#f0f0f0' },
+          }}
+        >
+          <StarIcon sx={{ fontSize: 28 }} />
+        </Fab>
+      </div>
+    </>
   );
 }
