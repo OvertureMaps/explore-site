@@ -41,7 +41,7 @@ const RADIUS = 90;
 const ANGLES = [155, 115, 65, 25];
 
 const FLY_DURATION_MS = 4000;
-const DWELL_MS = 10000;
+const DWELL_MS = 20000;
 const ROTATION_DEGREES = 25;
 const OVERLAY_FADE_IN_DELAY = 2000; // show city name mid-fly for context
 const SLIDER_SWEEP_START = 4500;   // ms after flyTo begins to start slider sweep
