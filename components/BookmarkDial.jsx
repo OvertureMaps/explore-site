@@ -48,6 +48,7 @@ const SLIDER_SWEEP_START = 4500;   // ms after flyTo begins to start slider swee
 const SLIDER_SWEEP_DURATION = 2500; // ms for each sweep leg
 const SLIDER_HOLD_MS = 800;        // ms to hold at the edge before sweeping back
 const SELECT_DELAY = FLY_DURATION_MS + 2000; // ms after flyTo begins to query features (tile load buffer)
+const IDLE_TIMEOUT_MS = 60000;              // ms of inactivity before demo auto-resumes
 
 function getArcPosition(angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -71,6 +72,8 @@ export default function BookmarkDial({ mode, animateSlider, selectDemoFeature, c
   const sliderSweepRef = useRef(null);
   const sliderReturnRef = useRef(null);
   const selectTimeoutRef = useRef(null);
+  const idleTimerRef = useRef(null);
+  const hasPlayedRef = useRef(false);
 
   const clearAllTimers = useCallback(() => {
     clearInterval(intervalRef.current);
@@ -85,6 +88,14 @@ export default function BookmarkDial({ mode, animateSlider, selectDemoFeature, c
     sliderSweepRef.current = null;
     sliderReturnRef.current = null;
     selectTimeoutRef.current = null;
+  }, []);
+
+  const resetIdleTimer = useCallback(() => {
+    clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => {
+      indexRef.current = 0;
+      setIsPlaying(true);
+    }, IDLE_TIMEOUT_MS);
   }, []);
 
   const flyToBookmark = useCallback((bookmark) => {
@@ -144,6 +155,12 @@ export default function BookmarkDial({ mode, animateSlider, selectDemoFeature, c
     if (!map) return;
 
     if (isPlaying) {
+      hasPlayedRef.current = true;
+      clearTimeout(idleTimerRef.current);
+      map.off('dragstart', resetIdleTimer);
+      map.off('zoomstart', resetIdleTimer);
+      map.off('click', resetIdleTimer);
+
       flyToBookmark(BOOKMARKS[indexRef.current]);
 
       intervalRef.current = setInterval(() => {
@@ -157,14 +174,25 @@ export default function BookmarkDial({ mode, animateSlider, selectDemoFeature, c
       setShowOverlay(false);
       animateSlider?.(0.5, 600);
       map.off('dragstart', stopDemo);
+
+      if (hasPlayedRef.current) {
+        resetIdleTimer();
+        map.on('dragstart', resetIdleTimer);
+        map.on('zoomstart', resetIdleTimer);
+        map.on('click', resetIdleTimer);
+      }
     }
 
     return () => {
       clearAllTimers();
+      clearTimeout(idleTimerRef.current);
       map.off('dragstart', stopDemo);
+      map.off('dragstart', resetIdleTimer);
+      map.off('zoomstart', resetIdleTimer);
+      map.off('click', resetIdleTimer);
       map.stop();
     };
-  }, [isPlaying, map, flyToBookmark, stopDemo, clearAllTimers]);
+  }, [isPlaying, map, flyToBookmark, stopDemo, clearAllTimers, animateSlider, resetIdleTimer]);
 
   const handleClick = (bookmark) => {
     if (!map) return;
