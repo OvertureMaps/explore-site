@@ -12,6 +12,6 @@
   "paint": {
     "line-color": "$inspect.division.color.line",
     "line-width": 1.5,
-    "line-opacity": "$inspect.division.opacity"
+    "line-opacity": 0.75
   }
 }

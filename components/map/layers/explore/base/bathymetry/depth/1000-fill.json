@@ -29,7 +29,7 @@
     "overture:theme": "base",
     "overture:type": "bathymetry",
     "overture:group": "base-bathymetry",
-    "overture:selectable": true,
+    "overture:selectable": false,
     "overture:item": "bathymetry-depth-1000"
   }
 }

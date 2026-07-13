@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useMapInstance } from "@/lib/MapContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getDownloadCatalog } from "@/lib/DownloadCatalog";
 import { getLatestReleaseVersion } from "@/lib/stacService";
 import {
@@ -12,6 +12,10 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
+import { downloadAsZip } from "@/lib/zipDownload";
+import { buildDownloadMetadata } from "@/lib/downloadMetadata";
+import { normalizeGeojson } from "@/lib/normalizeGeojson";
+import DownloadDialog from "@/components/nav/DownloadDialog";
 
 const ZOOM_BOUND = 15;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -20,6 +24,10 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
   const map = useMapInstance();
 
   const [loading, setLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [pendingBbox, setPendingBbox] = useState(null);
+  const [zipName, setZipName] = useState(null);
+  const loadReqRef = useRef(0);
 
   useEffect(() => {
     if (map) {
@@ -28,8 +36,52 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     }
   }, [map, setZoom]);
 
-  const handleDownloadClick = async () => {
+  // Fetches the release version in the background while the dialog is open
+  // in order to pre-compute the archive name. A request token guards against
+  // stale responses overwriting state when the dialog is cancelled and
+  // reopened before the previous fetch completes.
+  const loadDialogInfo = async (bbox) => {
+    const reqId = ++loadReqRef.current;
+    try {
+      const releaseVersion = await getLatestReleaseVersion();
+      if (reqId !== loadReqRef.current) return; // stale — a newer open superseded this one
+      const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
+      setZipName(`overture-${releaseVersion}-${bboxStr}.zip`);
+    } catch (err) {
+      console.error("Failed to load dialog info:", err);
+      // Leave zipName null — dialog degrades gracefully.
+    }
+  };
+
+  // Opens the confirmation dialog and captures the current bbox.
+  const handleDownloadClick = () => {
     if (!map) return;
+    const bounds = map.getBounds();
+    const bbox = [
+      bounds.getWest(),
+      bounds.getSouth(),
+      bounds.getEast(),
+      bounds.getNorth(),
+    ];
+    setPendingBbox(bbox);
+    setZipName(null);
+    setDialogOpen(true);
+    loadDialogInfo(bbox);
+  };
+
+  const handleDialogCancel = () => {
+    setDialogOpen(false);
+    setPendingBbox(null);
+  };
+
+  // Runs after user confirms in dialog.
+  const handleDialogConfirm = async () => {
+    setDialogOpen(false);
+
+    if (!map || !pendingBbox) return;
+
+    const bbox = pendingBbox;
+    setPendingBbox(null);
 
     //TODO: Make this async and parallelize with the startup of the map component, rather than blocking in.
     await initWasm();
@@ -37,15 +89,6 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
 
     setLoading(true);
     try {
-      //Get current map dimensions and convert to bbox
-      const bounds = map.getBounds();
-      let bbox = [
-        bounds.getWest(),  //xmin
-        bounds.getSouth(), //ymin
-        bounds.getEast(),  //xmax
-        bounds.getNorth(), //ymax
-      ];
-
       //Send those to the download engine
       const xmin = ["bbox", "xmin"];
       const ymin = ["bbox", "ymin"];
@@ -88,46 +131,58 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
         );
       });
 
-      await Promise.all(datasets)
-        .then((datasets) => {
-          return datasets.map((dataset) =>
-            dataset.parquet.read(readOptions).then((reader) => {
-              return { type: dataset.type, reader: reader };
-            })
-          );
-        })
-        .then((tableReads) =>
-          Promise.all(tableReads)
-            .then((wasmTables) => {
-              wasmTables.map((wasmTable) => {
-                if (wasmTable?.reader?.numBatches > 0) {
-                  const binaryDataForDownload = writeGeoJSON(wasmTable.reader);
+      try {
+        const resolvedDatasets = await Promise.all(datasets);
+        const wasmTables = await Promise.all(
+          resolvedDatasets.map((dataset) =>
+            dataset.parquet.read(readOptions).then((reader) => ({
+              type: dataset.type,
+              reader,
+            }))
+          )
+        );
 
-                  let blerb = new Blob([binaryDataForDownload], {
-                    type: "application/octet-stream",
-                  });
+        const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
 
-                  const url = URL.createObjectURL(blerb);
-                  var downloadLink = document.createElement("a");
-                  downloadLink.href = url;
+        // Collect each non-empty layer as a GeoJSON file inside a single ZIP.
+        // Bundling avoids iOS Safari silently dropping multi-file downloads
+        // and Chrome's "allow multiple downloads" prompt — see issue #190.
+        const nonEmptyTables = wasmTables.filter(
+          (wasmTable) => wasmTable?.reader?.numBatches > 0
+        );
 
-                  const bboxStr = bbox.map((v) => v.toFixed(3)).join(",");
-                  downloadLink.download = `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`;
+        const files = nonEmptyTables.map((wasmTable) => ({
+          name: `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`,
+          // writeGeoJSON puts `id` inside properties and emits every polygon
+          // as a MultiPolygon; normalize to match the source data / CLI.
+          data: normalizeGeojson(writeGeoJSON(wasmTable.reader)),
+        }));
 
-                  document.body.appendChild(downloadLink);
-                  downloadLink.click();
-                  document.body.removeChild(downloadLink);
-                }
-              });
-            })
-            .then(() => {
-              setLoading(false);
-            })
-        ).catch(error => {
-          // Something went wrong with the download.
-          console.error("An error occurred during the download:", error);
-          alert("An error occurred during the download. Please try again.");
+        if (files.length === 0) {
+          console.warn("No non-empty layers in the current view");
+          return;
+        }
+
+        // Include a metadata.json describing the bbox, release, and current
+        // map view URL so the download is self-describing and reproducible
+        // via overturemaps-py / DuckDB. See issue #156.
+        files.push({
+          name: "metadata.json",
+          data: buildDownloadMetadata({
+            bbox,
+            releaseVersion,
+            layers: nonEmptyTables.map((t) => t.type),
+            viewUrl: typeof window !== "undefined" ? window.location.href : undefined,
+          }),
         });
+
+        const archiveName = `overture-${releaseVersion}-${bboxStr}.zip`;
+        downloadAsZip(files, archiveName);
+      } catch (error) {
+        // Something went wrong with the download.
+        console.error("An error occurred during the download:", error);
+        alert("An error occurred during the download. Please try again.");
+      }
     } catch (error) {
       console.error("Error in download process:", error);
       alert("An error occurred while preparing the download. Please try again.");
@@ -178,7 +233,19 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
     </Tooltip>
   );
 
-  return downloadIcon;
+  return (
+    <>
+      {downloadIcon}
+      <DownloadDialog
+        open={dialogOpen}
+        onConfirm={handleDialogConfirm}
+        onCancel={handleDialogCancel}
+        visibleTypes={getVisibleTypes(visibleTypes)}
+        bbox={pendingBbox}
+        zipName={zipName}
+      />
+    </>
+  );
 }
 
 DownloadButton.propTypes = {
