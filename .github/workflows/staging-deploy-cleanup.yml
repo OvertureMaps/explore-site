@@ -1,0 +1,53 @@
+---
+# Staging Deploy Cleanup Workflow
+#
+# Triggered on: pull requests closed (merged or not) targeting main
+# Jobs:
+#   - cleanup: Removes the PR's staging preview from S3 and busts the CloudFront cache
+
+name: Staging Deploy Cleanup
+run-name: ♻️ Clean up staging preview for PR #${{ github.event.number }}
+
+on:
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: staging-${{ github.event.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # required to checkout the code from the repo
+
+jobs:
+  cleanup:
+    name: Cleanup
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-slim
+    permissions:
+      id-token: write # required to use OIDC authentication
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
+        with:
+          role-to-assume: arn:aws:iam::763944545891:role/pages-staging-oidc-overturemaps
+          aws-region: us-west-2
+
+      # No flags to ignore "not found" errors, so we use "|| true" to prevent failure if the path doesn't exist
+      - name: Delete from S3
+        run: |
+          aws s3 rm --recursive \
+            s3://overture-managed-staging-usw2/gh-pages/${GITHUB_EVENT_REPOSITORY_NAME}/pr/${GITHUB_EVENT_NUMBER}/ || true
+        env:
+          GITHUB_EVENT_REPOSITORY_NAME: ${{ github.event.repository.name }}
+          GITHUB_EVENT_NUMBER: ${{ github.event.number }}
+
+      - name: Bust the cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E1KP2IN0H2RGGT \
+            --paths "/${GITHUB_EVENT_REPOSITORY_NAME}/pr/${GITHUB_EVENT_NUMBER}/*" || true
+        env:
+          GITHUB_EVENT_REPOSITORY_NAME: ${{ github.event.repository.name }}
+          GITHUB_EVENT_NUMBER: ${{ github.event.number }}
