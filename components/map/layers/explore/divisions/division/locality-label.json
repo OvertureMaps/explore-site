@@ -4,53 +4,16 @@
   "source-layer": "division",
   "maxzoom": 14,
   "filter": [
-    "all",
+    "match",
     [
-      "match",
-      [
-        "get",
-        "subtype"
-      ],
-      [
-        "locality"
-      ],
-      true,
-      false
+      "get",
+      "subtype"
     ],
     [
-      "step",
-      [
-        "zoom"
-      ],
-      [
-        ">=",
-        [
-          "get",
-          "population"
-        ],
-        1000000
-      ],
-      11,
-      [
-        ">=",
-        [
-          "get",
-          "population"
-        ],
-        50000
-      ],
-      12,
-      [
-        ">=",
-        [
-          "get",
-          "population"
-        ],
-        10000
-      ],
-      13,
-      true
-    ]
+      "locality"
+    ],
+    true,
+    false
   ],
   "layout": {
     "text-field": [
@@ -63,9 +26,9 @@
         ">=",
         [
           "get",
-          "population"
+          "@prominence"
         ],
-        1000000
+        70
       ],
       [
         "literal",
@@ -91,12 +54,12 @@
           ">=",
           [
             "get",
-            "population"
+            "@prominence"
           ],
-          1000000
+          70
         ],
-        22,
-        18
+        16,
+        14
       ],
       12,
       [
@@ -105,9 +68,9 @@
           ">=",
           [
             "get",
-            "population"
+            "@prominence"
           ],
-          50000
+          50
         ],
         24,
         20
@@ -119,9 +82,9 @@
           ">=",
           [
             "get",
-            "population"
+            "@prominence"
           ],
-          10000
+          30
         ],
         28,
         24
