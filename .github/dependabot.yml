@@ -19,3 +19,22 @@ updates:
       include: "scope"
     cooldown:
       default-days: 7
+
+  # Maintain npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    open-pull-requests-limit: 5
+    labels:
+      - "bot"
+    commit-message:
+      prefix: "[CHORE](deps)"
+      include: "scope"
+    cooldown:
+      default-days: 7
