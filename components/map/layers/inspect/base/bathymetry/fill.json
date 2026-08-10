@@ -7,7 +7,7 @@
     "overture:type": "bathymetry",
     "overture:group": "base-bathymetry",
     "overture:item": "bathymetry-fill",
-    "overture:selectable": true
+    "overture:selectable": false
   },
   "paint": {
     "fill-color": "$inspect.bathymetry.color.fill",

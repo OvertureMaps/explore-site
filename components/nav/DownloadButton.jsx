@@ -14,6 +14,7 @@ import initWasm from "@geoarrow/geoarrow-wasm/esm/index.js";
 import { getVisibleTypes } from "@/lib/LayerManager";
 import { downloadAsZip } from "@/lib/zipDownload";
 import { buildDownloadMetadata } from "@/lib/downloadMetadata";
+import { normalizeGeojson } from "@/lib/normalizeGeojson";
 import DownloadDialog from "@/components/nav/DownloadDialog";
 
 const ZOOM_BOUND = 15;
@@ -152,7 +153,9 @@ function DownloadButton({ mode, zoom, setZoom, visibleTypes}) {
 
         const files = nonEmptyTables.map((wasmTable) => ({
           name: `overture-${releaseVersion}-${wasmTable.type}-${bboxStr}.geojson`,
-          data: writeGeoJSON(wasmTable.reader),
+          // writeGeoJSON puts `id` inside properties and emits every polygon
+          // as a MultiPolygon; normalize to match the source data / CLI.
+          data: normalizeGeojson(writeGeoJSON(wasmTable.reader)),
         }));
 
         if (files.length === 0) {

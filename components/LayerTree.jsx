@@ -344,11 +344,11 @@ export default function LayerTree({
   visibleTypes,
   setVisibleTypes,
   defaultVisibleTypes,
-  inspectMode,
+  inspect,
   zoom,
 }) {
-  const hierarchy = inspectMode ? inspectHierarchy : exploreHierarchy;
-  const allExpandableIds = inspectMode ? inspectExpandableIds : exploreExpandableIds;
+  const hierarchy = inspect ? inspectHierarchy : exploreHierarchy;
+  const allExpandableIds = inspect ? inspectExpandableIds : exploreExpandableIds;
   const [expandedItems, setExpandedItems] = useState([]);
 
   const isItemVisible = (itemId) => visibleTypes.includes(itemId);
@@ -581,6 +581,6 @@ LayerTree.propTypes = {
   visibleTypes: PropTypes.array.isRequired,
   setVisibleTypes: PropTypes.func.isRequired,
   defaultVisibleTypes: PropTypes.array.isRequired,
-  inspectMode: PropTypes.bool.isRequired,
+  inspect: PropTypes.bool,
   zoom: PropTypes.number.isRequired,
 };

@@ -12,7 +12,7 @@ import GithubButton from "@/components/nav/GithubButton";
 import SearchBox from "@/components/nav/SearchBox";
 import PropTypes from "prop-types";
 
-export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, language, setLanguage, inspectMode, setInspectMode, globeMode, setGlobeMode, activeFeature, onGersSelect }) {
+export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, language, setLanguage, globeMode, setGlobeMode, activeFeature, onGersSelect }) {
   const isDark = mode === "theme-dark";
 
   return (
@@ -41,7 +41,7 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, lan
           </IconButton>
         </Tooltip>
         <DownloadButton zoom={zoom} mode={mode} setZoom={setZoom} visibleTypes={visibleTypes} />
-        <ShareButton visibleTypes={visibleTypes} inspectMode={inspectMode} activeFeature={activeFeature} />
+        <ShareButton visibleTypes={visibleTypes} activeFeature={activeFeature} />
         <Tooltip title="Report a bug">
           <IconButton
             href="https://github.com/OvertureMaps/explore-site/issues/new/choose"
@@ -51,21 +51,6 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, lan
             sx={{ color: "inherit" }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: 24 }}>bug_report</span>
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Toggle inspect mode">
-          <IconButton
-            onClick={() => setInspectMode(!inspectMode)}
-            aria-label="Toggle inspect mode"
-            sx={{
-              color: inspectMode ? "#fff" : "inherit",
-              bgcolor: inspectMode ? "primary.main" : "transparent",
-              "&:hover": {
-                bgcolor: inspectMode ? "primary.dark" : (isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"),
-              },
-            }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 24 }}>frame_inspect</span>
           </IconButton>
         </Tooltip>
         <Tooltip title="Toggle globe view">
@@ -102,8 +87,6 @@ Header.propTypes = {
   visibleTypes: PropTypes.array.isRequired,
   language: PropTypes.string.isRequired,
   setLanguage: PropTypes.func.isRequired,
-  inspectMode: PropTypes.bool.isRequired,
-  setInspectMode: PropTypes.func.isRequired,
   globeMode: PropTypes.bool.isRequired,
   setGlobeMode: PropTypes.func.isRequired,
   activeFeature: PropTypes.object,

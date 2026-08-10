@@ -98,13 +98,17 @@ export default function FeaturePopup({
       .setDOMContent(container)
       .addTo(map);
 
-    popup.on("close", () => {
+    const handleClose = () => {
       onClose();
-    });
+    };
+    popup.on("close", handleClose);
 
     popupRef.current = popup;
 
     return () => {
+      // Detach the close listener first so the programmatic remove() below
+      // doesn't fire onClose and null out the coordinates of the next popup.
+      popup.off("close", handleClose);
       popup.remove();
       popupRef.current = null;
       rootRef.current = null;
