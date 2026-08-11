@@ -47,7 +47,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.0",
+    "eslint-config-next": "^16.3.0",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "js-yaml": "^5.2.3",
