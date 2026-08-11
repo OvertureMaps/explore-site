@@ -27,7 +27,7 @@
     "@mapbox/mapbox-gl-rtl-text": "^0.4.0",
     "@maplibre/maplibre-gl-inspect": "^1.8.2",
     "@mui/base": "^5.0.0-beta.40",
-    "@mui/icons-material": "^5.15.21",
+    "@mui/icons-material": "^9.2.0",
     "@mui/material": "^5.15.20",
     "@mui/x-tree-view": "^8.27.2",
     "apache-arrow": "^15.0.2",
