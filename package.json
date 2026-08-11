@@ -22,7 +22,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@geoarrow/geoarrow-wasm": "^0.2.0-beta.5",
-    "@mapbox-controls/language": "^3.0.0",
+    "@mapbox-controls/language": "^4.1.0",
     "@mapbox-controls/tooltip": "^3.0.0",
     "@mapbox/mapbox-gl-rtl-text": "^0.4.0",
     "@maplibre/maplibre-gl-inspect": "^1.8.2",
