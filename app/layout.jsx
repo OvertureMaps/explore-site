@@ -41,6 +41,8 @@ export default function RootLayout({ children }) {
         <style dangerouslySetInnerHTML={{ __html: fontFaceCSS }} />
         <link rel="preconnect" href="https://stac.overturemaps.org" />
         <link rel="preload" href="https://stac.overturemaps.org/catalog.json" as="fetch" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bug_report,docs,download_for_offline,find_replace,frame_inspect,globe_asia,my_location,zoom_in,zoom_out&display=swap"

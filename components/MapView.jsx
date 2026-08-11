@@ -13,6 +13,7 @@ import fontsJson from "@/components/map/tokens/primitive/fonts.json";
 import {
   addSources,
   addAllLayers,
+  preloadIcons,
   updateLayerVisibility,
   highlightFeature,
   getInteractiveLayerIds,
@@ -31,6 +32,11 @@ try {
 
 // Load PMTiles URLs from STAC catalog at module load time
 const pmtilesPromise = loadPmtilesFromStac();
+
+// Preload layer icon SVGs at module load time, in parallel with the STAC
+// fetch, map init, and font loading, so they're ready (or nearly ready)
+// by the time addAllLayers runs instead of only starting then.
+const iconsPromise = preloadIcons();
 
 // All font family names used by the map (must match @font-face declarations in globals.css)
 const fontNames = Object.values(fontsJson).flatMap((variants) =>
@@ -330,7 +336,7 @@ export default function Map({
 
     const map = mapRef.current;
     addSources(map, pmtilesUrls);
-    addAllLayers(map, visibleTypes).then(() => setSourcesAdded(true));
+    addAllLayers(map, visibleTypes, iconsPromise).then(() => setSourcesAdded(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, fontsLoaded, pmtilesUrls]);
 
