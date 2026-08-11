@@ -75,7 +75,7 @@ Options:
 // ══════════════════════════════════════════════════════
 
 async function buildSchema() {
-  const yaml = (await import("js-yaml")).default;
+  const yaml = await import("js-yaml");
 
   // Determine schema source: local path or git tag checkout
   let schemaPath = getArg("--schema-path");
