@@ -26,6 +26,13 @@ updates:
     schedule:
       interval: "weekly"
     groups:
+      # @mui/material, @mui/base, @mui/icons-material, and @mui/x-tree-view
+      # are peer-linked, so a major bump on one alone breaks resolution
+      # (see #341). Group them so dependabot proposes major bumps as one
+      # coordinated PR instead of piecemeal ones.
+      mui:
+        patterns:
+          - "@mui/*"
       npm-minor-patch:
         update-types:
           - "minor"
