@@ -33,6 +33,17 @@ updates:
       mui:
         patterns:
           - "@mui/*"
+      # eslint's major version is a peer dependency of eslint-config-next, and
+      # eslint-config-next's major version tracks next's major version, so all
+      # three must bump together or npm ci fails on a peer dependency conflict
+      # (see #340).
+      next-eslint-major:
+        patterns:
+          - "next"
+          - "eslint"
+          - "eslint-config-next"
+        update-types:
+          - "major"
       npm-minor-patch:
         update-types:
           - "minor"
