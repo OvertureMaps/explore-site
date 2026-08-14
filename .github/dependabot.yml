@@ -26,8 +26,8 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      # @mui/material, @mui/base, @mui/icons-material, and @mui/x-tree-view
-      # are peer-linked, so a major bump on one alone breaks resolution
+      # @mui/material, @mui/icons-material, and @mui/x-tree-view are
+      # peer-linked, so a major bump on one alone breaks resolution
       # (see #341). Group them so dependabot proposes major bumps as one
       # coordinated PR instead of piecemeal ones.
       mui:
@@ -42,6 +42,17 @@ updates:
           - "next"
           - "eslint"
           - "eslint-config-next"
+        update-types:
+          - "major"
+      # react and react-dom must stay on the same major version, and a react
+      # major also needs a next version whose peer range covers it (next 14
+      # only supports react 18), so react ended up split across #350 and #354
+      # with no matching next bump. Group react/react-dom major bumps so
+      # dependabot proposes them together.
+      react-major:
+        patterns:
+          - "react"
+          - "react-dom"
         update-types:
           - "major"
       npm-minor-patch:
