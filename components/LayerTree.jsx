@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
@@ -340,6 +340,28 @@ function getIconColor(itemId) {
   return itemColorMap[itemId] || "grey";
 }
 
+// MUI 9 sets aria-checked="mixed" on indeterminate checkboxes without setting
+// the input's native indeterminate property, which axe flags as an
+// aria-conditional-attr violation. Sync the DOM property ourselves.
+function TriStateCheckbox({ indeterminate = false, label, ...props }) {
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.indeterminate = indeterminate;
+  });
+  return (
+    <Checkbox
+      indeterminate={indeterminate}
+      slotProps={{ input: { "aria-label": label, ref: inputRef } }}
+      {...props}
+    />
+  );
+}
+
+TriStateCheckbox.propTypes = {
+  indeterminate: PropTypes.bool,
+  label: PropTypes.string.isRequired,
+};
+
 export default function LayerTree({
   visibleTypes,
   setVisibleTypes,
@@ -438,14 +460,14 @@ export default function LayerTree({
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <Checkbox
+                <TriStateCheckbox
                   size="small"
                   sx={{ p: 0, mr: 0.5, color: "inherit", "&.Mui-checked": { color: "inherit" }, "&.MuiCheckbox-indeterminate": { color: "inherit" } }}
                   checked={isAllVisible(themeItemIds)}
                   indeterminate={isIndeterminate(themeItemIds)}
                   onChange={() => toggleItems(themeItemIds)}
                   disabled={themeDisabled}
-                  inputProps={{ 'aria-label': themeEntry.name }}
+                  label={themeEntry.name}
                 />
                 <span>{themeEntry.name}</span>
               </Box>
@@ -482,7 +504,7 @@ export default function LayerTree({
                           checked={isItemVisible(item.id)}
                           onChange={() => toggleItems([item.id])}
                           disabled={!item.selectable}
-                          inputProps={{ 'aria-label': group.name }}
+                          slotProps={{ input: { 'aria-label': group.name } }}
                         />
                         <GeometryIcon
                           geometryType={item.geometryType}
@@ -513,14 +535,14 @@ export default function LayerTree({
                       }}
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <Checkbox
+                      <TriStateCheckbox
                         size="small"
                         sx={{ p: 0, mr: 0.5, color: "inherit", "&.Mui-checked": { color: "inherit" }, "&.MuiCheckbox-indeterminate": { color: "inherit" } }}
                         checked={isAllVisible(groupItemIds)}
                         indeterminate={isIndeterminate(groupItemIds)}
                         onChange={() => toggleItems(groupItemIds)}
                         disabled={groupDisabled}
-                        inputProps={{ 'aria-label': group.name }}
+                        label={group.name}
                       />
                       <span>{group.name}</span>
                       {group.items.every((i) => i.confidenceThreshold !== null) && <ConfidenceBadgeWithInfo threshold={group.items[0].confidenceThreshold} zoom={zoom} />}
@@ -551,7 +573,7 @@ export default function LayerTree({
                               checked={isItemVisible(item.id)}
                               onChange={() => toggleItems([item.id])}
                               disabled={!item.selectable}
-                              inputProps={{ 'aria-label': item.name }}
+                              slotProps={{ input: { 'aria-label': item.name } }}
                             />
                             <GeometryIcon
                               geometryType={item.geometryType}
