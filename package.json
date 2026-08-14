@@ -28,7 +28,7 @@
     "@maplibre/maplibre-gl-inspect": "^1.8.2",
     "@mui/icons-material": "^5.15.21",
     "@mui/material": "^5.15.20",
-    "@mui/x-tree-view": "^8.27.2",
+    "@mui/x-tree-view": "^9.11.0",
     "fflate": "^0.8.3",
     "iconoir-react": "^7.11.1",
     "maplibre-gl": "^5.18.0",
