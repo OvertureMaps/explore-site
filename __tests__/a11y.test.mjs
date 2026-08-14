@@ -109,8 +109,9 @@ for (const theme of ['theme-dark', 'theme-light']) {
   test(`homepage with layers sidebar open passes WCAG 2.2 AA (${theme})`, async () => {
     const { page, context } = await openPage(theme);
     try {
-      // Click the floating toggle button (contains LayersIcon) to open the drawer
-      await page.locator('button:has([data-testid="LayersIcon"])').click();
+      // Click the floating toggle button to open the drawer. Target the
+      // accessible name — MUI 9 strips icon data-testid from production builds.
+      await page.getByRole('button', { name: 'Open layers panel' }).click();
       // Wait for the Tabs inside the drawer to render (MUI Tabs has role="tablist")
       await page.waitForSelector('[role="tablist"]', { timeout: 5000 });
       formatViolations(await runAxe(page), `layers sidebar ${theme}`);

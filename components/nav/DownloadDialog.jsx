@@ -119,7 +119,7 @@ export default function DownloadDialog({ open, onConfirm, onCancel, visibleTypes
                           disabled
                           size="small"
                           disableRipple
-                          inputProps={{ "aria-label": item.name }}
+                          slotProps={{ input: { "aria-label": item.name } }}
                           sx={{ p: 0.5 }}
                         />
                       </ListItemIcon>
