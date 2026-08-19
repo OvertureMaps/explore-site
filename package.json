@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "postinstall": "node scripts/copy-rtl-plugin.mjs",
+    "postinstall": "node scripts/copy-maplibre-assets.mjs",
     "build": "next build --webpack",
     "build:schema": "node scripts/dont-dream-its-overture.mjs --build-schema",
     "build:tiles": "node scripts/dont-dream-its-overture.mjs --build-tiles",
@@ -16,8 +16,6 @@
     "test": "jest",
     "test:ci": "jest --ci --passWithNoTests",
     "test:a11y": "node --test --test-reporter=spec __tests__/a11y.test.mjs",
-    "prebuild": "node ./scripts/copy-maplibre-worker.mjs",
-    "predev": "node ./scripts/copy-maplibre-worker.mjs",
     "preview": "npx serve out"
   },
   "dependencies": {
