@@ -60,7 +60,7 @@ export default function Header({ zoom, mode, setMode, setZoom, visibleTypes, lan
               disabled={zoom >= 6}
               aria-label="Toggle globe view"
               sx={{
-                color: globeMode && zoom < 6 ? "#fff" : "inherit",
+                color: globeMode && zoom < 6 ? "primary.contrastText" : "inherit",
                 bgcolor: globeMode && zoom < 6 ? "primary.main" : "transparent",
                 "&:hover": {
                   bgcolor: globeMode && zoom < 6 ? "primary.dark" : (isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"),
