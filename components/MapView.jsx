@@ -1,6 +1,6 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import * as pmtiles from "pmtiles";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
 import { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import "@/components/CustomControls.css";
@@ -24,7 +24,7 @@ import {
 // Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
 try {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-  maplibregl.setRTLTextPlugin(`${basePath}/mapbox-gl-rtl-text.js`, null, true);
+  maplibregl.setRTLTextPlugin(`${basePath}/mapbox-gl-rtl-text.js`, true).catch(() => {});
 } catch {
   // Already set — ignore
 }
