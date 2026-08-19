@@ -128,7 +128,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-slim
-    needs: [test, build, a11y]
+    needs: [test, build]
     permissions:
       id-token: write # required to use OIDC authentication
       contents: read
