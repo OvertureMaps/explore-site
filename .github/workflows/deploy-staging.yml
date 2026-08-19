@@ -119,6 +119,7 @@ jobs:
         run: npm run build
 
       - name: Install Playwright browser
+        timeout-minutes: 5
         run: npx playwright install chromium --with-deps
 
       - name: Run accessibility tests
