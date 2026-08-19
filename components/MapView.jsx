@@ -21,6 +21,8 @@ import {
   updateInspectVisibility,
 } from "@/lib/LayerManager";
 
+maplibregl.setWorkerUrl('/maplibre/maplibre-gl-worker.mjs');
+
 // Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
 try {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
