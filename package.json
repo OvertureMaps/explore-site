@@ -41,18 +41,19 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@eslint/compat": "^2.1.0",
     "@maplibre/maplibre-gl-style-spec": "^26.2.1",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
-    "eslint": "^9.39.0",
-    "eslint-config-next": "^16.3.0",
+    "eslint": "^10.8.1",
+    "eslint-config-next": "^16.3.1",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "js-yaml": "^5.2.3",
     "playwright": "^1.62.1"
   },
   "volta": {
-    "node": "20.11.1"
+    "node": "24.19.0"
   }
 }
