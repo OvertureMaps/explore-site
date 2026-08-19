@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@eslint/compat": "^2.1.0",
     "@maplibre/maplibre-gl-style-spec": "^26.2.1",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^7.0.1",

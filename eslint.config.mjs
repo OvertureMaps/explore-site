@@ -1,8 +1,22 @@
 import { defineConfig, globalIgnores } from "eslint/config";
+import { fixupConfigRules } from "@eslint/compat";
 import nextVitals from "eslint-config-next/core-web-vitals";
+import * as compatParser from "./eslint-parser-compat.mjs";
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
+  // fixupConfigRules wraps every rule in the Next.js config with shims that
+  // restore deprecated ESLint v8/v9 context methods (e.g. getFilename())
+  // removed in ESLint v10, allowing bundled plugins to keep working until
+  // they are updated for the new API.
+  ...fixupConfigRules(nextVitals),
+  // Override the babel parser bundled by eslint-config-next with the compat
+  // shim that back-fills the addGlobals() method required by ESLint v10.
+  {
+    files: ["**/*.{js,jsx,mjs,cjs}"],
+    languageOptions: {
+      parser: compatParser,
+    },
+  },
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
