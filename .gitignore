@@ -3,3 +3,4 @@ node_modules
 out
 .swc
 public/mapbox-gl-rtl-text.js
+public/maplibre

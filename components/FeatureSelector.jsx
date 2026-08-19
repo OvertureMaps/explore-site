@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
 import PropTypes from "prop-types";
 import ThemeIcon from "@/components/inspector_panel/ThemeIcon";
 import FeatureTitle from "@/components/FeatureTitle";

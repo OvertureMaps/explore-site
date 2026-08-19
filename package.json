@@ -16,6 +16,8 @@
     "test": "jest",
     "test:ci": "jest --ci --passWithNoTests",
     "test:a11y": "node --test --test-reporter=spec __tests__/a11y.test.mjs",
+    "prebuild": "node ./scripts/copy-maplibre-worker.mjs",
+    "predev": "node ./scripts/copy-maplibre-worker.mjs",
     "preview": "npx serve out"
   },
   "dependencies": {
@@ -31,7 +33,7 @@
     "@mui/x-tree-view": "^9.11.0",
     "fflate": "^0.8.3",
     "iconoir-react": "^7.12.0",
-    "maplibre-gl": "^5.18.0",
+    "maplibre-gl": "^6.3.0",
     "next": "^16.3.0",
     "pmtiles": "^4.5.0",
     "prop-types": "^15.8.1",
