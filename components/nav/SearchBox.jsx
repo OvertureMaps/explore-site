@@ -242,7 +242,7 @@ export default function SearchBox({ mode, onGersSelect }) {
         >
           <span
             className="material-symbols-outlined"
-            style={{ fontSize: 18, opacity: 0.5, marginRight: 6 }}
+            style={{ fontSize: 18, color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)", marginRight: 6 }}
           >
             find_replace
           </span>
