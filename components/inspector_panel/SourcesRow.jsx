@@ -12,7 +12,7 @@ function SourcesRow({ entity, mode, tips }) {
           return `https://facebook.com/${source.record_id}`;
         case "OpenStreetMap": {
           if (!source.record_id) return null;
-          const match = source.record_id.match(/^([nwr])(\d+)(@\d+)?$/i);
+          const match = source.record_id.match(/^([nwr])(\d+)(?:@(\d+))?$/i);
           if (!match) return null;
 
           const typeMap = {
@@ -23,7 +23,12 @@ function SourcesRow({ entity, mode, tips }) {
 
           const type = typeMap[match[1].toLowerCase()];
           const id = match[2];
+          const version = match[3];
 
+          // If version is present, link to the specific version in history
+          if (version) {
+            return `https://www.openstreetmap.org/${type}/${id}/history/${version}`;
+          }
           return `https://www.openstreetmap.org/${type}/${id}`;
         }
         default:
