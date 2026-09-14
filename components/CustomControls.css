@@ -71,3 +71,43 @@
 .maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background-error::after {
   color: #e54e33;
 }
+
+/* Marker dropped at a GERS search result. A DOM node rather than a symbol
+   layer so it never takes part in label collision, and so it can be placed
+   from the geocoder's bbox centre without waiting for the feature to turn up
+   in a loaded tile. */
+.gers-search-marker {
+  width: 20px;
+  height: 20px;
+  border: 3px solid hsl(352, 90%, 45%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 1px 4px rgba(0, 0, 0, 0.4);
+  /* Clicks belong to the map underneath. */
+  pointer-events: none;
+}
+
+.gers-search-marker::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 3px solid hsl(352, 90%, 45%);
+  border-radius: 50%;
+  animation: gers-search-pulse 1.8s ease-out 3;
+}
+
+@keyframes gers-search-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gers-search-marker::after {
+    animation: none;
+  }
+}

@@ -63,6 +63,30 @@ for (const theme of ["base", "buildings", "transportation", "addresses", "places
 }
 
 
+// Centre of a geometry's bounding box. Used to aim the search marker at a
+// feature restored from a link, where there is no geocoder bbox to borrow.
+// A feature clipped across tile boundaries only yields the fragment that was
+// queried, which is close enough for a marker.
+function geometryCenter(geometry) {
+  const coordinates = geometry?.coordinates;
+  if (!coordinates) return null;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  const visit = (coords) => {
+    if (typeof coords[0] === "number") {
+      const [x, y] = coords;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+      return;
+    }
+    for (const child of coords) visit(child);
+  };
+  visit(coordinates);
+  if (minX === Infinity) return null;
+  return [(minX + maxX) / 2, (minY + maxY) / 2];
+}
+
 // this reference must remain constant to avoid re-renders
 const MAP_STYLE = {
   version: 8,
@@ -121,11 +145,39 @@ export default function Map({
 
   const inspectMapContainer = useRef(null);
   const inspectMapRef = useRef(null);
+
+  // DOM markers dropped at a GERS search result — one per map, since the
+  // inspect map is a separate MapLibre instance painted over the explore one
+  // and a marker only lives in the container of the map it was added to.
+  // Kept in a ref because they outlive pendingFeature — that gets cleared as
+  // soon as the feature resolves, but the markers stay until the user clicks
+  // elsewhere or closes the Features panel.
+  const searchMarkersRef = useRef([]);
+  const clearSearchMarker = useCallback(() => {
+    for (const marker of searchMarkersRef.current) marker.remove();
+    searchMarkersRef.current = [];
+  }, []);
+
+  // Drop the marker on both maps at once. The inspect map clips away the
+  // explore map's copy on its side of the divider, so each needs its own.
+  const showSearchMarker = useCallback((center) => {
+    clearSearchMarker();
+    const maps = [mapRef.current, inspectMapRef.current].filter(Boolean);
+    searchMarkersRef.current = maps.map((map) => {
+      const element = document.createElement("div");
+      element.className = "gers-search-marker";
+      return new maplibregl.Marker({ element }).setLngLat(center).addTo(map);
+    });
+  }, [clearSearchMarker]);
+
   const containerRef = useRef(null);
   const [sliderPosition, setSliderPosition] = useState(initialSlider ?? 0.5);
   const sliderPositionRef = useRef(initialSlider ?? 0.5);
   const [dragging, setDragging] = useState(false);
   const draggingRef = useRef(false);
+  // Suppresses the slide animation when the position is set for the user
+  // (a GERS search jumping to inspect view) rather than by them.
+  const [snapSlider, setSnapSlider] = useState(false);
   const [inspectMapLoaded, setInspectMapLoaded] = useState(false);
   const [clickedMap, setClickedMap] = useState(null);
 
@@ -133,6 +185,21 @@ export default function Map({
     sliderPositionRef.current = sliderPosition;
     onSliderChange?.(sliderPosition);
   }, [sliderPosition, onSliderChange]);
+
+  // A GERS search looks one feature up by ID, so collapse the compare slider
+  // into full inspect view — that is the half that shows the raw themes the ID
+  // was resolved against, and a split view would only clip away the thing the
+  // user just looked up. Done while rendering the search rather than when the
+  // feature resolves, so the view changes with the map jump instead of several
+  // seconds later when the tile lookup finishes.
+  const [lastPending, setLastPending] = useState(pendingFeature);
+  if (pendingFeature !== lastPending) {
+    setLastPending(pendingFeature);
+    if (pendingFeature?.searchAll) {
+      setSnapSlider(true);
+      setSliderPosition(0);
+    }
+  }
 
   // Load PMTiles URLs from STAC catalog
   useEffect(() => {
@@ -224,6 +291,8 @@ export default function Map({
 
     // Click handler
     map.on("click", (e) => {
+      // Clicking anywhere means the user has moved on from the search result.
+      clearSearchMarker();
       const { targetMap, targetItems } = pickTargetMap(e);
       const interactiveIds = getInteractiveLayerIds(targetMap, targetItems);
 
@@ -413,6 +482,31 @@ export default function Map({
     activeFeatureRef.current = activeFeature;
   }, [activeFeature]);
 
+  // Drop a marker at a searched location. Driven by the geocoder's bbox centre
+  // rather than the resolved feature, so it shows up immediately and still
+  // shows up when the feature can't be found in the loaded tiles.
+  useEffect(() => {
+    const center = pendingFeature?.searchAll ? pendingFeature.center : null;
+    if (!mapRef.current || !center) return;
+    showSearchMarker(center);
+    // No cleanup here on purpose: the marker is removed on the next search,
+    // on the next map click, when the Features panel closes, or on unmount.
+  }, [pendingFeature, showSearchMarker]);
+
+  // The marker belongs to the feature being inspected, so it goes with the
+  // Features panel. Read as a transition rather than a condition: a search
+  // drops the marker while the panel is still closed, and that must not clear
+  // it on the spot.
+  const featuresPanelOpen = drawerOpen && activeTab === "features";
+  const featuresPanelOpenRef = useRef(featuresPanelOpen);
+  useEffect(() => {
+    if (featuresPanelOpenRef.current && !featuresPanelOpen) clearSearchMarker();
+    featuresPanelOpenRef.current = featuresPanelOpen;
+  }, [featuresPanelOpen, clearSearchMarker]);
+
+  // Remove the search marker when the map goes away
+  useEffect(() => clearSearchMarker, [clearSearchMarker]);
+
   // Restore a pending feature from URL params once tiles are loaded
   useEffect(() => {
     if (!pendingFeature || !sourcesAdded || !mapRef.current) return;
@@ -461,6 +555,13 @@ export default function Map({
     }
 
     function resolve(match) {
+      // A hotlinked GERS ID has no geocoder bbox to place a marker from, so
+      // derive one from the feature itself now that it has been found. Search
+      // results already have their marker down and keep it where it landed.
+      if (!pendingFeature.center) {
+        const center = geometryCenter(match.geometry);
+        if (center) showSearchMarker(center);
+      }
       setActiveFeature(match);
       setFeatures([match]);
       setActiveTab("features");
@@ -490,7 +591,7 @@ export default function Map({
       clearTimeout(timeout);
       map.off("idle", onIdle);
     };
-  }, [pendingFeature, sourcesAdded, setPendingFeature, setActiveFeature, setFeatures]);
+  }, [pendingFeature, sourcesAdded, setPendingFeature, setActiveFeature, setFeatures, showSearchMarker]);
 
   // Keep window.map in sync
   useEffect(() => {
@@ -522,6 +623,13 @@ export default function Map({
     e.preventDefault();
     draggingRef.current = true;
     setDragging(true);
+    setSnapSlider(false);
+  }, []);
+
+  // Move the divider on the user's behalf, animated as usual
+  const moveSlider = useCallback((position) => {
+    setSnapSlider(false);
+    setSliderPosition(position);
   }, []);
 
   useEffect(() => {
@@ -574,7 +682,7 @@ export default function Map({
               clipPath: `inset(0 0 0 ${sliderPosition * 100}%)`,
               pointerEvents: "none",
               background: "#121212",
-              transition: !dragging ? "clip-path 300ms ease" : undefined,
+              transition: dragging || snapSlider ? undefined : "clip-path 300ms ease",
             }}
           />
           {/* Divider with snap handle */}
@@ -599,14 +707,14 @@ export default function Map({
               // directly here.
               zIndex: 1,
               touchAction: "none",
-              transition: !dragging ? "left 300ms ease" : undefined,
+              transition: dragging || snapSlider ? undefined : "left 300ms ease",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
             onMouseDown={handleDividerStart}
             onTouchStart={handleDividerStart}
-            onDoubleClick={() => setSliderPosition(0.5)}
+            onDoubleClick={() => moveSlider(0.5)}
           >
             {/* Visible divider line */}
             <div style={{
@@ -631,7 +739,7 @@ export default function Map({
               boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
             }}>
               <button
-                onClick={() => setSliderPosition(0)}
+                onClick={() => moveSlider(0)}
                 onMouseDown={(e) => e.stopPropagation()}
                 onDoubleClick={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
@@ -656,7 +764,7 @@ export default function Map({
                 <div style={{ width: 10, height: 2, background: "rgba(255,255,255,0.35)", borderRadius: 1 }} />
               </div>
               <button
-                onClick={() => setSliderPosition(1)}
+                onClick={() => moveSlider(1)}
                 onMouseDown={(e) => e.stopPropagation()}
                 onDoubleClick={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}

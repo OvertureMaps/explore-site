@@ -38,6 +38,10 @@ const PLACEHOLDER = {
   gers: "Enter GERS ID…",
 };
 
+// GERS IDs are UUIDs. Matched loosely (no version/variant nibble check) so
+// every flavour of ID in the data is recognized.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export default function SearchBox({ mode, onGersSelect }) {
   const isDark = mode === "theme-dark";
   const map = useMapInstance();
@@ -50,9 +54,49 @@ export default function SearchBox({ mode, onGersSelect }) {
   const menuOpen = Boolean(menuAnchor);
   const debounceRef = useRef(null);
   const abortRef = useRef(null);
+  // Mode the user had chosen before a pasted UUID switched them to GERS, so
+  // editing the ID back into ordinary text restores it.
+  const modeBeforeAutoRef = useRef(null);
 
   const currentLabel = SEARCH_MODES.find((m) => m.value === searchMode)?.label;
   const buttonLabel = searchMode === "locality" ? "Search Type" : currentLabel;
+
+  // Move the map to a result. Split out of handleSelect so an exact GERS ID
+  // lookup can navigate without going through the dropdown.
+  const navigateTo = useCallback((result, sMode) => {
+    if (!map) return;
+
+    if (sMode === "gers" && result.bbox && result.bbox.length === 4) {
+      const bboxWidth = Math.abs(result.bbox[2] - result.bbox[0]);
+      const bboxHeight = Math.abs(result.bbox[3] - result.bbox[1]);
+      const center = [
+        (result.bbox[0] + result.bbox[2]) / 2,
+        (result.bbox[1] + result.bbox[3]) / 2,
+      ];
+      if (bboxWidth > 0.001 && bboxHeight > 0.001) {
+        map.fitBounds(
+          [[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]],
+          { padding: 60, maxZoom: 14.5, animate: false }
+        );
+      } else {
+        map.jumpTo({ center, zoom: 16 });
+      }
+      if (onGersSelect) {
+        onGersSelect({ gersId: result.gers_id, center });
+      }
+    } else if (sMode === "country" && result.lat != null && result.lon != null) {
+      map.jumpTo({ center: [result.lon, result.lat], zoom: 4 });
+    } else if (result.bbox && result.bbox.length === 4 &&
+      Math.abs(result.bbox[2] - result.bbox[0]) > 0.001 &&
+      Math.abs(result.bbox[3] - result.bbox[1]) > 0.001) {
+      map.fitBounds(
+        [[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]],
+        { padding: 60, maxZoom: 14.5, animate: false }
+      );
+    } else if (result.lat != null && result.lon != null) {
+      map.jumpTo({ center: [result.lon, result.lat], zoom: 14.5 });
+    }
+  }, [map, onGersSelect]);
 
   const search = useCallback(async (q, sMode) => {
     if (abortRef.current) abortRef.current.abort();
@@ -80,9 +124,18 @@ export default function SearchBox({ mode, onGersSelect }) {
         }
         const data = await res.json();
         if (data.bbox) {
-          setResults([{ gers_id: data.id, name: data.id, type: "gers", bbox: [data.bbox.xmin, data.bbox.ymin, data.bbox.xmax, data.bbox.ymax] }]);
+          // An ID lookup has exactly one answer — go there instead of making
+          // the user pick it out of a one-row dropdown.
+          setResults([]);
           setNotFound(false);
-          setOpen(true);
+          setOpen(false);
+          navigateTo(
+            {
+              gers_id: data.id,
+              bbox: [data.bbox.xmin, data.bbox.ymin, data.bbox.xmax, data.bbox.ymax],
+            },
+            "gers"
+          );
         } else {
           setResults([]);
           setNotFound(true);
@@ -107,16 +160,38 @@ export default function SearchBox({ mode, onGersSelect }) {
         console.error("Geocoder search failed:", err);
       }
     }
-  }, []);
+  }, [navigateTo]);
 
   const handleInput = (e) => {
     const val = e.target.value;
     setQuery(val);
+
+    // A UUID is unmistakably a GERS ID — switch modes for the user instead of
+    // making them pick "GERS" from the menu first.
+    let nextMode = searchMode;
+    if (UUID_RE.test(val.trim())) {
+      if (searchMode !== "gers") {
+        modeBeforeAutoRef.current = searchMode;
+        nextMode = "gers";
+      }
+    } else if (modeBeforeAutoRef.current) {
+      nextMode = modeBeforeAutoRef.current;
+      modeBeforeAutoRef.current = null;
+    }
+    if (nextMode !== searchMode) {
+      setSearchMode(nextMode);
+      setResults([]);
+      setNotFound(false);
+      setOpen(false);
+    }
+
     clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => search(val, searchMode), searchMode === "gers" ? 500 : 200);
+    debounceRef.current = setTimeout(() => search(val, nextMode), nextMode === "gers" ? 500 : 200);
   };
 
   const handleModeChange = (newMode) => {
+    // An explicit choice wins — don't undo it on the next keystroke.
+    modeBeforeAutoRef.current = null;
     setSearchMode(newMode);
     setMenuAnchor(null);
     setResults([]);
@@ -133,39 +208,7 @@ export default function SearchBox({ mode, onGersSelect }) {
     setOpen(false);
     setResults([]);
     setNotFound(false);
-
-    if (!map) return;
-
-    if (searchMode === "gers" && result.bbox && result.bbox.length === 4) {
-      const bboxWidth = Math.abs(result.bbox[2] - result.bbox[0]);
-      const bboxHeight = Math.abs(result.bbox[3] - result.bbox[1]);
-      if (bboxWidth > 0.001 && bboxHeight > 0.001) {
-        map.fitBounds(
-          [[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]],
-          { padding: 60, maxZoom: 14.5, animate: false }
-        );
-      } else {
-        const centerLng = (result.bbox[0] + result.bbox[2]) / 2;
-        const centerLat = (result.bbox[1] + result.bbox[3]) / 2;
-        map.jumpTo({ center: [centerLng, centerLat], zoom: 16 });
-      }
-      if (onGersSelect) {
-        const centerLng = (result.bbox[0] + result.bbox[2]) / 2;
-        const centerLat = (result.bbox[1] + result.bbox[3]) / 2;
-        onGersSelect({ gersId: result.gers_id, center: [centerLng, centerLat] });
-      }
-    } else if (searchMode === "country" && result.lat != null && result.lon != null) {
-      map.jumpTo({ center: [result.lon, result.lat], zoom: 4 });
-    } else if (result.bbox && result.bbox.length === 4 &&
-      Math.abs(result.bbox[2] - result.bbox[0]) > 0.001 &&
-      Math.abs(result.bbox[3] - result.bbox[1]) > 0.001) {
-      map.fitBounds(
-        [[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]],
-        { padding: 60, maxZoom: 14.5, animate: false }
-      );
-    } else if (result.lat != null && result.lon != null) {
-      map.jumpTo({ center: [result.lon, result.lat], zoom: 14.5 });
-    }
+    navigateTo(result, searchMode);
   };
 
   const handleKeyDown = (e) => {
@@ -216,7 +259,7 @@ export default function SearchBox({ mode, onGersSelect }) {
           anchorEl={menuAnchor}
           open={menuOpen}
           onClose={() => setMenuAnchor(null)}
-          MenuListProps={{ dense: true }}
+          slotProps={{ list: { dense: true } }}
         >
           {SEARCH_MODES.map((m) => (
             <MenuItem
@@ -305,22 +348,15 @@ export default function SearchBox({ mode, onGersSelect }) {
                   <ListItemText
                     primary={r.name}
                     secondary={
-                      r.type === "gers" ? (
-                        <Typography variant="caption" sx={{ color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)" }}>
-                          GERS ID
-                        </Typography>
-                      ) : (
-                        <Typography variant="caption" sx={{ color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)" }}>
-                          {TYPE_LABELS[r.type] || r.type}
-                          {r.region ? `, ${r.region}` : ""}
-                          {r.country ? ` · ${r.country}` : ""}
-                        </Typography>
-                      )
+                      <Typography variant="caption" sx={{ color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)" }}>
+                        {TYPE_LABELS[r.type] || r.type}
+                        {r.region ? `, ${r.region}` : ""}
+                        {r.country ? ` · ${r.country}` : ""}
+                      </Typography>
                     }
                     primaryTypographyProps={{
                       fontSize: 14,
                       color: isDark ? "#fff" : "#000",
-                      ...(r.type === "gers" && { fontFamily: "monospace", fontSize: 12 }),
                     }}
                   />
                 </ListItemButton>

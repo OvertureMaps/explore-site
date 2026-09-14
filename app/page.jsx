@@ -76,17 +76,24 @@ export default function Home() {
       setVisibleTypes(layersParam.split(","));
     }
 
+    let hotlinkedFeature = false;
     if (featureParam) {
       const parts = featureParam.split(".");
       if (parts.length >= 3) {
         const [source, sourceLayer, ...rest] = parts;
         setPendingFeature({ source, sourceLayer, gersId: rest.join(".") });
+        hotlinkedFeature = true;
       }
     }
 
+    // A link to a single feature opens in full inspect view, same as a GERS
+    // search does — a split view would only clip away the thing the link points
+    // at. An explicit ?mode= is the user's own choice, so it still wins. Set as
+    // the divider's initial position rather than moved afterwards, so it starts
+    // there instead of sliding across on load.
     const modeParam = params.get("mode");
     if (modeParam === "explore") setInitialSlider(1);
-    else if (modeParam === "inspect") setInitialSlider(0);
+    else if (modeParam === "inspect" || hotlinkedFeature) setInitialSlider(0);
 
     setMounted(true);
   }, []);
@@ -149,8 +156,8 @@ export default function Home() {
             globeMode={globeMode}
             setGlobeMode={setGlobeMode}
             activeFeature={activeFeature}
-            onGersSelect={({ gersId }) => {
-              setPendingFeature({ gersId, searchAll: true });
+            onGersSelect={({ gersId, center }) => {
+              setPendingFeature({ gersId, center, searchAll: true });
             }}
           />
           <Map
