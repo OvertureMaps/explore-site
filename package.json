@@ -28,10 +28,10 @@
     "@maplibre/maplibre-gl-inspect": "^1.9.0",
     "@mui/icons-material": "^9.4.0",
     "@mui/material": "^9.3.1",
-    "@mui/x-tree-view": "^9.12.0",
+    "@mui/x-tree-view": "^9.13.0",
     "fflate": "^0.8.3",
     "iconoir-react": "^7.12.1",
-    "maplibre-gl": "^6.6.0",
+    "maplibre-gl": "^6.8.0",
     "next": "^16.3.4",
     "pmtiles": "^4.5.0",
     "prop-types": "^15.8.1",
@@ -41,17 +41,17 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@eslint/compat": "^2.1.0",
-    "@maplibre/maplibre-gl-style-spec": "^26.2.1",
+    "@eslint/compat": "^2.1.1",
+    "@maplibre/maplibre-gl-style-spec": "^26.4.2",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
-    "eslint": "^10.9.1",
+    "eslint": "^10.10.0",
     "eslint-config-next": "^16.3.4",
     "jest": "^30.5.1",
     "jest-environment-jsdom": "^30.5.1",
     "js-yaml": "^5.4.1",
-    "playwright": "^1.62.1"
+    "playwright": "^1.63.0"
   },
   "volta": {
     "node": "24.19.0"
