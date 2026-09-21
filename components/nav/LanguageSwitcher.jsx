@@ -66,7 +66,7 @@ export default function LanguageSwitcher({ language, setLanguage, zoom }) {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ dense: true }}
+        slotProps={{ list: { dense: true } }}
       >
         {LANGUAGES.map((lang) => (
           <MenuItem
