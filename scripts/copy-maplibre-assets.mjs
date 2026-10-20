@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Copies the RTL text plugin, web worker, and library modules from node_modules into public/ so it can
+ * Copies the web worker and library modules from node_modules into public/ so they can
  * be served locally instead of fetched from an external CDN.
  *
  * Run automatically as the `postinstall` npm script after dependencies are installed.
@@ -18,11 +18,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
 
 mkdirSync(resolve(root, "public"), { recursive: true });
-copyFileSync(
-  resolve(root, "node_modules/@mapbox/mapbox-gl-rtl-text/dist/mapbox-gl-rtl-text.js"),
-  resolve(root, "public/mapbox-gl-rtl-text.js")
-);
-
 copyFileSync(
   resolve(root, "node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs"),
   resolve(root, "public/maplibre-gl-shared.mjs")
