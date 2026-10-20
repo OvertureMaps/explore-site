@@ -59,6 +59,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # 1.0.0 is ESM-only and no longer works with setRTLTextPlugin, which
+      # components/MapView.jsx uses; the UMD build only exists in 0.4.x.
+      - dependency-name: "@mapbox/mapbox-gl-rtl-text"
+        update-types:
+          - "version-update:semver-major"
     open-pull-requests-limit: 5
     labels:
       - "bot"
