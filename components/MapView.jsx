@@ -24,13 +24,6 @@ import {
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 maplibregl.setWorkerUrl(`${basePath}/maplibre-gl-worker.mjs`);
 
-// Set RTL text plugin for Arabic/Hebrew rendering (must be called once, before map init)
-try {
-  maplibregl.setRTLTextPlugin(`${basePath}/mapbox-gl-rtl-text.js`, true).catch(() => {});
-} catch {
-  // Already set — ignore
-}
-
 // Load PMTiles URLs from STAC catalog at module load time
 const pmtilesPromise = loadPmtilesFromStac();
 
