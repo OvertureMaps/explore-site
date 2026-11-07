@@ -21,6 +21,14 @@ const sharedProperties = [
   "version",
 ];
 
+// Mirrors the GERS registry's deny-list; every other theme/type has a gers.page page.
+const NON_GERS_THEMES = ["base", "addresses"];
+const NON_GERS_TYPES = ["building_part"];
+
+const isInGersRegistry = (entity) =>
+  !NON_GERS_THEMES.includes(entity["theme"]) &&
+  !NON_GERS_TYPES.includes(entity["type"]);
+
 function ThemePanel({ mode, entity, tips }) {
   return (
     <div className="theme-panel">
@@ -33,17 +41,19 @@ function ThemePanel({ mode, entity, tips }) {
             <span style={{ fontSize: "11px" }} onDoubleClick={() => {
                 navigator.clipboard.writeText(entity["id"]);
               }}>{entity["id"]}</span>
-            <Tooltip title="View on gers.page" placement="top" arrow>
-              <a
-                className="gers-page-link"
-                href={`https://gers.page/id/${encodeURIComponent(entity["id"])}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`View GERS ID ${entity["id"]} on gers.page`}
-              >
-                <OpenInNewIcon fontSize="inherit" />
-              </a>
-            </Tooltip>
+            {isInGersRegistry(entity) && (
+              <Tooltip title="View on gers.page" placement="top" arrow>
+                <a
+                  className="gers-page-link"
+                  href={`https://gers.page/id/${encodeURIComponent(entity["id"])}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View GERS ID ${entity["id"]} on gers.page`}
+                >
+                  <OpenInNewIcon fontSize="inherit" />
+                </a>
+              </Tooltip>
+            )}
           </div>
         </div>
       ) : (
