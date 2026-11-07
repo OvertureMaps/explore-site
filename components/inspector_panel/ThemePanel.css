@@ -4,6 +4,21 @@ div.theme-panel {
   padding: 9px 0;
 }
 
+a.gers-page-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  font-size: 13px;
+  color: inherit;
+  opacity: 0.7;
+  vertical-align: middle;
+}
+
+a.gers-page-link:hover,
+a.gers-page-link:focus-visible {
+  opacity: 1;
+}
+
 caption.common-props {
   width: max-content;
 }

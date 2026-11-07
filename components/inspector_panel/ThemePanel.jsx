@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import TableRow from "@/components/inspector_panel/TableRow";
 import Tooltip from "@mui/material/Tooltip";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import "./ThemePanel.css";
 import IndentIcon from "@/components/icons/icon-indent.svg?react";
 import SourcesRow from "@/components/inspector_panel/SourcesRow";
@@ -32,6 +33,17 @@ function ThemePanel({ mode, entity, tips }) {
             <span style={{ fontSize: "11px" }} onDoubleClick={() => {
                 navigator.clipboard.writeText(entity["id"]);
               }}>{entity["id"]}</span>
+            <Tooltip title="View on gers.page" placement="top" arrow>
+              <a
+                className="gers-page-link"
+                href={`https://gers.page/id/${encodeURIComponent(entity["id"])}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`View GERS ID ${entity["id"]} on gers.page`}
+              >
+                <OpenInNewIcon fontSize="inherit" />
+              </a>
+            </Tooltip>
           </div>
         </div>
       ) : (
