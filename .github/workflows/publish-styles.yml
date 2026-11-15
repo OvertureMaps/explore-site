@@ -15,6 +15,10 @@ on:
 permissions:
   contents: read # required to checkout the code from the repo
 
+concurrency:
+  group: publish-styles-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Publish
