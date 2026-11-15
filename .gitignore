@@ -1,6 +1,7 @@
 node_modules
 .next
 out
+dist
 .swc
 public/maplibre-gl-worker.mjs
 public/maplibre-gl-shared.mjs

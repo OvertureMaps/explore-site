@@ -40,6 +40,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm start` | Start the Next.js production server |
 | `npm run preview` | Serve the static export from `out/` locally |
 | `npm run lint` | Run ESLint |
+| `npm run build:styles` | Build the publishable style bundle to `dist/overture-styles.json` |
 | `npm test` | Run unit tests |
 | `npm run test:ci` | Run tests in CI mode |
 
@@ -139,6 +140,43 @@ At import time, `index.js` resolves all `$`-references to their actual values fr
 #### Layer IDs
 
 Each layer's `id` matches its filename without `.json` (e.g., `base/land-cover-fill.json` has `"id": "land-cover-fill"`). The rendering order is defined in `layer-order.json`.
+
+### Publishable style bundle
+
+`npm run build:styles` exports standalone [MapLibre styles](https://maplibre.org/maplibre-style-spec/), one per Overture collection (`theme/type`). It uses the same resolver as the site (`components/map/resolver.js`), avoiding a separate implementation of the style tokens.
+
+The bundle exports resolved collection layers, not every part of the site's map setup. In particular, it does not include the background layer or the visibility choices applied by the site at runtime, so some layers may appear differently in other clients.
+
+```json
+{
+  "format_version": 1,
+  "release_placeholder": "{release}",
+  "collections": {
+    "base/water": {
+      "default": "explore",
+      "styles": { "explore": { "version": 8, ... }, "inspect": { "version": 8, ... } }
+    }
+  }
+}
+```
+
+- Each collection has an `explore` and/or `inspect` style. `default` is `explore` where it exists, otherwise `inspect`.
+- Source URLs contain `{release}` (e.g. `pmtiles://https://tiles.overturemaps.org/{release}/base.pmtiles`). Consumers replace it with a release id.
+- Styles have no `glyphs` or `sprite` by default, because the site loads fonts and icons itself. Pass `--glyphs <url>` and `--sprite <url>` to set them.
+- The script validates every style and prints the bundle's sha256, so consumers can pin it.
+
+Run `node scripts/build-style-bundle.mjs --help` for all options.
+
+#### Releasing
+
+Push a tag named `styles-vX.Y.Z` to publish a new version:
+
+```sh
+git tag styles-v1.0.0
+git push origin styles-v1.0.0
+```
+
+The [Publish Styles](.github/workflows/publish-styles.yml) workflow runs the tests, builds the bundle, and attaches `overture-styles.json` and `overture-styles.json.sha256` to a GitHub Release. Consumers should pin the asset URL and the sha256 from that release.
 
 ## License
 
