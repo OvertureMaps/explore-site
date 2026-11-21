@@ -1,0 +1,82 @@
+---
+# Publish Styles Workflow
+#
+# Triggered on: push of a tag matching styles-v* (e.g. styles-v1.0.0)
+# Jobs:
+#   - publish: Runs the tests, builds the style bundle, and attaches it with its sha256 to a GitHub Release
+
+name: Publish Styles
+run-name: Publish style bundle ${{ github.ref_name }}
+
+on:
+  push:
+    tags: ["styles-v*"]
+
+permissions:
+  contents: read # required to checkout the code from the repo
+
+concurrency:
+  group: publish-styles-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # required to create the release and upload its assets
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Ensure tag is on the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git merge-base --is-ancestor "$GITHUB_SHA" "origin/$DEFAULT_BRANCH" || {
+            echo "Tag commit must be reachable from $DEFAULT_BRANCH" >&2
+            exit 1
+          }
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: package.json
+          package-manager-cache: false # a published artifact must not be built from a restored cache
+
+      - name: Configure sustainable npm
+        uses: lowlydba/sustainable-npm@4cc1da285e5a589a7b3816122f791c21ec6ff3e6 # v4.0.0
+
+      - name: Install
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Build style bundle
+        run: npm run build:styles
+
+      - name: Write checksum
+        working-directory: dist
+        run: sha256sum overture-styles.json > overture-styles.json.sha256
+
+      - name: Create release
+        run: |
+          SHA256="$(cut -d ' ' -f 1 dist/overture-styles.json.sha256)"
+          gh release create "$TAG" \
+            dist/overture-styles.json \
+            dist/overture-styles.json.sha256 \
+            --verify-tag \
+            --notes-file - <<EOF
+          MapLibre styles for the Overture Maps PMTiles, built from the layers the site renders.
+          Source URLs contain a \`{release}\` placeholder for the Overture release id.
+
+          sha256: \`${SHA256}\`
+          EOF
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
